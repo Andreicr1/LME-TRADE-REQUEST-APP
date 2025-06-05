@@ -46,14 +46,17 @@ test('clearTrade resets fields and output', () => {
 });
 
 test('removeTrade deletes block and renumbers remaining trades', () => {
+  jest.useFakeTimers();
   addTrade();
   addTrade();
 
   expect(document.querySelectorAll('.trade-title')[1].textContent).toBe('Trade 2');
 
   removeTrade(0);
+  jest.runAllTimers();
 
   expect(document.getElementById('trade-0')).toBeNull();
   const titles = Array.from(document.querySelectorAll('.trade-title')).map(el => el.textContent);
   expect(titles).toEqual(['Trade 1']);
+  jest.useRealTimers();
 });
