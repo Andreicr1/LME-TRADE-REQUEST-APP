@@ -1,5 +1,5 @@
 // Update this version when releasing a new build so clients refresh cached files
-const CACHE_VERSION = 6;
+const CACHE_VERSION = 7;
 const CACHE_NAME = `lme-cache-v${CACHE_VERSION}`;
 
 const FILES_TO_CACHE = [
@@ -9,6 +9,7 @@ const FILES_TO_CACHE = [
   'holidays.json',
   'solarlunar.min.js',
   'tailwind.min.css',
+  'icons/whatsapp.svg',
   'manifest.json',
   'service-worker.js'
 ];
