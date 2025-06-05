@@ -556,11 +556,38 @@ async function copyAll() {
     textarea.focus();
     return;
   }
-  try {
-    await navigator.clipboard.writeText(text);
+
+  const fallbackCopy = () => {
+    const temp = document.createElement("textarea");
+    temp.value = text;
+    // Avoid scrolling to bottom on iOS
+    temp.style.position = "fixed";
+    document.body.appendChild(temp);
+    temp.focus();
+    temp.select();
+    let successful = false;
+    try {
+      successful = document.execCommand("copy");
+    } catch (err) {
+      console.error("Fallback copy failed:", err);
+    }
+    document.body.removeChild(temp);
+    return successful;
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("Copied to clipboard");
+      return;
+    } catch (err) {
+      console.warn("Clipboard API failed, falling back:", err);
+    }
+  }
+
+  if (fallbackCopy()) {
     alert("Copied to clipboard");
-  } catch (err) {
-    console.error("Failed to copy text:", err);
+  } else {
     alert("Failed to copy text");
   }
 }
