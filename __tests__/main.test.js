@@ -23,7 +23,7 @@ describe('parseInputDate', () => {
 describe('business day helpers', () => {
   test('getSecondBusinessDay returns formatted date', () => {
     const res = getSecondBusinessDay(2025, 0);
-    expect(res).toBe('03-01-25');
+    expect(res).toBe('04-02-25');
   });
 
   test('getFixPpt computes two business days after fix date', () => {

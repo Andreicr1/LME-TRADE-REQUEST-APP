@@ -51,7 +51,8 @@ function parseDate(str) {
 
 function getSecondBusinessDay(year, month) {
   const holidays = lmeHolidays[year] || [];
-  let date = new Date(year, month, 1);
+  // start from the first day of the month following the reference month
+  let date = new Date(year, month + 1, 1);
   let count = 0;
   while (count < 2) {
     const isoDate = date.toISOString().split("T")[0];
@@ -146,12 +147,28 @@ function generateRequest(index) {
     fixInput.classList.remove("border-red-500");
     const useSamePPT1 = document.getElementById(`samePpt1-${index}`)?.checked;
     const useSamePPT2 = document.getElementById(`samePpt2-${index}`)?.checked;
-    const monthIndex = new Date(`${month2} 1, ${year2}`).getMonth();
-    const pptDateAVG = getSecondBusinessDay(year2, monthIndex);
+    // Determine which leg is averaging to compute its PPT
+    let avgMonth, avgYear;
+    if (leg1Type.startsWith("AVG")) {
+      avgMonth = month;
+      avgYear = year;
+    } else if (leg2Type.startsWith("AVG")) {
+      avgMonth = month2;
+      avgYear = year2;
+    }
+    const monthIndex = avgMonth
+      ? new Date(`${avgMonth} 1, ${avgYear}`).getMonth()
+      : 0;
+    const pptDateAVG = avgMonth ? getSecondBusinessDay(avgYear, monthIndex) : "";
 
     let leg1;
+    const showPptAvg =
+      (leg2Type === "Fix" && (useSamePPT2 || dateFix2Raw)) ||
+      (leg1Type === "Fix" && (useSamePPT1 || dateFix1Raw));
     if (leg1Type === "AVG") {
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
+      if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
+      leg1 += " Flat";
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
@@ -160,10 +177,11 @@ function generateRequest(index) {
       const startStr = formatDate(start);
       const endStr = formatDate(end);
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG (${startStr} – ${endStr})`;
+      if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
     } else {
       let pptFixLeg1;
       if (useSamePPT1) {
-        pptFixLeg1 = pptDateAVG;
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix`;
       } else {
         try {
           pptFixLeg1 = getFixPpt(dateFix1);
@@ -171,12 +189,14 @@ function generateRequest(index) {
           err.fixInputId = `fixDate1-${index}`;
           throw err;
         }
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
       }
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
     }
     let leg2;
     if (leg2Type === "AVG") {
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
+      if (showPptAvg) leg2 += ` ppt ${pptDateAVG}`;
+      leg2 += " Flat";
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
         document.getElementById(`startDate2-${index}`)?.value || "",
@@ -189,10 +209,11 @@ function generateRequest(index) {
       const sStr = formatDate(start);
       const eStr = formatDate(end);
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG (${sStr} – ${eStr})`;
+      if (showPptAvg) leg2 += ` ppt ${pptDateAVG}`;
     } else if (leg2Type === "Fix") {
       let pptFix;
       if (useSamePPT2) {
-        pptFix = pptDateAVG;
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al Fix`;
       } else {
         try {
           pptFix = getFixPpt(dateFix2);
@@ -200,8 +221,8 @@ function generateRequest(index) {
           err.fixInputId = `fixDate-${index}`;
           throw err;
         }
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
       }
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
     } else if (leg2Type === "C2R") {
       let pptFix;
       try {
@@ -268,8 +289,30 @@ function updateFinalOutput() {
   document.getElementById("final-output").value = finalOutput;
 }
 
-function syncLegSides() {
-  // Sides are independent; no synchronization needed.
+function syncLegSides(index, changedLeg) {
+  const leg1 = document.querySelector(`input[name='side1-${index}']:checked`);
+  const leg2 = document.querySelector(`input[name='side2-${index}']:checked`);
+  if (!leg1 || !leg2) return;
+
+  if (changedLeg === 1) {
+    const opposite = leg1.value === "buy" ? "sell" : "buy";
+    const other = document.querySelector(
+      `input[name='side2-${index}'][value='${opposite}']`,
+    );
+    if (other) other.checked = true;
+  } else if (changedLeg === 2) {
+    const opposite = leg2.value === "buy" ? "sell" : "buy";
+    const other = document.querySelector(
+      `input[name='side1-${index}'][value='${opposite}']`,
+    );
+    if (other) other.checked = true;
+  } else {
+    const opposite = leg1.value === "buy" ? "sell" : "buy";
+    const other = document.querySelector(
+      `input[name='side2-${index}'][value='${opposite}']`,
+    );
+    if (other) other.checked = true;
+  }
 }
 
 function toggleLeg1Fields(index) {
@@ -332,9 +375,7 @@ function toggleLeg2Fields(index) {
   }
 
   if (samePpt && samePpt.parentElement) {
-    const showChk =
-      (type1 === "AVG" && type2 === "Fix") ||
-      (type1 === "Fix" && type2 === "AVG");
+    const showChk = type1 === "AVG" && type2 === "Fix";
     samePpt.parentElement.style.display = showChk ? "" : "none";
     if (!showChk) samePpt.checked = false;
 
@@ -421,7 +462,10 @@ function addTrade() {
   toggleLeg1Fields(index);
   toggleLeg2Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach((r) => {
-    r.addEventListener("change", () => syncLegSides(index));
+    r.addEventListener("change", () => syncLegSides(index, 1));
+  });
+  document.querySelectorAll(`input[name='side2-${index}']`).forEach((r) => {
+    r.addEventListener("change", () => syncLegSides(index, 2));
   });
   syncLegSides(index);
 
@@ -445,5 +489,6 @@ if (typeof module !== "undefined" && module.exports) {
     generateRequest,
     toggleLeg1Fields,
     toggleLeg2Fields,
+    syncLegSides,
   };
 }
