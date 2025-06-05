@@ -40,10 +40,10 @@ day (its PPT date). Leg&nbsp;2's checkbox is visible when Leg&nbsp;1 is set to
 Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG**.
 
 Only the leg priced as **Fix** shows this checkbox. When checked the generated
-request omits the PPT from the fixed leg and displays it only on the averaging
-leg. If you enter a specific fixing date instead, the request shows PPT dates
-for both legs (two business days after the fixing date for the fixed leg and the
-averaging leg's second business day of the following month).
+request uses the averaging leg's PPT for that fixed leg and displays the date
+only on the fixed side. If you enter a specific fixing date instead, the request
+shows PPT dates for both legs (two business days after the fixing date for the
+fixed leg and the averaging leg's second business day of the following month).
 
 The Buy/Sell options of the two legs are synchronised: selecting **Buy** on Leg
 1 automatically selects **Sell** on Leg 2 and vice versa.
