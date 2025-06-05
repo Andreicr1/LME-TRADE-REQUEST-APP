@@ -141,7 +141,7 @@ let leg2;
 if (leg2Type === 'AVG') {
 const month2 = document.getElementById(`month2-${index}`).value;
 const year2 = parseInt(document.getElementById(`year2-${index}`).value);
-leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
+leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat ppt ${pptDateAVG}`;
 } else if (leg2Type === 'Fix') {
   let pptFix;
   if (useSamePPT) {
