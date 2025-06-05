@@ -9,5 +9,18 @@
     "ecmaVersion": 12,
     "sourceType": "script"
   },
-  "rules": {}
+  "rules": {},
+  "globals": {
+    "calendarUtils": "readonly"
+  },
+  "overrides": [
+    {
+      "files": [
+        "__tests__/**/*"
+      ],
+      "env": {
+        "jest": true
+      }
+    }
+  ]
 }
