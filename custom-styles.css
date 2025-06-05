@@ -1,0 +1,13 @@
+body,
+input,
+select,
+textarea,
+button {
+  font-family: "Inter", sans-serif;
+}
+.form-control {
+  height: 2.5rem; /* ensures uniform input height */
+  padding: 0.5rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 0.25rem;
+}
