@@ -176,7 +176,7 @@ function generateRequest(index) {
         throw new Error("Start and end dates are required for AVG Inter.");
       const startStr = formatDate(start);
       const endStr = formatDate(end);
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG (${startStr} – ${endStr})`;
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al Fixing AVG ${startStr} to ${endStr}`;
       if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
     } else {
       let pptFixLeg1;
@@ -208,7 +208,7 @@ function generateRequest(index) {
         throw new Error("Start and end dates are required for AVGInter.");
       const sStr = formatDate(start);
       const eStr = formatDate(end);
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG (${sStr} – ${eStr})`;
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al Fixing AVG ${sStr} to ${eStr}`;
       if (showPptAvg) leg2 += ` ppt ${pptDateAVG}`;
     } else if (leg2Type === "Fix") {
       let pptFix;
@@ -493,5 +493,6 @@ if (typeof module !== "undefined" && module.exports) {
     addTrade,
     clearTrade,
     removeTrade,
+    copyAll,
   };
 }
