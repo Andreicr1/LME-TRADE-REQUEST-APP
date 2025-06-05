@@ -55,11 +55,11 @@ averaging leg's PPT.
 
 ## Building
 
-No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
+No build step is required. The repository only contains static files (`index.html`, `main.js`, `src/trade-utils.js`, `src/ui-handlers.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
 
 ## Service worker
 
-`service-worker.js` caches the essential files (`index.html`, `main.js`, `calendar-utils.js`, `holidays.json`, `solarlunar.min.js`, `tailwind.min.css` and the service worker itself) when the app is installed. This lets the app continue working offline after the first visit.
+`service-worker.js` caches the essential files (`index.html`, `main.js`, `src/trade-utils.js`, `src/ui-handlers.js`, `calendar-utils.js`, `holidays.json`, `solarlunar.min.js`, `tailwind.min.css` and the service worker itself) when the app is installed. This lets the app continue working offline after the first visit.
 
 `holidays.json` was added in cache version 6 so holiday data is available offline.
 

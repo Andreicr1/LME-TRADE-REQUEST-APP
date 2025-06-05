@@ -11,10 +11,13 @@ const {
   parseInputDate,
   getSecondBusinessDay,
   getFixPpt,
+} = require('../src/trade-utils');
+
+const {
   updateEndDateMin,
   updateAvgRestrictions,
   setMinDates,
-} = require('../main');
+} = require('../src/ui-handlers');
 
 describe('parseInputDate', () => {
   test('parses yyyy-mm-dd string', () => {

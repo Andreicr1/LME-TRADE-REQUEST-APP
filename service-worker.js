@@ -5,6 +5,8 @@ const CACHE_NAME = `lme-cache-v${CACHE_VERSION}`;
 const FILES_TO_CACHE = [
   'index.html',
   'main.js',
+  'src/trade-utils.js',
+  'src/ui-handlers.js',
   'calendar-utils.js',
   'holidays.json',
   'solarlunar.min.js',

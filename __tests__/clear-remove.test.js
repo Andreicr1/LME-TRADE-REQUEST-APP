@@ -22,7 +22,7 @@ function setupDom() {
 
 beforeEach(() => {
   jest.resetModules();
-  ({ addTrade, clearTrade, removeTrade } = require('../main'));
+  ({ addTrade, clearTrade, removeTrade } = require('../src/ui-handlers'));
   setupDom();
 });
 

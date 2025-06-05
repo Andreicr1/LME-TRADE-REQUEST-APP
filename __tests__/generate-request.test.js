@@ -6,10 +6,13 @@ global.calendarUtils = calendarUtils;
 const {
   getSecondBusinessDay,
   getFixPpt,
+} = require("../src/trade-utils");
+
+const {
   generateRequest,
   toggleLeg1Fields,
   toggleLeg2Fields,
-} = require("../main");
+} = require("../src/ui-handlers");
 
 document.body.innerHTML = '<select id="calendarType"></select>';
 document.getElementById("calendarType").value = "gregorian";

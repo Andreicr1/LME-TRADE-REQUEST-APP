@@ -7,11 +7,12 @@ global.calendarUtils = calendarUtils;
 document.body.innerHTML = '<select id="calendarType"></select>';
 document.getElementById("calendarType").value = "gregorian";
 
+const { getSecondBusinessDay } = require("../src/trade-utils");
+
 const {
   toggleLeg1Fields,
   toggleLeg2Fields,
-  getSecondBusinessDay,
-} = require("../main");
+} = require("../src/ui-handlers");
 
 beforeEach(() => {
   document.body.innerHTML = `
