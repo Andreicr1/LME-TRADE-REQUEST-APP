@@ -1,134 +1,250 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LME Trade Request Generator</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link href="tailwind.min.css" rel="stylesheet">
-  <link rel="manifest" href="manifest.json">
-  <style>
-    body, input, select, textarea, button {
-      font-family: 'Inter', sans-serif;
-    }
-    .form-control {
-      height: 2.5rem;            /* ensures uniform input height */
-      padding: 0.5rem;
-      border: 1px solid #d1d5db; /* gray-300 */
-      border-radius: 0.25rem;
-    }
-  </style>
-</head>
-<body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen p-6">
-  <div class="max-w-4xl mx-auto space-y-6">
-    <h1 class="text-3xl font-bold mb-6 text-center">LME Trade Request Generator</h1>
-    <div id="trades" class="space-y-6"></div>
-    <div class="space-y-2 bg-white p-6 rounded-lg shadow-md">
-      <textarea id="final-output" class="form-control w-full" style="height: 10rem;" placeholder="All trade requests will appear here..."></textarea>
-      <div id="trade-controls" class="flex flex-wrap items-center gap-2 justify-center pt-2">
-        <button onclick="addTrade()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-32">Add Trade</button>
-        <button onclick="copyAll()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-32">Copy All</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LME Trade Request Generator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="tailwind.min.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json" />
+    <style>
+      body,
+      input,
+      select,
+      textarea,
+      button {
+        font-family: "Inter", sans-serif;
+      }
+      .form-control {
+        height: 2.5rem; /* ensures uniform input height */
+        padding: 0.5rem;
+        border: 1px solid #d1d5db; /* gray-300 */
+        border-radius: 0.25rem;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen p-6">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <h1 class="text-3xl font-bold mb-6 text-center">
+        LME Trade Request Generator
+      </h1>
+      <div id="trades" class="space-y-6"></div>
+      <div class="space-y-2 bg-white p-6 rounded-lg shadow-md">
+        <textarea
+          id="final-output"
+          class="form-control w-full"
+          style="height: 10rem"
+          placeholder="All trade requests will appear here..."
+        ></textarea>
+        <div
+          id="trade-controls"
+          class="flex flex-wrap items-center gap-2 justify-center pt-2"
+        >
+          <button
+            onclick="addTrade()"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-32"
+          >
+            Add Trade
+          </button>
+          <button
+            onclick="copyAll()"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-32"
+          >
+            Copy All
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <template id="trade-template">
-    <div class="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6 trade-card">
-      <h2 class="text-xl font-semibold trade-title">Trade 1</h2>
-      <div class="flex items-end gap-3 flex-wrap">
-        <label class="font-semibold">Quantity (mt):</label>
-        <input type="number" id="qty-0" class="form-control w-32" min="0" step="0.01" />
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h2 class="font-semibold">Leg 1</h2>
-          <label><input type="radio" name="side1-0" value="buy" checked class="mr-1"/> Buy</label>
-          <label><input type="radio" name="side1-0" value="sell" class="mr-1"/> Sell</label><br />
-          <div class="flex items-center gap-2 mt-2 mb-2">
-            <label class="font-medium">Price Type:</label>
-            <select id="type1-0" class="form-control w-32">
-              <option value="AVG">AVG</option>
-              <option value="AVGInter">AVG Inter</option>
-              <option value="Fix">Fix</option>
-            </select>
-          </div>
-          <div class="flex gap-2">
-            <div>
-              <label class="block mb-1">Month:</label>
-              <select id="month1-0" class="form-control w-28">
-                <option>January</option><option>February</option><option>March</option><option>April</option>
-                <option>May</option><option>June</option><option>July</option><option>August</option>
-                <option>September</option><option>October</option><option>November</option><option>December</option>
+    <template id="trade-template">
+      <div class="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6 trade-card">
+        <h2 class="text-xl font-semibold trade-title">Trade 1</h2>
+        <div class="flex items-end gap-3 flex-wrap">
+          <label class="font-semibold">Quantity (mt):</label>
+          <input
+            type="number"
+            id="qty-0"
+            class="form-control w-32"
+            min="0"
+            step="0.01"
+          />
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h2 class="font-semibold">Leg 1</h2>
+            <label
+              ><input
+                type="radio"
+                name="side1-0"
+                value="buy"
+                checked
+                class="mr-1"
+              />
+              Buy</label
+            >
+            <label
+              ><input type="radio" name="side1-0" value="sell" class="mr-1" />
+              Sell</label
+            ><br />
+            <div class="flex items-center gap-2 mt-2 mb-2">
+              <label class="font-medium">Price Type:</label>
+              <select id="type1-0" class="form-control w-32">
+                <option value="">Select</option>
+                <option value="AVG">AVG</option>
+                <option value="AVGInter">AVG Inter</option>
+                <option value="Fix">Fix</option>
+                <option value="C2R">C2R</option>
               </select>
             </div>
-            <div>
-              <label class="block mb-1">Year:</label>
-              <select id="year1-0" class="form-control w-28">
-                <!-- Options populated via JavaScript -->
+            <div class="flex gap-2" id="avgFields1-0" style="display: none">
+              <div>
+                <label class="block mb-1">Month:</label>
+                <select id="month1-0" class="form-control w-28">
+                  <option>January</option>
+                  <option>February</option>
+                  <option>March</option>
+                  <option>April</option>
+                  <option>May</option>
+                  <option>June</option>
+                  <option>July</option>
+                  <option>August</option>
+                  <option>September</option>
+                  <option>October</option>
+                  <option>November</option>
+                  <option>December</option>
+                </select>
+              </div>
+              <div>
+                <label class="block mb-1">Year:</label>
+                <select id="year1-0" class="form-control w-28">
+                  <!-- Options populated via JavaScript -->
+                </select>
+              </div>
+            </div>
+            <div class="flex gap-2 mt-2">
+              <div style="display: none">
+                <label class="block mb-1">Start Date:</label>
+                <input type="date" id="startDate-0" class="form-control w-36" />
+              </div>
+              <div style="display: none">
+                <label class="block mb-1">End Date:</label>
+                <input type="date" id="endDate-0" class="form-control w-36" />
+              </div>
+            </div>
+            <div
+              class="flex items-center gap-2 mr-2 mt-2"
+              style="display: none"
+            >
+              <span>Fixing Date:</span>
+              <input type="date" id="fixDate1-0" class="form-control w-24" />
+            </div>
+            <label style="display: none"
+              ><input type="checkbox" id="samePpt1-0" /> Use AVG PPT Date</label
+            >
+          </div>
+          <div>
+            <h2 class="font-semibold">Leg 2</h2>
+            <label
+              ><input
+                type="radio"
+                name="side2-0"
+                value="buy"
+                checked
+                class="mr-1"
+              />
+              Buy</label
+            >
+            <label
+              ><input type="radio" name="side2-0" value="sell" class="mr-1" />
+              Sell</label
+            ><br />
+            <div class="flex items-center gap-2 mt-2 mb-2">
+              <label class="font-medium">Price Type:</label>
+              <select id="type2-0" class="form-control w-32">
+                <option value="">Select</option>
+                <option value="AVG">AVG</option>
+                <option value="AVGInter">AVG Inter</option>
+                <option value="Fix">Fix</option>
+                <option value="C2R">C2R</option>
               </select>
             </div>
-          </div>
-          <div class="flex gap-2 mt-2">
-            <div style="display:none">
-              <label class="block mb-1">Start Date:</label>
-              <input type="date" id="startDate-0" class="form-control w-36" />
+            <div class="flex gap-2" id="avgFields2-0" style="display: none">
+              <div>
+                <label class="block mb-1">Month:</label>
+                <select id="month2-0" class="form-control w-28">
+                  <option>January</option>
+                  <option>February</option>
+                  <option>March</option>
+                  <option>April</option>
+                  <option>May</option>
+                  <option>June</option>
+                  <option>July</option>
+                  <option>August</option>
+                  <option>September</option>
+                  <option>October</option>
+                  <option>November</option>
+                  <option>December</option>
+                </select>
+              </div>
+              <div>
+                <label class="block mb-1">Year:</label>
+                <select id="year2-0" class="form-control w-28">
+                  <!-- Options populated via JavaScript -->
+                </select>
+              </div>
             </div>
-            <div style="display:none">
-              <label class="block mb-1">End Date:</label>
-              <input type="date" id="endDate-0" class="form-control w-36" />
+            <div class="flex gap-2 mt-2">
+              <div style="display: none">
+                <label class="block mb-1">Start Date:</label>
+                <input
+                  type="date"
+                  id="startDate2-0"
+                  class="form-control w-36"
+                />
+              </div>
+              <div style="display: none">
+                <label class="block mb-1">End Date:</label>
+                <input type="date" id="endDate2-0" class="form-control w-36" />
+              </div>
             </div>
-          </div>
-          <div class="flex items-center gap-2 mr-2 mt-2" style="display:none">
-            <span>Fixing Date:</span>
-            <input type="date" id="fixDate1-0" class="form-control w-24" />
+
+            <div class="flex items-center gap-2 mr-2" style="display: none">
+              <span>Fixing Date:</span>
+              <input type="date" id="fixDate-0" class="form-control w-24" />
+            </div>
+            <label style="display: none"
+              ><input type="checkbox" id="samePpt2-0" /> Use AVG PPT Date</label
+            >
           </div>
         </div>
-        <div>
-          <h2 class="font-semibold">Leg 2</h2>
-          <label><input type="radio" name="side2-0" value="buy" checked class="mr-1"/> Buy</label>
-          <label><input type="radio" name="side2-0" value="sell" class="mr-1"/> Sell</label><br />
-          <div class="flex items-center gap-2 mt-2 mb-2">
-            <label class="font-medium">Price Type:</label>
-            <select id="type2-0" class="form-control w-32">
-              <option value="Fix">Fix</option>
-              <option value="C2R">C2R</option>
-              <option value="AVG">AVG</option>
-            </select>
-          </div>
-          <div class="flex gap-2">
-            <div>
-              <label class="block mb-1">Month:</label>
-              <select id="month2-0" class="form-control w-28">
-                <option>January</option><option>February</option><option>March</option><option>April</option>
-                <option>May</option><option>June</option><option>July</option><option>August</option>
-                <option>September</option><option>October</option><option>November</option><option>December</option>
-              </select>
-            </div>
-            <div>
-              <label class="block mb-1">Year:</label>
-              <select id="year2-0" class="form-control w-28">
-                <!-- Options populated via JavaScript -->
-              </select>
-            </div>
-          </div>
-          
-          <div class="flex items-center gap-2 mr-2">
-            <span>Fixing Date:</span>
-            <input type="date" id="fixDate-0" class="form-control w-24" />
-          </div>
-          <label><input type="checkbox" id="samePpt-0" /> Use AVG PPT Date</label>
+        <div class="flex flex-wrap items-center gap-2 justify-center">
+          <button
+            name="generate"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-32"
+          >
+            Generate
+          </button>
+          <button
+            name="clear"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-32"
+          >
+            Clear
+          </button>
+          <button
+            name="remove"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-32"
+          >
+            Remove
+          </button>
         </div>
+        <p id="output-0" class="mt-2 font-mono text-sm"></p>
       </div>
-      <div class="flex flex-wrap items-center gap-2 justify-center">
-        <button name="generate" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-32">Generate</button>
-        <button name="clear" class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-32">Clear</button>
-        <button name="remove" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-32">Remove</button>
-      </div>
-      <p id="output-0" class="mt-2 font-mono text-sm"></p>
-    </div>
-  </template>
-  <script src="solarlunar.min.js"></script>
-  <script src="calendar-utils.js"></script>
-  <script src="main.js"></script>
+    </template>
+    <script src="solarlunar.min.js"></script>
+    <script src="calendar-utils.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>
