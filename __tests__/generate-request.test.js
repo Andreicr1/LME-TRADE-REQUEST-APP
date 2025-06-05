@@ -57,7 +57,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al AVG January 2025 ppt 04-02-25 Flat and Sell 5 mt Al USD ppt 06-01-25 against",
+      "LME Request: Buy 5 mt Al AVG January 2025 ppt 04/02/25 Flat and Sell 5 mt Al USD ppt 06/01/25 against",
     );
   });
 
@@ -71,7 +71,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 8 mt Al Fix and Sell 8 mt Al AVG February 2025 ppt 04-03-25 Flat against",
+      "LME Request: Buy 8 mt Al Fix and Sell 8 mt Al AVG February 2025 ppt 04/03/25 Flat against",
     );
   });
 
@@ -82,7 +82,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against",
+      "LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02/01/25 ppt 06/01/25 against",
     );
   });
 
@@ -97,7 +97,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al AVG (01-09-25 \u2013 10-09-25) and Sell 5 mt Al AVG October 2025 Flat against",
+      "LME Request: Buy 5 mt Al Fixing AVG 01/09/25 to 10/09/25 and Sell 5 mt Al AVG October 2025 Flat against",
     );
   });
 
@@ -129,10 +129,10 @@ describe("generateRequest", () => {
 
 describe("business day helpers", () => {
   test("getSecondBusinessDay returns formatted date", () => {
-    expect(getSecondBusinessDay(2025, 0)).toBe("04-02-25");
+    expect(getSecondBusinessDay(2025, 0)).toBe("04/02/25");
   });
 
   test("getFixPpt computes two business days after fix date", () => {
-    expect(getFixPpt("02-01-25")).toBe("06-01-25");
+    expect(getFixPpt("02/01/25")).toBe("06/01/25");
   });
 });
