@@ -126,9 +126,13 @@ const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).
 const leg2Type = document.getElementById(`type2-${index}`).value;
 const month2 = document.getElementById(`month2-${index}`).value;
 const year2 = parseInt(document.getElementById(`year2-${index}`).value);
+const fixInputLeg1 = document.getElementById(`fixDate1-${index}`);
 const fixInput = document.getElementById(`fixDate-${index}`);
-const dateFixRaw = fixInput.value;
-const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
+const dateFix1Raw = fixInputLeg1 ? fixInputLeg1.value : '';
+const dateFix2Raw = fixInput.value;
+const dateFix1 = dateFix1Raw ? formatDate(parseInputDate(dateFix1Raw)) : '';
+const dateFix2 = dateFix2Raw ? formatDate(parseInputDate(dateFix2Raw)) : '';
+if (fixInputLeg1) fixInputLeg1.classList.remove('border-red-500');
 fixInput.classList.remove('border-red-500');
 const useSamePPT = document.getElementById(`samePpt-${index}`).checked;
 const monthIndex = new Date(`${month2} 1, ${year2}`).getMonth();
@@ -145,7 +149,13 @@ if (leg1Type === 'AVG') {
   const endStr = formatDate(end);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG (${startStr} – ${endStr})`;
 } else {
-  const pptFixLeg1 = getFixPpt(dateFix);
+  let pptFixLeg1;
+  try {
+    pptFixLeg1 = getFixPpt(dateFix1);
+  } catch (err) {
+    err.fixInputId = `fixDate1-${index}`;
+    throw err;
+  }
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
 }
 let leg2;
@@ -156,12 +166,23 @@ if (leg2Type === 'AVG') {
   if (useSamePPT) {
     pptFix = pptDateAVG;
   } else {
-    pptFix = getFixPpt(dateFix);
+    try {
+      pptFix = getFixPpt(dateFix2);
+    } catch (err) {
+      err.fixInputId = `fixDate-${index}`;
+      throw err;
+    }
   }
   leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
 } else if (leg2Type === 'C2R') {
-  const pptFix = getFixPpt(dateFix);
-  leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix} ppt ${pptFix}`;
+  let pptFix;
+  try {
+    pptFix = getFixPpt(dateFix2);
+  } catch (err) {
+    err.fixInputId = `fixDate-${index}`;
+    throw err;
+  }
+  leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix2} ppt ${pptFix}`;
 }
 
   const result = `LME Request: ${leg1} and ${leg2} against`;
@@ -170,10 +191,11 @@ if (leg2Type === 'AVG') {
 } catch (e) {
   console.error("Error generating request:", e);
   if (/Fixing date/.test(e.message)) {
-    const fixInput = document.getElementById(`fixDate-${index}`);
-    if (fixInput) {
-      fixInput.classList.add('border-red-500');
-      fixInput.focus();
+    const id = e.fixInputId || `fixDate-${index}`;
+    const fixField = document.getElementById(id);
+    if (fixField) {
+      fixField.classList.add('border-red-500');
+      fixField.focus();
     }
   }
   if (outputEl) outputEl.textContent = e.message;
@@ -259,10 +281,11 @@ function addTrade() {
   const index = nextIndex++;
 const template = document.getElementById('trade-template');
 const clone = template.content.cloneNode(true);
+// Assign unique IDs (including the new Leg 1 fixing date field)
 clone.querySelectorAll('[id]').forEach(el => {
-const baseId = el.id.replace(/-\d+$/, '');
-el.id = `${baseId}-${index}`;
-if (el.name) el.name = el.name.replace(/-\d+$/, `-${index}`);
+  const baseId = el.id.replace(/-\d+$/, '');
+  el.id = `${baseId}-${index}`;
+  if (el.name) el.name = el.name.replace(/-\d+$/, `-${index}`);
 });
 clone.querySelectorAll('[name]:not([id])').forEach(el => {
 el.name = el.name.replace(/-\d+$/, `-${index}`);
