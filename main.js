@@ -490,5 +490,8 @@ if (typeof module !== "undefined" && module.exports) {
     toggleLeg1Fields,
     toggleLeg2Fields,
     syncLegSides,
+    addTrade,
+    clearTrade,
+    removeTrade,
   };
 }
