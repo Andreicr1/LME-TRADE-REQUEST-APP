@@ -490,6 +490,15 @@ function toggleLeg2Fields(index) {
   }
 }
 
+function generateAll() {
+  for (let i = 0; i < nextIndex; i++) {
+    if (document.getElementById(`trade-${i}`)) {
+      generateRequest(i);
+    }
+  }
+  updateFinalOutput();
+}
+
 async function copyAll() {
   const textarea = document.getElementById("final-output");
   const text = textarea.value.trim();
@@ -622,6 +631,7 @@ if (typeof module !== "undefined" && module.exports) {
     addTrade,
     clearTrade,
     removeTrade,
+    generateAll,
     copyAll,
     shareWhatsApp,
     setMinDates,
