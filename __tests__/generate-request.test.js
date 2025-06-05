@@ -60,6 +60,31 @@ describe('generateRequest', () => {
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against');
   });
+
+  test('shows error for non-numeric quantity', () => {
+    document.getElementById('qty-0').value = 'abc';
+    document.getElementById('type2-0').value = 'AVG';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('Please enter a valid quantity.');
+  });
+
+  test('shows error for negative quantity', () => {
+    document.getElementById('qty-0').value = '-3';
+    document.getElementById('type2-0').value = 'AVG';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('Quantity must be greater than zero.');
+  });
+
+  test('requires fixing date when needed', () => {
+    document.getElementById('qty-0').value = '5';
+    document.getElementById('type2-0').value = 'C2R';
+    document.getElementById('fixDate-0').value = '';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('Please provide a fixing date.');
+  });
 });
 
 describe('business day helpers', () => {
