@@ -59,7 +59,9 @@ No build step is required. The repository only contains static files (`index.htm
 
 ## Service worker
 
-`service-worker.js` caches the essential files (`index.html`, `main.js`, `calendar-utils.js`, `solarlunar.min.js`, `tailwind.min.css` and the service worker itself) when the app is installed. This lets the app continue working offline after the first visit.
+`service-worker.js` caches the essential files (`index.html`, `main.js`, `calendar-utils.js`, `holidays.json`, `solarlunar.min.js`, `tailwind.min.css` and the service worker itself) when the app is installed. This lets the app continue working offline after the first visit.
+
+`holidays.json` was added in cache version 6 so holiday data is available offline.
 
 The worker uses a `CACHE_VERSION` constant to build a cache name (`lme-cache-v<version>`). Increment this value during a release so clients fetch the updated files. The activation step deletes any caches that don't match this name. During installation it also verifies that all core files were cached successfully.
 
