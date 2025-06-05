@@ -260,8 +260,8 @@ function generateRequest(index) {
 
     let leg1;
     const showPptAvg =
-      (leg2Type === "Fix" && (useSamePPT2 || dateFix2Raw)) ||
-      (leg1Type === "Fix" && (useSamePPT1 || dateFix1Raw));
+      (leg2Type === "Fix" && dateFix2Raw) ||
+      (leg1Type === "Fix" && dateFix1Raw);
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
       if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
@@ -278,7 +278,7 @@ function generateRequest(index) {
     } else {
       let pptFixLeg1;
       if (useSamePPT1) {
-        leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix`;
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
       } else {
         try {
           pptFixLeg1 = getFixPpt(dateFix1);
@@ -286,7 +286,7 @@ function generateRequest(index) {
           err.fixInputId = `fixDate1-${index}`;
           throw err;
         }
-        leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptFixLeg1}`;
       }
     }
     let leg2;
@@ -310,7 +310,7 @@ function generateRequest(index) {
     } else if (leg2Type === "Fix") {
       let pptFix;
       if (useSamePPT2) {
-        leg2 = `${capitalize(leg2Side)} ${q} mt Al Fix`;
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
       } else {
         try {
           pptFix = getFixPpt(dateFix2);

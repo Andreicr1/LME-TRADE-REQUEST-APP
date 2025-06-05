@@ -61,7 +61,7 @@ describe("generateRequest", () => {
     );
   });
 
-  test("uses AVG PPT date and hides Fix PPT", () => {
+  test("uses AVG PPT date on Fix leg", () => {
     document.getElementById("qty-0").value = "8";
     document.getElementById("type1-0").value = "Fix";
     document.getElementById("type2-0").value = "AVG";
@@ -71,7 +71,21 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 8 mt Al Fix and Sell 8 mt Al AVG February 2025 ppt 04/03/25 Flat against",
+      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 Flat against",
+    );
+  });
+
+  test("uses AVG PPT date on second Fix leg", () => {
+    document.getElementById("qty-0").value = "12";
+    document.getElementById("type1-0").value = "AVG";
+    document.getElementById("type2-0").value = "Fix";
+    document.getElementById("samePpt2-0").checked = true;
+    document.getElementById("month1-0").value = "October";
+    document.getElementById("year1-0").value = "2025";
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Buy 12 mt Al AVG October 2025 Flat and Sell 12 mt Al USD ppt 04/11/25 against",
     );
   });
 
