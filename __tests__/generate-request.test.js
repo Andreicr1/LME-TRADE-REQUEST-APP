@@ -13,11 +13,12 @@ function setupDom() {
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
-    <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option></select>
+    <select id="type1-0"><option value="AVG">AVG</option><option value="AVGInter">AVGInter</option><option value="Fix">Fix</option><option value="Spot">Spot</option></select>
     <select id="month1-0"><option>January</option><option>February</option></select>
     <select id="year1-0"><option>2025</option></select>
     <input id="startDate1-0" />
     <input id="endDate1-0" />
+    <input id="fixDate1-0" />
     <input type="radio" name="side2-0" value="buy">
     <input type="radio" name="side2-0" value="sell" checked>
     <select id="type2-0"><option value="Fix">Fix</option><option value="C2R">C2R</option><option value="AVG">AVG</option></select>
@@ -45,14 +46,15 @@ describe('generateRequest', () => {
     expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against');
   });
 
-  test('includes start and end dates when provided', () => {
+  test('creates AVGInter request with date range', () => {
     document.getElementById('qty-0').value = '10';
+    document.getElementById('type1-0').value = 'AVGInter';
     document.getElementById('type2-0').value = 'AVG';
     document.getElementById('startDate1-0').value = '2025-01-05';
     document.getElementById('endDate1-0').value = '2025-01-10';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 (05-01-25 to 10-01-25) Flat and Sell 10 mt Al AVG February 2025 Flat against');
+    expect(out).toBe('LME Request: Buy 10 mt Al AVGInter January 2025 (05-01-25 to 10-01-25) Flat and Sell 10 mt Al AVG February 2025 Flat against');
   });
 
   test('creates Fix request text', () => {
@@ -62,6 +64,16 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD ppt 06-01-25 against');
+  });
+
+  test('creates Fix request for Leg 1', () => {
+    document.getElementById('qty-0').value = '5';
+    document.getElementById('type1-0').value = 'Fix';
+    document.getElementById('type2-0').value = 'AVG';
+    document.getElementById('fixDate1-0').value = '2025-01-03';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('LME Request: Buy 5 mt Al Fix ppt 07-01-25 and Sell 5 mt Al AVG February 2025 Flat against');
   });
 
   test('creates C2R request text', () => {
@@ -93,6 +105,16 @@ describe('generateRequest', () => {
     document.getElementById('qty-0').value = '5';
     document.getElementById('type2-0').value = 'C2R';
     document.getElementById('fixDate-0').value = '';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('Please provide a fixing date.');
+  });
+
+  test('requires fixing date for Leg 1', () => {
+    document.getElementById('qty-0').value = '4';
+    document.getElementById('type1-0').value = 'Fix';
+    document.getElementById('type2-0').value = 'AVG';
+    document.getElementById('fixDate1-0').value = '';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('Please provide a fixing date.');

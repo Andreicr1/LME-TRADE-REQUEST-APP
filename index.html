@@ -48,7 +48,9 @@
             <label class="font-medium">Price Type:</label>
             <select id="type1-0" class="form-control w-32">
               <option value="AVG">AVG</option>
+              <option value="AVGInter">AVGInter</option>
               <option value="Fix">Fix</option>
+              <option value="Spot">Spot</option>
             </select>
           </div>
           <div class="flex gap-2">
@@ -67,7 +69,7 @@
               </select>
             </div>
           </div>
-          <div class="flex gap-2 mt-2">
+          <div id="avgInterDates1-0" class="flex gap-2 mt-2 hidden">
             <div>
               <label class="block mb-1">Start Date:</label>
               <input type="date" id="startDate1-0" class="form-control w-28" />
@@ -76,6 +78,10 @@
               <label class="block mb-1">End Date:</label>
               <input type="date" id="endDate1-0" class="form-control w-28" />
             </div>
+          </div>
+          <div id="fixDate1Wrapper-0" class="flex items-center gap-2 mt-2 hidden">
+            <span>Fixing Date:</span>
+            <input type="date" id="fixDate1-0" class="form-control w-24" />
           </div>
         </div>
         <div>

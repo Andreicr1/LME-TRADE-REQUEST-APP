@@ -126,24 +126,30 @@ const startDate = startDateRaw ? formatDate(parseInputDate(startDateRaw)) : '';
 const endDate = endDateRaw ? formatDate(parseInputDate(endDateRaw)) : '';
 const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).value;
 const leg2Type = document.getElementById(`type2-${index}`).value;
-const fixInput = document.getElementById(`fixDate-${index}`);
-const dateFixRaw = fixInput.value;
-const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
-fixInput.classList.remove('border-red-500');
+const fixInput2 = document.getElementById(`fixDate-${index}`);
+const dateFixRaw2 = fixInput2.value;
+const dateFix2 = dateFixRaw2 ? formatDate(parseInputDate(dateFixRaw2)) : '';
+fixInput2.classList.remove('border-red-500');
+const fixInput1 = document.getElementById(`fixDate1-${index}`);
+const dateFixRaw1 = fixInput1 ? fixInput1.value : '';
+const dateFix1 = dateFixRaw1 ? formatDate(parseInputDate(dateFixRaw1)) : '';
+if (fixInput1) fixInput1.classList.remove('border-red-500');
 const useSamePPT = document.getElementById(`samePpt-${index}`).checked;
 const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
 const pptDateAVG = getSecondBusinessDay(year, monthIndex);
 
 let leg1;
 if (leg1Type === 'AVG') {
-  leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
+} else if (leg1Type === 'AVGInter') {
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al AVGInter ${month} ${year}`;
   if (startDate && endDate) {
     leg1 += ` (${startDate} to ${endDate})`;
   }
   leg1 += ' Flat';
 } else {
-  const pptFixLeg1 = getFixPpt(dateFix);
-  leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
+  const pptFixLeg1 = getFixPpt(dateFix1);
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al ${leg1Type} ppt ${pptFixLeg1}`;
 }
 let leg2;
 if (leg2Type === 'AVG') {
@@ -155,12 +161,12 @@ leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
   if (useSamePPT) {
     pptFix = pptDateAVG;
   } else {
-    pptFix = getFixPpt(dateFix);
+    pptFix = getFixPpt(dateFix2);
   }
   leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
 } else if (leg2Type === 'C2R') {
-  const pptFix = getFixPpt(dateFix);
-  leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix} ppt ${pptFix}`;
+  const pptFix = getFixPpt(dateFix2);
+  leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix2} ppt ${pptFix}`;
 }
 
   const result = `LME Request: ${leg1} and ${leg2} against`;
@@ -169,11 +175,16 @@ leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
 } catch (e) {
   console.error("Error generating request:", e);
   if (/Fixing date/.test(e.message)) {
-    const fixInput = document.getElementById(`fixDate-${index}`);
-    if (fixInput) {
-      fixInput.classList.add('border-red-500');
-      fixInput.focus();
-    }
+    const inputs = [
+      document.getElementById(`fixDate1-${index}`),
+      document.getElementById(`fixDate-${index}`)
+    ];
+    inputs.forEach(inp => {
+      if (inp) {
+        inp.classList.add('border-red-500');
+        inp.focus();
+      }
+    });
   }
   if (outputEl) outputEl.textContent = e.message;
 }
@@ -225,6 +236,19 @@ leg2Options.forEach(opt => {
 if (!opt.disabled) opt.checked = true;
 });
 }
+
+function toggleLeg1Fields(index) {
+  const type = document.getElementById(`type1-${index}`).value;
+  const startWrap = document.getElementById(`avgInterDates1-${index}`);
+  const fixWrap = document.getElementById(`fixDate1Wrapper-${index}`);
+  if (startWrap) startWrap.classList.add('hidden');
+  if (fixWrap) fixWrap.classList.add('hidden');
+  if (type === 'AVGInter') {
+    if (startWrap) startWrap.classList.remove('hidden');
+  } else if (type === 'Fix' || type === 'Spot') {
+    if (fixWrap) fixWrap.classList.remove('hidden');
+  }
+}
 }
 
 async function copyAll() {
@@ -273,6 +297,11 @@ div.className = 'trade-block';
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
+  const type1Sel = document.getElementById(`type1-${index}`);
+  if (type1Sel) {
+    type1Sel.addEventListener('change', () => toggleLeg1Fields(index));
+  }
+  toggleLeg1Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach(r => {
   r.addEventListener('change', () => syncLegSides(index));
   });

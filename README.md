@@ -30,7 +30,7 @@ Make sure to visit the full path to `index.html` (not just `/`) because the serv
 Enter quantities as finite positive numbers. Values of zero or negative amounts
 will trigger an error message.
 
-If you provide values for the **Start Date** and **End Date** fields in Leg 1 they will be inserted into the generated request text.
+When the **AVGInter** price type is chosen for Leg 1, start and end date inputs become available and their values will be inserted into the generated text. Selecting **Fix** or **Spot** reveals a fixing date field instead.
 
 ## Building
 
