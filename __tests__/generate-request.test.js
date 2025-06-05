@@ -79,7 +79,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 ppt 04/03/25 Flat against",
+      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 Flat against",
     );
   });
 
@@ -94,7 +94,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 12 mt Al AVG October 2025 ppt 04/11/25 Flat and Sell 12 mt Al USD ppt 04/11/25 against",
+      "LME Request: Buy 12 mt Al AVG October 2025 Flat and Sell 12 mt Al USD ppt 04/11/25 against",
     );
   });
 

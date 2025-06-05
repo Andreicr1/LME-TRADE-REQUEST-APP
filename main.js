@@ -260,10 +260,8 @@ function generateRequest(index) {
 
     let leg1;
     const showPptAvg =
-      !useSamePPT1 &&
-      !useSamePPT2 &&
-      ((leg2Type === "Fix" && dateFix2Raw) ||
-        (leg1Type === "Fix" && dateFix1Raw));
+      (leg2Type === "Fix" && dateFix2Raw && !useSamePPT2) ||
+      (leg1Type === "Fix" && dateFix1Raw && !useSamePPT1);
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
       if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
