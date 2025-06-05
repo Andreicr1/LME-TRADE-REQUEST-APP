@@ -9,7 +9,6 @@ const FILES_TO_CACHE = [
   'holidays.json',
   'solarlunar.min.js',
   'tailwind.min.css',
-  'icons/whatsapp.svg',
   'manifest.json',
   'service-worker.js'
 ];
