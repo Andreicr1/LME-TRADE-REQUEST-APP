@@ -13,6 +13,7 @@ const {
   getFixPpt,
   updateEndDateMin,
   updateAvgRestrictions,
+  setMinDates,
 } = require('../main');
 
 describe('parseInputDate', () => {
@@ -64,5 +65,21 @@ describe('date restrictions', () => {
     const opts = document.getElementById('month1-0').options;
     expect(opts[0].disabled).toBe(true);
     expect(opts[1].disabled).toBe(false);
+  });
+
+  test('setMinDates applies today to min attributes', () => {
+    document.body.innerHTML += `
+      <input type="date" id="fixDate1-0">
+      <input type="date" id="fixDate-0">
+      <input type="date" id="startDate-0">
+      <input type="date" id="endDate-0">
+      <input type="date" id="startDate2-0">
+      <input type="date" id="endDate2-0">
+    `;
+    setMinDates(0);
+    const today = new Date().toISOString().split('T')[0];
+    ['fixDate1-0','fixDate-0','startDate-0','endDate-0','startDate2-0','endDate2-0'].forEach(id => {
+      expect(document.getElementById(id).min).toBe(today);
+    });
   });
 });
