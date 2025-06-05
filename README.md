@@ -32,13 +32,12 @@ will trigger an error message.
 
 When selecting the price type for Leg 1 you can choose **AVG Inter** to specify an averaging period. Pick a start and end date in the Leg 1 section and the request text will reflect that range.
 
-If one leg uses **Fix** pricing while the other uses **AVG**, a checkbox labelled
-"Use AVG PPT Date" appears next to the fixing date input on the fixed leg.
-Checking it will automatically apply the second business day (the PPT date) from
-the averaging leg's month to the fixed leg. The checkbox for Leg&nbsp;2 is shown
-when Leg&nbsp;1 is set to **AVG** and Leg&nbsp;2 is **Fix**. Conversely, when
-Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG** the same option is displayed next
-to the fixing date for Leg&nbsp;1.
+If one leg uses **Fix** pricing while the other uses **AVG**, a checkbox labeled
+"Use AVG PPT Date" appears next to the fixing date field on the fixed leg. When
+selected, this option fills that field with the averaging leg's second business
+day (its PPT date). Leg&nbsp;2's checkbox is visible when Leg&nbsp;1 is set to
+**AVG** and Leg&nbsp;2 is **Fix**. Likewise, Leg&nbsp;1's checkbox appears when
+Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG**.
 
 ## Building
 
