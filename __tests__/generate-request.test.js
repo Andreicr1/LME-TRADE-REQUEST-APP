@@ -40,7 +40,9 @@ describe('generateRequest', () => {
     document.getElementById('type2-0').value = 'AVG';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against');
+    expect(out).toBe(
+      'LME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against'
+    );
   });
 
   test('creates Fix request text', () => {
@@ -49,7 +51,9 @@ describe('generateRequest', () => {
     document.getElementById('fixDate-0').value = '2025-01-02';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe('LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD ppt 06-01-25 against');
+    expect(out).toBe(
+      'LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD ppt 06-01-25 against'
+    );
   });
 
   test('creates C2R request text', () => {
@@ -58,7 +62,9 @@ describe('generateRequest', () => {
     document.getElementById('fixDate-0').value = '2025-01-02';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe('LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against');
+    expect(out).toBe(
+      'LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against'
+    );
   });
 });
 

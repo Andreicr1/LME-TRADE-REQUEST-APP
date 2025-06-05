@@ -1,6 +1,6 @@
 const solarlunarMock = {
   solar2lunar: jest.fn((y, m, d) => ({ lDay: d, lMonth: m, lYear: y })),
-  lunar2solar: jest.fn((y, m, d) => ({ cYear: y, cMonth: m, cDay: d }))
+  lunar2solar: jest.fn((y, m, d) => ({ cYear: y, cMonth: m, cDay: d })),
 };
 
 global.solarlunar = solarlunarMock;
@@ -9,7 +9,7 @@ const {
   formatDateGregorian,
   parseDateGregorian,
   formatDateChinese,
-  parseDateChinese
+  parseDateChinese,
 } = require('../calendar-utils');
 
 describe('Gregorian utilities', () => {
