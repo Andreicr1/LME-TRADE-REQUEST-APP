@@ -219,6 +219,23 @@ if (!opt.disabled) opt.checked = true;
 }
 }
 
+function updateLeg1Fields(index) {
+  const type = document.getElementById(`type1-${index}`);
+  if (!type) return;
+  const trade = document.getElementById(`trade-${index}`);
+  if (!trade) return;
+  const monthYear = trade.querySelector('.leg1-month-year');
+  const range = trade.querySelector('.leg1-date-range');
+  if (!monthYear || !range) return;
+  if (type.value === 'Fix') {
+    monthYear.classList.add('hidden');
+    range.classList.remove('hidden');
+  } else {
+    monthYear.classList.remove('hidden');
+    range.classList.add('hidden');
+  }
+}
+
 async function copyAll() {
   const textarea = document.getElementById('final-output');
   const text = textarea.value.trim();
@@ -269,6 +286,12 @@ div.className = 'trade-block';
   r.addEventListener('change', () => syncLegSides(index));
   });
   syncLegSides(index);
+
+  const typeSel = document.getElementById(`type1-${index}`);
+  if (typeSel) {
+    typeSel.addEventListener('change', () => updateLeg1Fields(index));
+  }
+  updateLeg1Fields(index);
 
   renumberTrades();
 }

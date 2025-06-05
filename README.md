@@ -30,6 +30,8 @@ Make sure to visit the full path to `index.html` (not just `/`) because the serv
 Enter quantities as finite positive numbers. Values of zero or negative amounts
 will trigger an error message.
 
+Changing the **Leg&nbsp;1 Price Type** hides the month/year dropdowns and shows a start/end date range when "Fix" is selected.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
