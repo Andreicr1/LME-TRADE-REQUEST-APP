@@ -30,6 +30,8 @@ Make sure to visit the full path to `index.html` (not just `/`) because the serv
 Enter quantities as finite positive numbers. Values of zero or negative amounts
 will trigger an error message.
 
+When Leg 1 uses the `AVGInter` type together with an `AVG` Leg 2, the fixing date input is optional. The PPT for Leg 1 automatically uses the second business day of the month following Leg 2's reference month.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.

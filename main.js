@@ -122,6 +122,8 @@ const month = document.getElementById(`month1-${index}`).value;
 const year = parseInt(document.getElementById(`year1-${index}`).value);
 const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).value;
 const leg2Type = document.getElementById(`type2-${index}`).value;
+const month2 = document.getElementById(`month2-${index}`).value;
+const year2 = parseInt(document.getElementById(`year2-${index}`).value);
 const fixInput = document.getElementById(`fixDate-${index}`);
 const dateFixRaw = fixInput.value;
 const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
@@ -133,14 +135,18 @@ const pptDateAVG = getSecondBusinessDay(year, monthIndex);
 let leg1;
 if (leg1Type === 'AVG') {
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
+} else if (leg1Type === 'AVGInter' && leg2Type === 'AVG') {
+  const leg2MonthIndex = new Date(`${month2} 1, ${year2}`).getMonth();
+  const nextMonthIndex = (leg2MonthIndex + 1) % 12;
+  const nextYear = year2 + (leg2MonthIndex === 11 ? 1 : 0);
+  const pptFixLeg1 = getSecondBusinessDay(nextYear, nextMonthIndex);
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
 } else {
   const pptFixLeg1 = getFixPpt(dateFix);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
 }
 let leg2;
 if (leg2Type === 'AVG') {
-const month2 = document.getElementById(`month2-${index}`).value;
-const year2 = parseInt(document.getElementById(`year2-${index}`).value);
 leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
 } else if (leg2Type === 'Fix') {
   let pptFix;
