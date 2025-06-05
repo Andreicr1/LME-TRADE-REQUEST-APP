@@ -13,13 +13,15 @@ function setupDom() {
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
-    <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option></select>
-    <select id="month1-0"><option>January</option><option>February</option></select>
+    <select id="type1-0"><option value="AVG">AVG</option><option value="AVGInter">AVG Inter</option><option value="Fix">Fix</option></select>
+    <select id="month1-0"><option>January</option><option>February</option><option>October</option></select>
     <select id="year1-0"><option>2025</option></select>
+    <input id="startDate-0" type="date" />
+    <input id="endDate-0" type="date" />
     <input type="radio" name="side2-0" value="buy">
     <input type="radio" name="side2-0" value="sell" checked>
     <select id="type2-0"><option value="Fix">Fix</option><option value="C2R">C2R</option><option value="AVG">AVG</option></select>
-    <select id="month2-0"><option>February</option></select>
+    <select id="month2-0"><option>February</option><option>October</option></select>
     <select id="year2-0"><option>2025</option></select>
     <input id="fixDate-0" />
     <input type="checkbox" id="samePpt-0" />
@@ -59,6 +61,19 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against');
+  });
+
+  test('creates AVGInter request text', () => {
+    document.getElementById('qty-0').value = '5';
+    document.getElementById('type1-0').value = 'AVGInter';
+    document.getElementById('startDate-0').value = '2025-09-01';
+    document.getElementById('endDate-0').value = '2025-09-10';
+    document.getElementById('type2-0').value = 'AVG';
+    document.getElementById('month2-0').value = 'October';
+    document.getElementById('year2-0').value = '2025';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('LME Request: Buy 5 mt Al AVG (01-09-25 \u2013 10-09-25) and Sell 5 mt Al AVG October 2025 Flat against');
   });
 
   test('shows error for non-numeric quantity', () => {
