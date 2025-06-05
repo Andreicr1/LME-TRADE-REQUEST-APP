@@ -22,7 +22,7 @@ function setupDom() {
     <select id="month2-0"><option>February</option></select>
     <select id="year2-0"><option>2025</option></select>
     <input id="fixDate-0" />
-    <input type="checkbox" id="samePpt-0" />
+    <label id="samePpt-wrap-0"><input type="checkbox" id="samePpt-0" /> Use AVG PPT Date</label>
     <p id="output-0"></p>
     <textarea id="final-output"></textarea>
   `;
@@ -67,7 +67,7 @@ describe('generateRequest', () => {
     document.getElementById('fixDate-0').value = '2025-01-02';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe('LME Request: Buy 8 mt Al Spot ppt 06-01-25 against');
+    expect(out).toBe('LME Request: Buy 8 mt Al USD ppt 06-01-25');
   });
 
   test('shows error for non-numeric quantity', () => {

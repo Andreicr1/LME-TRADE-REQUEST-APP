@@ -128,7 +128,8 @@ const fixInput = document.getElementById(`fixDate-${index}`);
 const dateFixRaw = fixInput.value;
 const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
 fixInput.classList.remove('border-red-500');
-const useSamePPT = document.getElementById(`samePpt-${index}`).checked;
+const samePptInput = document.getElementById(`samePpt-${index}`);
+const useSamePPT = samePptInput ? samePptInput.checked : false;
 const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
 const pptDateAVG = getSecondBusinessDay(year, monthIndex);
 
@@ -137,7 +138,7 @@ if (leg1Type === 'AVG') {
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
 } else if (leg1Type === 'Spot') {
   const pptSpot = getFixPpt(dateFix);
-  leg1 = `${capitalize(leg1Side)} ${q} mt Al Spot ppt ${pptSpot}`;
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptSpot}`;
 } else {
   const pptFixLeg1 = getFixPpt(dateFix);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
@@ -160,9 +161,12 @@ if (leg1Type !== 'Spot' && leg2Type === 'AVG') {
   leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix} ppt ${pptFix}`;
 }
 
-  const result = leg1Type === 'Spot'
-    ? `LME Request: ${leg1} against`
-    : `LME Request: ${leg1} and ${leg2} against`;
+  let result;
+  if (leg2) {
+    result = `LME Request: ${leg1} and ${leg2} against`;
+  } else {
+    result = `LME Request: ${leg1}`;
+  }
   if (outputEl) outputEl.textContent = result;
   updateFinalOutput();
 } catch (e) {
@@ -245,6 +249,13 @@ function toggleLeg2(index) {
   const fixWrap = document.getElementById(`fix-wrap-${index}`);
   if (fixWrap) {
     fixWrap.style.display = hide ? '' : 'block';
+  }
+  const sameWrap = document.getElementById(`samePpt-wrap-${index}`);
+  if (sameWrap) {
+    sameWrap.style.display = hide ? 'none' : '';
+    sameWrap.querySelectorAll('input').forEach(el => {
+      el.disabled = hide;
+    });
   }
   if (!hide) syncLegSides(index);
 }
