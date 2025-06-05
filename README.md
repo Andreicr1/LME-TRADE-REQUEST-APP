@@ -75,8 +75,11 @@ latest data from the [GOV.UK Bank Holidays API](https://www.gov.uk/bank-holidays
 Run the following command whenever you want to refresh `holidays.json`:
 
 ```bash
-node scripts/update-holidays.js
+npm run update-holidays
 ```
+
+This command downloads the latest dates from the GOV.UK service, so make sure
+you are connected to the internet when running it.
 
 ## Prerequisites
 
