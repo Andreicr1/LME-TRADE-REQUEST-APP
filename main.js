@@ -219,6 +219,16 @@ if (!opt.disabled) opt.checked = true;
 }
 }
 
+function updateFixDateVisibility(index) {
+  const type1 = document.getElementById(`type1-${index}`);
+  const type2 = document.getElementById(`type2-${index}`);
+  const container = document.querySelector(`#trade-${index} .fix-date-container`);
+  if (!type1 || !type2 || !container) return;
+  const hide = type1.value === 'AVGInter' && type2.value === 'AVG';
+  container.style.display = hide ? 'none' : '';
+}
+
+
 async function copyAll() {
   const textarea = document.getElementById('final-output');
   const text = textarea.value.trim();
@@ -268,7 +278,12 @@ div.className = 'trade-block';
   document.querySelectorAll(`input[name='side1-${index}']`).forEach(r => {
   r.addEventListener('change', () => syncLegSides(index));
   });
+  const type1Sel = document.getElementById(`type1-${index}`);
+  const type2Sel = document.getElementById(`type2-${index}`);
+  if (type1Sel) type1Sel.addEventListener('change', () => updateFixDateVisibility(index));
+  if (type2Sel) type2Sel.addEventListener('change', () => updateFixDateVisibility(index));
   syncLegSides(index);
+  updateFixDateVisibility(index);
 
   renumberTrades();
 }
@@ -286,7 +301,8 @@ if (typeof module !== 'undefined' && module.exports) {
     parseInputDate,
     getSecondBusinessDay,
     getFixPpt,
-    generateRequest
+    generateRequest,
+    updateFixDateVisibility
   };
 }
 
