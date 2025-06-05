@@ -30,6 +30,9 @@ Make sure to visit the full path to `index.html` (not just `/`) because the serv
 Enter quantities as finite positive numbers. Values of zero or negative amounts
 will trigger an error message.
 
+Selecting **AVG Inter** as the Leg 1 price type hides the month/year dropdowns
+and instead shows start and end date inputs for that leg.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.

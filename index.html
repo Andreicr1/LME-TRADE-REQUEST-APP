@@ -49,9 +49,10 @@
             <select id="type1-0" class="form-control w-32">
               <option value="AVG">AVG</option>
               <option value="Fix">Fix</option>
+              <option value="AVGInter">AVG Inter</option>
             </select>
           </div>
-          <div class="flex gap-2">
+          <div class="leg1-month-year flex gap-2">
             <div>
               <label class="block mb-1">Month:</label>
               <select id="month1-0" class="form-control w-28">
@@ -65,6 +66,16 @@
               <select id="year1-0" class="form-control w-28">
                 <!-- Options populated via JavaScript -->
               </select>
+            </div>
+          </div>
+          <div class="leg1-date-range hidden flex gap-2 mt-2">
+            <div>
+              <label class="block mb-1">Start Date:</label>
+              <input type="date" id="startDate1-0" class="form-control w-32" />
+            </div>
+            <div>
+              <label class="block mb-1">End Date:</label>
+              <input type="date" id="endDate1-0" class="form-control w-32" />
             </div>
           </div>
         </div>

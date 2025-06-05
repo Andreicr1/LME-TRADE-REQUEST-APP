@@ -219,6 +219,20 @@ if (!opt.disabled) opt.checked = true;
 }
 }
 
+function updateLeg1Fields(index) {
+  const type = document.getElementById(`type1-${index}`)?.value;
+  const monthYear = document.querySelector(`#trade-${index} .leg1-month-year`);
+  const dateRange = document.querySelector(`#trade-${index} .leg1-date-range`);
+  if (!monthYear || !dateRange) return;
+  if (type === 'AVGInter') {
+    monthYear.classList.add('hidden');
+    dateRange.classList.remove('hidden');
+  } else {
+    monthYear.classList.remove('hidden');
+    dateRange.classList.add('hidden');
+  }
+}
+
 async function copyAll() {
   const textarea = document.getElementById('final-output');
   const text = textarea.value.trim();
@@ -269,6 +283,11 @@ div.className = 'trade-block';
   r.addEventListener('change', () => syncLegSides(index));
   });
   syncLegSides(index);
+  const type1 = document.getElementById(`type1-${index}`);
+  if (type1) {
+    type1.addEventListener('change', () => updateLeg1Fields(index));
+    updateLeg1Fields(index);
+  }
 
   renumberTrades();
 }
@@ -286,7 +305,8 @@ if (typeof module !== 'undefined' && module.exports) {
     parseInputDate,
     getSecondBusinessDay,
     getFixPpt,
-    generateRequest
+    generateRequest,
+    updateLeg1Fields
   };
 }
 
