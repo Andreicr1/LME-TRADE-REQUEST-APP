@@ -14,6 +14,14 @@ python -m http.server 8000
 npx http-server -p 8000
 ```
 
+If you have installed the dependencies you can also run:
+
+```bash
+npm start
+```
+
+This uses the bundled http-server to serve the site on port 8000.
+
 After the server starts, open `http://localhost:8000/index.html` in a modern browser.
 Make sure to visit the full path to `index.html` (not just `/`) because the service worker only caches that file.
 
