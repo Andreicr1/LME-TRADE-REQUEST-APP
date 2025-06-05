@@ -85,6 +85,22 @@ describe('generateRequest', () => {
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('Please provide a fixing date.');
   });
+
+  test('shows error for invalid date range', () => {
+    const start = document.createElement('input');
+    start.id = 'startDate-0';
+    start.value = '2025-02-01';
+    document.body.appendChild(start);
+    const end = document.createElement('input');
+    end.id = 'endDate-0';
+    end.value = '2025-01-01';
+    document.body.appendChild(end);
+    document.getElementById('qty-0').value = '5';
+    document.getElementById('type2-0').value = 'AVG';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('Start date must be before end date.');
+  });
 });
 
 describe('business day helpers', () => {
