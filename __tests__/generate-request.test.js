@@ -13,7 +13,7 @@ function setupDom() {
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
-    <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option></select>
+    <select id="type1-0"><option value="AVG">AVG</option><option value="AVGInter">AVGInter</option><option value="Fix">Fix</option></select>
     <select id="month1-0"><option>January</option><option>February</option></select>
     <select id="year1-0"><option>2025</option></select>
     <input type="radio" name="side2-0" value="buy">
@@ -59,6 +59,16 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against');
+  });
+
+  test('AVGInter leg1 uses next month PPT when leg2 AVG', () => {
+    document.getElementById('qty-0').value = '5';
+    document.getElementById('type1-0').value = 'AVGInter';
+    document.getElementById('type2-0').value = 'AVG';
+    document.getElementById('fixDate-0').value = '';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('LME Request: Buy 5 mt Al Fix ppt 04-03-25 and Sell 5 mt Al AVG February 2025 Flat against');
   });
 
   test('shows error for non-numeric quantity', () => {
