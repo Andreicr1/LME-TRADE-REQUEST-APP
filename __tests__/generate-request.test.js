@@ -40,7 +40,7 @@ describe('generateRequest', () => {
     document.getElementById('type2-0').value = 'AVG';
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against');
+    expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat ppt 03-01-25 against');
   });
 
   test('creates Fix request text', () => {
