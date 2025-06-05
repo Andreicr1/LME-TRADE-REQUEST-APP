@@ -232,10 +232,34 @@ function toggleLeg1Fields(index) {
   const typeSel = document.getElementById(`type1-${index}`);
   const startInput = document.getElementById(`startDate-${index}`);
   const endInput = document.getElementById(`endDate-${index}`);
+  const monthSel = document.getElementById(`month1-${index}`);
+  const yearSel = document.getElementById(`year1-${index}`);
+  const fixInput = document.getElementById(`fixDate1-${index}`);
   if (!typeSel || !startInput || !endInput) return;
-  const show = typeSel.value === 'AVGInter';
-  if (startInput.parentElement) startInput.parentElement.style.display = show ? '' : 'none';
-  if (endInput.parentElement) endInput.parentElement.style.display = show ? '' : 'none';
+  const val = typeSel.value;
+  const showInter = val === 'AVGInter';
+  if (startInput.parentElement) startInput.parentElement.style.display = showInter ? '' : 'none';
+  if (endInput.parentElement) endInput.parentElement.style.display = showInter ? '' : 'none';
+  if (monthSel && monthSel.parentElement) monthSel.parentElement.style.display = val === 'AVG' ? '' : 'none';
+  if (yearSel && yearSel.parentElement) yearSel.parentElement.style.display = val === 'AVG' ? '' : 'none';
+  if (fixInput && fixInput.parentElement) fixInput.parentElement.style.display = (val === 'Fix' || val === 'Spot') ? '' : 'none';
+}
+
+function toggleLeg2Fields(index) {
+  const typeSel = document.getElementById(`type2-${index}`);
+  const monthSel = document.getElementById(`month2-${index}`);
+  const yearSel = document.getElementById(`year2-${index}`);
+  const fixInput = document.getElementById(`fixDate-${index}`);
+  const samePpt = document.getElementById(`samePpt-${index}`);
+  if (!typeSel) return;
+  const val = typeSel.value;
+  if (monthSel && monthSel.parentElement) monthSel.parentElement.style.display = val === 'AVG' ? '' : 'none';
+  if (yearSel && yearSel.parentElement) yearSel.parentElement.style.display = val === 'AVG' ? '' : 'none';
+  if (fixInput && fixInput.parentElement) fixInput.parentElement.style.display = (val === 'Fix' || val === 'C2R') ? '' : 'none';
+  const leg1Type = document.getElementById(`type1-${index}`)?.value;
+  if (samePpt && samePpt.parentElement) {
+    samePpt.parentElement.style.display = leg1Type === 'AVG' && val === 'Fix' ? '' : 'none';
+  }
 }
 
 async function copyAll() {
@@ -284,8 +308,19 @@ div.className = 'trade-block';
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
-  document.getElementById(`type1-${index}`).addEventListener('change', () => toggleLeg1Fields(index));
+  const type1Sel = document.getElementById(`type1-${index}`);
+  const type2Sel = document.getElementById(`type2-${index}`);
+  if (type1Sel) {
+    type1Sel.addEventListener('change', () => {
+      toggleLeg1Fields(index);
+      toggleLeg2Fields(index);
+    });
+  }
+  if (type2Sel) {
+    type2Sel.addEventListener('change', () => toggleLeg2Fields(index));
+  }
   toggleLeg1Fields(index);
+  toggleLeg2Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach(r => {
   r.addEventListener('change', () => syncLegSides(index));
   });
@@ -307,7 +342,9 @@ if (typeof module !== 'undefined' && module.exports) {
     parseInputDate,
     getSecondBusinessDay,
     getFixPpt,
-    generateRequest
+    generateRequest,
+    toggleLeg1Fields,
+    toggleLeg2Fields
   };
 }
 
