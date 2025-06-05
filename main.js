@@ -507,6 +507,18 @@ async function copyAll() {
   }
 }
 
+function shareWhatsApp() {
+  const textarea = document.getElementById("final-output");
+  const text = textarea.value.trim();
+  if (!text) {
+    alert("Nothing to share.");
+    textarea.focus();
+    return;
+  }
+  const url = "https://wa.me/?text=" + encodeURIComponent(text);
+  window.open(url, "_blank");
+}
+
 function addTrade() {
   const index = nextIndex++;
   const template = document.getElementById("trade-template");
@@ -611,6 +623,7 @@ if (typeof module !== "undefined" && module.exports) {
     clearTrade,
     removeTrade,
     copyAll,
+    shareWhatsApp,
     setMinDates,
     updateEndDateMin,
     updateAvgRestrictions,
