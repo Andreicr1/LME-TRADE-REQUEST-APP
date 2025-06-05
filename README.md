@@ -32,6 +32,14 @@ will trigger an error message.
 
 When selecting the price type for Leg 1 you can choose **AVG Inter** to specify an averaging period. Pick a start and end date in the Leg 1 section and the request text will reflect that range.
 
+If one leg uses **Fix** pricing while the other uses **AVG**, a checkbox labelled
+"Use AVG PPT Date" appears next to the fixing date input on the fixed leg.
+Checking it will automatically apply the second business day (the PPT date) from
+the averaging leg's month to the fixed leg. The checkbox for Leg&nbsp;2 is shown
+when Leg&nbsp;1 is set to **AVG** and Leg&nbsp;2 is **Fix**. Conversely, when
+Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG** the same option is displayed next
+to the fixing date for Leg&nbsp;1.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
