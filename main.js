@@ -1,7 +1,20 @@
-const lmeHolidays = {
-2025: ["2025-01-01", "2025-03-18", "2025-04-21", "2025-05-05", "2025-05-26", "2025-08-25", "2025-12-25", "2025-12-26"],
-2026: ["2026-01-01", "2026-04-03", "2026-04-06", "2026-05-04", "2026-05-25", "2026-08-31", "2026-12-25", "2026-12-26"]
-};
+let lmeHolidays = {};
+
+if (typeof window === 'undefined' || typeof fetch === 'undefined') {
+  const fs = require('fs');
+  const path = require('path');
+  try {
+    const file = path.join(__dirname, 'holidays.json');
+    lmeHolidays = JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (err) {
+    console.error('Failed to read holidays.json:', err);
+  }
+} else {
+  fetch('holidays.json')
+    .then(res => res.json())
+    .then(data => { lmeHolidays = data; })
+    .catch(err => console.error('Failed to load holidays.json:', err));
+}
 
 async function loadHolidayData() {
   try {

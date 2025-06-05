@@ -44,9 +44,14 @@ After increasing `CACHE_VERSION`, refresh the site so the new worker can take co
 
 ## Holiday data
 
-`main.js` includes UK bank holiday dates for 2025 and 2026. When the page loads it also fetches current dates from the [GOV.UK Bank Holidays API](https://www.gov.uk/bank-holidays.json) and merges them with the built‑in list. This allows the app to work with future years while still functioning offline.
+Holiday dates are stored in `holidays.json`. When the page loads it fetches the
+latest data from the [GOV.UK Bank Holidays API](https://www.gov.uk/bank-holidays.json) and merges the result with the local file so the app keeps working offline.
 
-To update the embedded years manually, download the JSON file above, extract the dates for the required year and append them to the `lmeHolidays` object in `main.js`.
+Run the following command whenever you want to refresh `holidays.json`:
+
+```bash
+node scripts/update-holidays.js
+```
 
 ## Prerequisites
 
