@@ -3,28 +3,36 @@
 const calendarUtils = require('../calendar-utils');
 global.calendarUtils = calendarUtils;
 
-const { getSecondBusinessDay, getFixPpt, generateRequest } = require('../main');
+const { getSecondBusinessDay, getFixPpt, generateRequest, updateLeg1Fields } = require('../main');
 
 document.body.innerHTML = '<select id="calendarType"></select>';
 document.getElementById('calendarType').value = 'gregorian';
 
 function setupDom() {
   document.body.innerHTML += `
-    <input id="qty-0" />
-    <input type="radio" name="side1-0" value="buy" checked>
-    <input type="radio" name="side1-0" value="sell">
-    <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option></select>
-    <select id="month1-0"><option>January</option><option>February</option></select>
-    <select id="year1-0"><option>2025</option></select>
-    <input type="radio" name="side2-0" value="buy">
-    <input type="radio" name="side2-0" value="sell" checked>
-    <select id="type2-0"><option value="Fix">Fix</option><option value="C2R">C2R</option><option value="AVG">AVG</option></select>
-    <select id="month2-0"><option>February</option></select>
-    <select id="year2-0"><option>2025</option></select>
-    <input id="fixDate-0" />
-    <input type="checkbox" id="samePpt-0" />
-    <p id="output-0"></p>
-    <textarea id="final-output"></textarea>
+    <div id="trade-0">
+      <input id="qty-0" />
+      <input type="radio" name="side1-0" value="buy" checked>
+      <input type="radio" name="side1-0" value="sell">
+      <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option><option value="AVGInter">AVGInter</option></select>
+      <div class="leg1-month-year">
+        <select id="month1-0"><option>January</option><option>February</option></select>
+        <select id="year1-0"><option>2025</option></select>
+      </div>
+      <div class="leg1-date-range hidden">
+        <input id="startDate1-0" />
+        <input id="endDate1-0" />
+      </div>
+      <input type="radio" name="side2-0" value="buy">
+      <input type="radio" name="side2-0" value="sell" checked>
+      <select id="type2-0"><option value="Fix">Fix</option><option value="C2R">C2R</option><option value="AVG">AVG</option></select>
+      <select id="month2-0"><option>February</option></select>
+      <select id="year2-0"><option>2025</option></select>
+      <input id="fixDate-0" />
+      <input type="checkbox" id="samePpt-0" />
+      <p id="output-0"></p>
+      <textarea id="final-output"></textarea>
+    </div>
   `;
 }
 
@@ -84,6 +92,28 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('Please provide a fixing date.');
+  });
+});
+
+describe('updateLeg1Fields', () => {
+  beforeEach(() => {
+    document.body.innerHTML = '<select id="calendarType"></select>';
+    document.getElementById('calendarType').value = 'gregorian';
+    setupDom();
+  });
+
+  test('toggles month and date inputs', () => {
+    const sel = document.getElementById('type1-0');
+    const monthYear = document.querySelector('.leg1-month-year');
+    const dateRange = document.querySelector('.leg1-date-range');
+    sel.value = 'AVGInter';
+    updateLeg1Fields(0);
+    expect(monthYear.classList.contains('hidden')).toBe(true);
+    expect(dateRange.classList.contains('hidden')).toBe(false);
+    sel.value = 'AVG';
+    updateLeg1Fields(0);
+    expect(monthYear.classList.contains('hidden')).toBe(false);
+    expect(dateRange.classList.contains('hidden')).toBe(true);
   });
 });
 
