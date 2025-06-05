@@ -18,6 +18,12 @@ if (typeof window === "undefined" || typeof fetch === "undefined") {
     .catch((err) => console.error("Failed to load holidays.json:", err));
 }
 
+/**
+ * Fetches the latest UK bank holidays and merges them with the local
+ * `lmeHolidays` object so offline requests still have up‑to‑date data.
+ *
+ * @returns {Promise<void>} Resolves once the remote data has been processed.
+ */
 async function loadHolidayData() {
   try {
     const res = await fetch("https://www.gov.uk/bank-holidays.json");
@@ -49,6 +55,16 @@ function parseDate(str) {
   return calendarUtils.parseDate(str, getCalendarType());
 }
 
+/**
+ * Returns the second business day of the month following the provided month.
+ *
+ * Weekends and any dates in `lmeHolidays` are skipped when counting
+ * business days.
+ *
+ * @param {number} year - The reference year.
+ * @param {number} month - Zero‑based reference month.
+ * @returns {string} Formatted date string for the second business day.
+ */
 function getSecondBusinessDay(year, month) {
   const holidays = lmeHolidays[year] || [];
   // start from the first day of the month following the reference month
@@ -63,6 +79,16 @@ function getSecondBusinessDay(year, month) {
   return formatDate(date);
 }
 
+/**
+ * Computes the payment prompt date (PPT) for a given fixing date.
+ *
+ * The PPT is two business days after the fixing date and skips weekends and
+ * holidays defined in `lmeHolidays`.
+ *
+ * @param {string} dateFix - Fixing date in formatted string form.
+ * @returns {string} Formatted PPT date.
+ * @throws {Error} If the fixing date is missing or invalid.
+ */
 function getFixPpt(dateFix) {
   if (!dateFix) throw new Error("Please provide a fixing date.");
   const date = parseDate(dateFix);
@@ -95,11 +121,17 @@ function populateYearOptions(selectId, start, count) {
   }
 }
 
+/**
+ * Converts an ISO date string in the form `yyyy-mm-dd` into a `Date` object.
+ *
+ * @param {string} value - The value from a `<input type="date">` field.
+ * @returns {Date|null} Parsed `Date` instance or `null` for invalid input.
+ */
 function parseInputDate(value) {
   if (!value) return null;
   const parts = value.split("-").map(Number);
   if (parts.length !== 3) return null;
-const [y, m, d] = parts;
+  const [y, m, d] = parts;
   return new Date(y, m - 1, d);
 }
 
@@ -200,6 +232,14 @@ function updateAvgRestrictions(index) {
   }
 }
 
+/**
+ * Builds the text for a single trade request using the values from the form.
+ *
+ * Validation errors are displayed in the relevant fields and a message is
+ * shown in the output element when invalid data is encountered.
+ *
+ * @param {number} index - Trade block index to read values from.
+ */
 function generateRequest(index) {
   const outputEl = document.getElementById(`output-${index}`);
   try {
@@ -415,6 +455,12 @@ function syncLegSides(index, changedLeg) {
   }
 }
 
+/**
+ * Shows or hides Leg&nbsp;1 fields based on the selected pricing type and
+ * optionally populates the fixing date when using the averaging PPT.
+ *
+ * @param {number} index - Trade block index to update.
+ */
 function toggleLeg1Fields(index) {
   const typeSel = document.getElementById(`type1-${index}`);
   const type2 = document.getElementById(`type2-${index}`)?.value;
@@ -547,6 +593,12 @@ function closeHelp() {
   }
 }
 
+/**
+ * Clones the trade template and inserts a new trade block into the page.
+ *
+ * Event listeners are attached to the newly created elements and default
+ * values for year selections and date restrictions are applied.
+ */
 function addTrade() {
   const index = nextIndex++;
   const template = document.getElementById("trade-template");
