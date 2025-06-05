@@ -255,9 +255,10 @@ function toggleLeg1Fields(index) {
   const startInput = document.getElementById(`startDate-${index}`);
   const endInput = document.getElementById(`endDate-${index}`);
   if (!typeSel || !startInput || !endInput) return;
-  const show = typeSel.value === 'AVGInter';
-  if (startInput.parentElement) startInput.parentElement.style.display = show ? '' : 'none';
-  if (endInput.parentElement) endInput.parentElement.style.display = show ? '' : 'none';
+  // Only display the date range inputs for the AVG Inter price type.
+  const shouldShowRange = typeSel.value === 'AVGInter';
+  if (startInput.parentElement) startInput.parentElement.style.display = shouldShowRange ? '' : 'none';
+  if (endInput.parentElement) endInput.parentElement.style.display = shouldShowRange ? '' : 'none';
 }
 
 async function copyAll() {
