@@ -120,28 +120,37 @@ const leg1Side = document.querySelector(`input[name='side1-${index}']:checked`).
 const leg1Type = document.getElementById(`type1-${index}`)?.value || 'AVG';
 const month = document.getElementById(`month1-${index}`).value;
 const year = parseInt(document.getElementById(`year1-${index}`).value);
+const startDateRaw = document.getElementById(`startDate-${index}`)?.value || '';
+const endDateRaw = document.getElementById(`endDate-${index}`)?.value || '';
 const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).value;
 const leg2Type = document.getElementById(`type2-${index}`).value;
+const month2 = document.getElementById(`month2-${index}`).value;
+const year2 = parseInt(document.getElementById(`year2-${index}`).value);
 const fixInput = document.getElementById(`fixDate-${index}`);
 const dateFixRaw = fixInput.value;
 const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
 fixInput.classList.remove('border-red-500');
 const useSamePPT = document.getElementById(`samePpt-${index}`).checked;
-const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
-const pptDateAVG = getSecondBusinessDay(year, monthIndex);
+const monthIndex = new Date(`${month2} 1, ${year2}`).getMonth();
+const pptDateAVG = getSecondBusinessDay(year2, monthIndex);
 
 let leg1;
 if (leg1Type === 'AVG') {
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
+} else if (leg1Type === 'AVGInter') {
+  const start = parseInputDate(startDateRaw);
+  const end = parseInputDate(endDateRaw);
+  if (!start || !end) throw new Error('Start and end dates are required for AVG Inter.');
+  const startStr = formatDate(start);
+  const endStr = formatDate(end);
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG (${startStr} – ${endStr})`;
 } else {
   const pptFixLeg1 = getFixPpt(dateFix);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
 }
 let leg2;
 if (leg2Type === 'AVG') {
-const month2 = document.getElementById(`month2-${index}`).value;
-const year2 = parseInt(document.getElementById(`year2-${index}`).value);
-leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
+  leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
 } else if (leg2Type === 'Fix') {
   let pptFix;
   if (useSamePPT) {

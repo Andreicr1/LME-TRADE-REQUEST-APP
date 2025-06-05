@@ -30,6 +30,8 @@ Make sure to visit the full path to `index.html` (not just `/`) because the serv
 Enter quantities as finite positive numbers. Values of zero or negative amounts
 will trigger an error message.
 
+When selecting the price type for Leg 1 you can choose **AVG Inter** to specify an averaging period. Pick a start and end date in the Leg 1 section and the request text will reflect that range.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
