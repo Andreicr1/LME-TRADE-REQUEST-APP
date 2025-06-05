@@ -1,0 +1,13 @@
+{
+  "name": "lme-trade-request",
+  "version": "1.0.0",
+  "description": "LME Trade Request Generator",
+  "main": "main.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.6.1",
+    "jest-environment-jsdom": "^30.0.0-beta.3"
+  }
+}
