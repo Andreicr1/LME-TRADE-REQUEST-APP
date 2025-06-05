@@ -18,6 +18,8 @@ function setupDom() {
     <select id="year1-0"><option>2025</option></select>
     <input id="startDate-0" type="date" />
     <input id="endDate-0" type="date" />
+    <input id="fixDate1-0" />
+    <input type="checkbox" id="samePpt1-0" />
     <input type="radio" name="side2-0" value="buy">
     <input type="radio" name="side2-0" value="sell" checked>
     <select id="type2-0"><option value="Fix">Fix</option><option value="C2R">C2R</option><option value="AVG">AVG</option></select>
@@ -61,6 +63,19 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against');
+  });
+
+  test('leg1 Fix with AVG PPT date from leg2', () => {
+    document.getElementById('qty-0').value = '5';
+    document.getElementById('type1-0').value = 'Fix';
+    document.getElementById('fixDate1-0').value = '2025-09-30';
+    document.getElementById('type2-0').value = 'AVG';
+    document.getElementById('month2-0').value = 'October';
+    document.getElementById('year2-0').value = '2025';
+    document.getElementById('samePpt1-0').checked = true;
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('LME Request: Buy 5 mt Al Fix ppt 02-10-25 and Sell 5 mt Al AVG October 2025 Flat against');
   });
 
   test('creates AVGInter request text', () => {

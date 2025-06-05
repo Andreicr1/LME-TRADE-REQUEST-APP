@@ -5,7 +5,7 @@ const { toggleLeg1Fields, toggleLeg2Fields } = require('../main');
 describe('field visibility toggling', () => {
   let type1, type2,
     month1, year1, fix1, startDate, endDate,
-    month2, year2, fix2, samePpt;
+    month2, year2, fix2, samePpt, samePpt1;
 
   beforeEach(() => {
     document.body.innerHTML = `
@@ -19,6 +19,7 @@ describe('field visibility toggling', () => {
       <div id="sd"><input id="startDate-0"></div>
       <div id="ed"><input id="endDate-0"></div>
       <div id="f1"><input id="fixDate1-0"></div>
+      <label id="sppt1"><input type="checkbox" id="samePpt1-0" /></label>
 
       <select id="type2-0">
         <option value="Fix">Fix</option>
@@ -41,6 +42,7 @@ describe('field visibility toggling', () => {
     year2 = document.getElementById('year2-0');
     fix2 = document.getElementById('fixDate-0');
     samePpt = document.getElementById('samePpt-0');
+    samePpt1 = document.getElementById('samePpt1-0');
   });
 
   test('leg1 AVG shows month/year and hides fix/start/end', () => {
@@ -59,6 +61,14 @@ describe('field visibility toggling', () => {
     expect(month1.parentElement.style.display).toBe('none');
     expect(year1.parentElement.style.display).toBe('none');
     expect(fix1.parentElement.style.display).toBe('');
+  });
+
+  test('leg1 Fix shows checkbox when leg2 AVG', () => {
+    type1.value = 'Fix';
+    type2.value = 'AVG';
+    toggleLeg1Fields(0);
+    toggleLeg2Fields(0);
+    expect(samePpt1.parentElement.style.display).toBe('');
   });
 
   test('leg2 Fix shows fix date and checkbox when leg1 AVG', () => {

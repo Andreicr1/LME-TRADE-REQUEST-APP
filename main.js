@@ -126,15 +126,29 @@ const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).
 const leg2Type = document.getElementById(`type2-${index}`).value;
 const month2 = document.getElementById(`month2-${index}`).value;
 const year2 = parseInt(document.getElementById(`year2-${index}`).value);
+const fixInput1 = document.getElementById(`fixDate1-${index}`);
+const dateFixRaw1 = fixInput1 ? fixInput1.value : '';
+const dateFix1 = dateFixRaw1 ? formatDate(parseInputDate(dateFixRaw1)) : '';
+if (fixInput1) fixInput1.classList.remove('border-red-500');
+const useSamePPT1 = document.getElementById(`samePpt1-${index}`)?.checked;
+
 const fixInput = document.getElementById(`fixDate-${index}`);
 const dateFixRaw = fixInput.value;
 const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
 fixInput.classList.remove('border-red-500');
 const useSamePPT = document.getElementById(`samePpt-${index}`).checked;
-const monthIndex = new Date(`${month2} 1, ${year2}`).getMonth();
-const pptDateAVG = getSecondBusinessDay(year2, monthIndex);
+
+let pptDateAVG = '';
+if (leg1Type === 'AVG') {
+  const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
+  pptDateAVG = getSecondBusinessDay(year, monthIndex);
+} else if (leg2Type === 'AVG') {
+  const monthIndex = new Date(`${month2} 1, ${year2}`).getMonth();
+  pptDateAVG = getSecondBusinessDay(year2, monthIndex);
+}
 
 let leg1;
+let activeFixInput = null;
 if (leg1Type === 'AVG') {
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
 } else if (leg1Type === 'AVGInter') {
@@ -145,7 +159,13 @@ if (leg1Type === 'AVG') {
   const endStr = formatDate(end);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG (${startStr} – ${endStr})`;
 } else {
-  const pptFixLeg1 = getFixPpt(dateFix);
+  let pptFixLeg1;
+  if (useSamePPT1 && leg2Type === 'AVG') {
+    pptFixLeg1 = pptDateAVG;
+  } else {
+    activeFixInput = fixInput1;
+    pptFixLeg1 = getFixPpt(dateFix1);
+  }
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
 }
 let leg2;
@@ -156,10 +176,12 @@ if (leg2Type === 'AVG') {
   if (useSamePPT) {
     pptFix = pptDateAVG;
   } else {
+    activeFixInput = fixInput;
     pptFix = getFixPpt(dateFix);
   }
   leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
 } else if (leg2Type === 'C2R') {
+  activeFixInput = fixInput;
   const pptFix = getFixPpt(dateFix);
   leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix} ppt ${pptFix}`;
 }
@@ -170,7 +192,7 @@ if (leg2Type === 'AVG') {
 } catch (e) {
   console.error("Error generating request:", e);
   if (/Fixing date/.test(e.message)) {
-    const fixInput = document.getElementById(`fixDate-${index}`);
+    const fixInput = activeFixInput || document.getElementById(`fixDate-${index}`);
     if (fixInput) {
       fixInput.classList.add('border-red-500');
       fixInput.focus();
@@ -235,6 +257,7 @@ function toggleLeg1Fields(index) {
   const monthSel = document.getElementById(`month1-${index}`);
   const yearSel = document.getElementById(`year1-${index}`);
   const fixInput = document.getElementById(`fixDate1-${index}`);
+  const samePpt1 = document.getElementById(`samePpt1-${index}`);
   if (!typeSel || !startInput || !endInput) return;
   const val = typeSel.value;
   const showInter = val === 'AVGInter';
@@ -243,6 +266,10 @@ function toggleLeg1Fields(index) {
   if (monthSel && monthSel.parentElement) monthSel.parentElement.style.display = val === 'AVG' ? '' : 'none';
   if (yearSel && yearSel.parentElement) yearSel.parentElement.style.display = val === 'AVG' ? '' : 'none';
   if (fixInput && fixInput.parentElement) fixInput.parentElement.style.display = (val === 'Fix' || val === 'Spot') ? '' : 'none';
+  const leg2Type = document.getElementById(`type2-${index}`)?.value;
+  if (samePpt1 && samePpt1.parentElement) {
+    samePpt1.parentElement.style.display = val === 'Fix' && leg2Type === 'AVG' ? '' : 'none';
+  }
 }
 
 function toggleLeg2Fields(index) {
@@ -317,7 +344,10 @@ div.className = 'trade-block';
     });
   }
   if (type2Sel) {
-    type2Sel.addEventListener('change', () => toggleLeg2Fields(index));
+    type2Sel.addEventListener('change', () => {
+      toggleLeg2Fields(index);
+      toggleLeg1Fields(index);
+    });
   }
   toggleLeg1Fields(index);
   toggleLeg2Fields(index);
