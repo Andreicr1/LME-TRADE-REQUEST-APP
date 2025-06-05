@@ -365,9 +365,12 @@ function clearTrade(index) {
 function removeTrade(index) {
   const trade = document.getElementById(`trade-${index}`);
   if (trade) {
-    trade.remove();
-    updateFinalOutput();
-    renumberTrades();
+    trade.classList.add("opacity-0", "transition-opacity", "duration-300");
+    setTimeout(() => {
+      trade.remove();
+      updateFinalOutput();
+      renumberTrades();
+    }, 300);
   }
 }
 
@@ -546,11 +549,12 @@ function addTrade() {
     .setAttribute("onclick", `removeTrade(${index})`);
   const div = document.createElement("div");
   div.id = `trade-${index}`;
-  div.className = "trade-block";
+  div.className = "trade-block opacity-0 transition-opacity duration-300";
   div.appendChild(clone);
   const trades = document.getElementById("trades");
   if (trades) {
     trades.appendChild(div);
+    requestAnimationFrame(() => div.classList.remove("opacity-0"));
   }
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
