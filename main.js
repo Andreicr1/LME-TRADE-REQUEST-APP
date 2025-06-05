@@ -531,6 +531,22 @@ function shareWhatsApp() {
   window.open(url, "_blank");
 }
 
+function openHelp() {
+  const modal = document.getElementById("help-modal");
+  if (modal) {
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+}
+
+function closeHelp() {
+  const modal = document.getElementById("help-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+}
+
 function addTrade() {
   const index = nextIndex++;
   const template = document.getElementById("trade-template");
@@ -638,6 +654,8 @@ if (typeof module !== "undefined" && module.exports) {
     generateAll,
     copyAll,
     shareWhatsApp,
+    openHelp,
+    closeHelp,
     setMinDates,
     updateEndDateMin,
     updateAvgRestrictions,
