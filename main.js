@@ -228,6 +228,16 @@ if (!opt.disabled) opt.checked = true;
 }
 }
 
+function toggleLeg1Fields(index) {
+  const typeSel = document.getElementById(`type1-${index}`);
+  const startInput = document.getElementById(`startDate-${index}`);
+  const endInput = document.getElementById(`endDate-${index}`);
+  if (!typeSel || !startInput || !endInput) return;
+  const show = typeSel.value === 'AVGInter';
+  if (startInput.parentElement) startInput.parentElement.style.display = show ? '' : 'none';
+  if (endInput.parentElement) endInput.parentElement.style.display = show ? '' : 'none';
+}
+
 async function copyAll() {
   const textarea = document.getElementById('final-output');
   const text = textarea.value.trim();
@@ -274,6 +284,8 @@ div.className = 'trade-block';
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
+  document.getElementById(`type1-${index}`).addEventListener('change', () => toggleLeg1Fields(index));
+  toggleLeg1Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach(r => {
   r.addEventListener('change', () => syncLegSides(index));
   });
