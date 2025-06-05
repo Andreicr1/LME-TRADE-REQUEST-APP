@@ -62,6 +62,17 @@ npm install
 npm test
 ```
 
+### Linting and formatting
+
+Use the following npm scripts to check code style and automatically format files:
+
+```bash
+npm run lint
+npm run format
+```
+
+ESLint and Prettier are configured to ignore minified assets such as `tailwind.min.css` and `solarlunar.min.js`.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
