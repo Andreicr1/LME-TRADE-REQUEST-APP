@@ -57,7 +57,21 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD ppt 06-01-25 against",
+      "LME Request: Buy 5 mt Al AVG January 2025 ppt 04-02-25 Flat and Sell 5 mt Al USD ppt 06-01-25 against",
+    );
+  });
+
+  test("uses AVG PPT date and hides Fix PPT", () => {
+    document.getElementById("qty-0").value = "8";
+    document.getElementById("type1-0").value = "Fix";
+    document.getElementById("type2-0").value = "AVG";
+    document.getElementById("samePpt1-0").checked = true;
+    document.getElementById("month2-0").value = "February";
+    document.getElementById("year2-0").value = "2025";
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Buy 8 mt Al Fix and Sell 8 mt Al AVG February 2025 ppt 04-03-25 Flat against",
     );
   });
 
@@ -115,7 +129,7 @@ describe("generateRequest", () => {
 
 describe("business day helpers", () => {
   test("getSecondBusinessDay returns formatted date", () => {
-    expect(getSecondBusinessDay(2025, 0)).toBe("03-01-25");
+    expect(getSecondBusinessDay(2025, 0)).toBe("04-02-25");
   });
 
   test("getFixPpt computes two business days after fix date", () => {

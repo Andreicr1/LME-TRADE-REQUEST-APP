@@ -52,11 +52,15 @@ test("Leg2 fields toggle and checkbox sets PPT", () => {
   document.getElementById("type2-0").value = "Fix";
   const chk = document.getElementById("samePpt2-0");
   chk.checked = true;
+  toggleLeg1Fields(0);
   toggleLeg2Fields(0);
   expect(document.getElementById("fixDate-0").parentElement.style.display).toBe(
     "",
   );
   expect(chk.parentElement.style.display).toBe("");
+  expect(document.getElementById("samePpt1-0").parentElement.style.display).toBe(
+    "none",
+  );
   const ppt = getSecondBusinessDay(2025, 0);
   const date = calendarUtils.parseDateGregorian(ppt);
   expect(document.getElementById("fixDate-0").value).toBe(
