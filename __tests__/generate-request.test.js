@@ -16,6 +16,8 @@ function setupDom() {
     <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option></select>
     <select id="month1-0"><option>January</option><option>February</option></select>
     <select id="year1-0"><option>2025</option></select>
+    <input id="startDate1-0" />
+    <input id="endDate1-0" />
     <input type="radio" name="side2-0" value="buy">
     <input type="radio" name="side2-0" value="sell" checked>
     <select id="type2-0"><option value="Fix">Fix</option><option value="C2R">C2R</option><option value="AVG">AVG</option></select>
@@ -41,6 +43,16 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against');
+  });
+
+  test('includes start and end dates when provided', () => {
+    document.getElementById('qty-0').value = '10';
+    document.getElementById('type2-0').value = 'AVG';
+    document.getElementById('startDate1-0').value = '2025-01-05';
+    document.getElementById('endDate1-0').value = '2025-01-10';
+    generateRequest(0);
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe('LME Request: Buy 10 mt Al AVG January 2025 (05-01-25 to 10-01-25) Flat and Sell 10 mt Al AVG February 2025 Flat against');
   });
 
   test('creates Fix request text', () => {

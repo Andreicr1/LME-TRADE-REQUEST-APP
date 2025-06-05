@@ -120,6 +120,10 @@ const leg1Side = document.querySelector(`input[name='side1-${index}']:checked`).
 const leg1Type = document.getElementById(`type1-${index}`)?.value || 'AVG';
 const month = document.getElementById(`month1-${index}`).value;
 const year = parseInt(document.getElementById(`year1-${index}`).value);
+const startDateRaw = document.getElementById(`startDate1-${index}`)?.value || '';
+const endDateRaw = document.getElementById(`endDate1-${index}`)?.value || '';
+const startDate = startDateRaw ? formatDate(parseInputDate(startDateRaw)) : '';
+const endDate = endDateRaw ? formatDate(parseInputDate(endDateRaw)) : '';
 const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).value;
 const leg2Type = document.getElementById(`type2-${index}`).value;
 const fixInput = document.getElementById(`fixDate-${index}`);
@@ -132,7 +136,11 @@ const pptDateAVG = getSecondBusinessDay(year, monthIndex);
 
 let leg1;
 if (leg1Type === 'AVG') {
-  leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
+  if (startDate && endDate) {
+    leg1 += ` (${startDate} to ${endDate})`;
+  }
+  leg1 += ' Flat';
 } else {
   const pptFixLeg1 = getFixPpt(dateFix);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
