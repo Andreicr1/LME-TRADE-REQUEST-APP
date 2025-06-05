@@ -39,6 +39,11 @@ day (its PPT date). Leg&nbsp;2's checkbox is visible when Leg&nbsp;1 is set to
 **AVG** and Leg&nbsp;2 is **Fix**. Likewise, Leg&nbsp;1's checkbox appears when
 Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG**.
 
+Fixing date inputs only appear when a leg uses **Fix** pricing (Leg&nbsp;2 also
+shows it for **C2R**). When one leg is **AVG** and the other **Fix**, checking
+the "Use AVG PPT Date" option automatically fills the fixed leg's date with the
+averaging leg's PPT.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
