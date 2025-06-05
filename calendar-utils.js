@@ -6,12 +6,12 @@
     const d = String(date.getDate()).padStart(2,'0');
     const m = String(date.getMonth()+1).padStart(2,'0');
     const y = String(date.getFullYear()).slice(-2);
-    return `${d}-${m}-${y}`;
+    return `${d}/${m}/${y}`;
   }
 
   function parseDateGregorian(str){
     if (typeof str !== 'string') return null;
-    const match = str.trim().match(/^(\d{2})-(\d{2})-(\d{2})$/);
+    const match = str.trim().match(/^(\d{2})\/(\d{2})\/(\d{2})$/);
     if (!match) return null;
     const day = parseInt(match[1],10);
     const month = parseInt(match[2],10)-1;
@@ -29,12 +29,12 @@
     const d = String(lunar.lDay).padStart(2,'0');
     const m = String(lunar.lMonth).padStart(2,'0');
     const y = String(lunar.lYear).slice(-2);
-    return `${d}-${m}-${y}`;
+    return `${d}/${m}/${y}`;
   }
 
   function parseDateChinese(str){
     if (!solar || typeof str !== 'string') return null;
-    const match = str.trim().match(/^(\d{2})-(\d{2})-(\d{2})$/);
+    const match = str.trim().match(/^(\d{2})\/(\d{2})\/(\d{2})$/);
     if (!match) return null;
     const day = parseInt(match[1],10);
     const month = parseInt(match[2],10);
