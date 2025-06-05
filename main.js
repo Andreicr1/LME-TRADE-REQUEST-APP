@@ -99,8 +99,105 @@ function parseInputDate(value) {
   if (!value) return null;
   const parts = value.split("-").map(Number);
   if (parts.length !== 3) return null;
-  const [y, m, d] = parts;
+const [y, m, d] = parts;
   return new Date(y, m - 1, d);
+}
+
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+function setMinDates(index) {
+  const today = new Date().toISOString().split("T")[0];
+  [
+    `fixDate1-${index}`,
+    `fixDate-${index}`,
+    `startDate-${index}`,
+    `endDate-${index}`,
+    `startDate2-${index}`,
+    `endDate2-${index}`,
+  ].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.min = today;
+  });
+}
+
+function updateEndDateMin(index, leg) {
+  const start = document.getElementById(`startDate${leg === 2 ? 2 : ""}-${index}`);
+  const end = document.getElementById(`endDate${leg === 2 ? 2 : ""}-${index}`);
+  if (!start || !end) return;
+  const d = parseInputDate(start.value);
+  if (!d) return;
+  d.setDate(d.getDate() + 1);
+  end.min = d.toISOString().split("T")[0];
+}
+
+function clearMonthYearRestrictions(index, leg) {
+  const monthSel = document.getElementById(`month${leg}-${index}`);
+  const yearSel = document.getElementById(`year${leg}-${index}`);
+  if (!monthSel || !yearSel) return;
+  Array.from(monthSel.options).forEach((o) => (o.disabled = false));
+  Array.from(yearSel.options).forEach((o) => (o.disabled = false));
+}
+
+function updateAvgRestrictions(index) {
+  const type1 = document.getElementById(`type1-${index}`)?.value;
+  const type2 = document.getElementById(`type2-${index}`)?.value;
+  let interLeg, avgLeg;
+  if (type1 === "AVGInter" && type2 === "AVG") {
+    interLeg = 1;
+    avgLeg = 2;
+  } else if (type2 === "AVGInter" && type1 === "AVG") {
+    interLeg = 2;
+    avgLeg = 1;
+  } else {
+    clearMonthYearRestrictions(index, 1);
+    clearMonthYearRestrictions(index, 2);
+    return;
+  }
+
+  const end = document.getElementById(`endDate${interLeg === 2 ? 2 : ""}-${index}`);
+  const monthSel = document.getElementById(`month${avgLeg}-${index}`);
+  const yearSel = document.getElementById(`year${avgLeg}-${index}`);
+  if (!end || !monthSel || !yearSel) return;
+  const endDate = parseInputDate(end.value);
+  if (!endDate) return;
+
+  const limitYear = endDate.getFullYear();
+  const limitMonth = endDate.getMonth();
+
+  Array.from(yearSel.options).forEach((o) => {
+    const yr = parseInt(o.value, 10);
+    o.disabled = yr < limitYear;
+  });
+
+  if (parseInt(yearSel.value, 10) < limitYear) yearSel.value = String(limitYear);
+
+  const selectedYear = parseInt(yearSel.value, 10);
+  Array.from(monthSel.options).forEach((o, idx) => {
+    o.disabled = selectedYear === limitYear && idx < limitMonth;
+  });
+
+  const currentIdx = monthNames.indexOf(monthSel.value);
+  if (currentIdx < 0 || monthSel.options[currentIdx].disabled) {
+    for (let i = limitMonth; i < monthSel.options.length; i++) {
+      if (!monthSel.options[i].disabled) {
+        monthSel.value = monthNames[i];
+        break;
+      }
+    }
+  }
 }
 
 function generateRequest(index) {
@@ -446,19 +543,39 @@ function addTrade() {
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
+  setMinDates(index);
+  updateEndDateMin(index, 1);
+  updateEndDateMin(index, 2);
+  updateAvgRestrictions(index);
   document.getElementById(`type1-${index}`).addEventListener("change", () => {
     toggleLeg1Fields(index);
     toggleLeg2Fields(index);
+    updateAvgRestrictions(index);
   });
   document
     .getElementById(`type2-${index}`)
-    .addEventListener("change", () => toggleLeg2Fields(index));
+    .addEventListener("change", () => {
+      toggleLeg2Fields(index);
+      updateAvgRestrictions(index);
+    });
   document
     .getElementById(`samePpt1-${index}`)
     .addEventListener("change", () => toggleLeg1Fields(index));
   document
     .getElementById(`samePpt2-${index}`)
     .addEventListener("change", () => toggleLeg2Fields(index));
+  const start1 = document.getElementById(`startDate-${index}`);
+  const end1 = document.getElementById(`endDate-${index}`);
+  const start2 = document.getElementById(`startDate2-${index}`);
+  const end2 = document.getElementById(`endDate2-${index}`);
+  if (start1) start1.addEventListener("change", () => updateEndDateMin(index, 1));
+  if (start2) start2.addEventListener("change", () => updateEndDateMin(index, 2));
+  if (end1) end1.addEventListener("change", () => updateAvgRestrictions(index));
+  if (end2) end2.addEventListener("change", () => updateAvgRestrictions(index));
+  const year1 = document.getElementById(`year1-${index}`);
+  const year2 = document.getElementById(`year2-${index}`);
+  if (year1) year1.addEventListener("change", () => updateAvgRestrictions(index));
+  if (year2) year2.addEventListener("change", () => updateAvgRestrictions(index));
   toggleLeg1Fields(index);
   toggleLeg2Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach((r) => {
@@ -494,5 +611,8 @@ if (typeof module !== "undefined" && module.exports) {
     clearTrade,
     removeTrade,
     copyAll,
+    setMinDates,
+    updateEndDateMin,
+    updateAvgRestrictions,
   };
 }
