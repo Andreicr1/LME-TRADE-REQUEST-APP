@@ -254,11 +254,44 @@ function toggleLeg1Fields(index) {
   const typeSel = document.getElementById(`type1-${index}`);
   const startInput = document.getElementById(`startDate-${index}`);
   const endInput = document.getElementById(`endDate-${index}`);
+  const fixInput = document.getElementById(`fixDate1-${index}`);
   if (!typeSel || !startInput || !endInput) return;
   // Only display the date range inputs for the AVG Inter price type.
   const shouldShowRange = typeSel.value === 'AVGInter';
   if (startInput.parentElement) startInput.parentElement.style.display = shouldShowRange ? '' : 'none';
   if (endInput.parentElement) endInput.parentElement.style.display = shouldShowRange ? '' : 'none';
+  if (fixInput && fixInput.parentElement) {
+    fixInput.parentElement.style.display = typeSel.value === 'Fix' ? '' : 'none';
+  }
+}
+
+function toggleLeg2Fields(index) {
+  const type1 = document.getElementById(`type1-${index}`)?.value;
+  const type2Sel = document.getElementById(`type2-${index}`);
+  const fixInput = document.getElementById(`fixDate-${index}`);
+  const samePpt = document.getElementById(`samePpt-${index}`);
+  if (!type2Sel || !fixInput || !samePpt) return;
+
+  const type2 = type2Sel.value;
+
+  if (fixInput.parentElement) {
+    fixInput.parentElement.style.display = (type2 === 'Fix' || type2 === 'C2R') ? '' : 'none';
+    if (type2 !== 'Fix' && type2 !== 'C2R') fixInput.value = '';
+  }
+
+  const showChk = (type1 === 'AVG' && type2 === 'Fix') || (type1 === 'Fix' && type2 === 'AVG');
+  if (samePpt.parentElement) samePpt.parentElement.style.display = showChk ? '' : 'none';
+  if (!showChk) samePpt.checked = false;
+
+  if (showChk && samePpt.checked) {
+    const avgLeg = type1 === 'AVG' ? 1 : 2;
+    const month = document.getElementById(`month${avgLeg}-${index}`).value;
+    const year = parseInt(document.getElementById(`year${avgLeg}-${index}`).value);
+    const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
+    const pptStr = getSecondBusinessDay(year, monthIdx);
+    const date = parseDate(pptStr);
+    if (fixInput) fixInput.value = date.toISOString().split('T')[0];
+  }
 }
 
 async function copyAll() {
@@ -308,8 +341,14 @@ div.className = 'trade-block';
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
-  document.getElementById(`type1-${index}`).addEventListener('change', () => toggleLeg1Fields(index));
+  document.getElementById(`type1-${index}`).addEventListener('change', () => {
+    toggleLeg1Fields(index);
+    toggleLeg2Fields(index);
+  });
+  document.getElementById(`type2-${index}`).addEventListener('change', () => toggleLeg2Fields(index));
+  document.getElementById(`samePpt-${index}`).addEventListener('change', () => toggleLeg2Fields(index));
   toggleLeg1Fields(index);
+  toggleLeg2Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach(r => {
   r.addEventListener('change', () => syncLegSides(index));
   });
@@ -331,7 +370,9 @@ if (typeof module !== 'undefined' && module.exports) {
     parseInputDate,
     getSecondBusinessDay,
     getFixPpt,
-    generateRequest
+    generateRequest,
+    toggleLeg1Fields,
+    toggleLeg2Fields
   };
 }
 
