@@ -3,7 +3,13 @@
 const calendarUtils = require("../calendar-utils");
 global.calendarUtils = calendarUtils;
 
-const { getSecondBusinessDay, getFixPpt, generateRequest } = require("../main");
+const {
+  getSecondBusinessDay,
+  getFixPpt,
+  generateRequest,
+  toggleLeg1Fields,
+  toggleLeg2Fields,
+} = require("../main");
 
 document.body.innerHTML = '<select id="calendarType"></select>';
 document.getElementById("calendarType").value = "gregorian";
@@ -18,6 +24,7 @@ function setupDom() {
     <select id="year1-0"><option>2025</option></select>
     <input id="startDate-0" type="date" />
     <input id="endDate-0" type="date" />
+    <input id="fixDate1-0" />
     <input id="startDate2-0" type="date" />
     <input id="endDate2-0" type="date" />
     <input type="radio" name="side2-0" value="buy">
@@ -68,10 +75,11 @@ describe("generateRequest", () => {
     document.getElementById("samePpt1-0").checked = true;
     document.getElementById("month2-0").value = "February";
     document.getElementById("year2-0").value = "2025";
+    toggleLeg1Fields(0);
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 Flat against",
+      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 ppt 04/03/25 Flat against",
     );
   });
 
@@ -82,10 +90,11 @@ describe("generateRequest", () => {
     document.getElementById("samePpt2-0").checked = true;
     document.getElementById("month1-0").value = "October";
     document.getElementById("year1-0").value = "2025";
+    toggleLeg2Fields(0);
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 12 mt Al AVG October 2025 Flat and Sell 12 mt Al USD ppt 04/11/25 against",
+      "LME Request: Buy 12 mt Al AVG October 2025 ppt 04/11/25 Flat and Sell 12 mt Al USD ppt 04/11/25 against",
     );
   });
 
