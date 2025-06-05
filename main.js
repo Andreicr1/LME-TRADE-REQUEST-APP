@@ -136,8 +136,7 @@ let leg1;
 if (leg1Type === 'AVG') {
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
 } else if (leg1Type === 'Spot') {
-  const spot = formatDate(new Date());
-  const pptSpot = getFixPpt(spot);
+  const pptSpot = getFixPpt(dateFix);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Spot ppt ${pptSpot}`;
 } else {
   const pptFixLeg1 = getFixPpt(dateFix);
@@ -236,6 +235,17 @@ function toggleLeg2(index) {
   leg2Div.querySelectorAll('input, select').forEach(el => {
     el.disabled = hide;
   });
+  const monthYear = document.getElementById(`monthYear1-${index}`);
+  if (monthYear) {
+    monthYear.style.display = hide ? 'none' : '';
+    monthYear.querySelectorAll('select').forEach(el => {
+      el.disabled = hide;
+    });
+  }
+  const fixWrap = document.getElementById(`fix-wrap-${index}`);
+  if (fixWrap) {
+    fixWrap.style.display = hide ? '' : 'block';
+  }
   if (!hide) syncLegSides(index);
 }
 

@@ -64,10 +64,10 @@ describe('generateRequest', () => {
   test('creates Spot request text', () => {
     document.getElementById('qty-0').value = '8';
     document.getElementById('type1-0').value = 'Spot';
+    document.getElementById('fixDate-0').value = '2025-01-02';
     generateRequest(0);
-    const ppt = getFixPpt(calendarUtils.formatDate(new Date()));
     const out = document.getElementById('output-0').textContent;
-    expect(out).toBe(`LME Request: Buy 8 mt Al Spot ppt ${ppt} against`);
+    expect(out).toBe('LME Request: Buy 8 mt Al Spot ppt 06-01-25 against');
   });
 
   test('shows error for non-numeric quantity', () => {
