@@ -13,7 +13,7 @@ function setupDom() {
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
-    <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option></select>
+    <select id="type1-0"><option value="AVG">AVG</option><option value="Fix">Fix</option><option value="Spot">Spot</option></select>
     <select id="month1-0"><option>January</option><option>February</option></select>
     <select id="year1-0"><option>2025</option></select>
     <input type="radio" name="side2-0" value="buy">
@@ -59,6 +59,15 @@ describe('generateRequest', () => {
     generateRequest(0);
     const out = document.getElementById('output-0').textContent;
     expect(out).toBe('LME Request: Buy 7 mt Al AVG January 2025 Flat and Sell 7 mt Al C2R 02-01-25 ppt 06-01-25 against');
+  });
+
+  test('creates Spot request text', () => {
+    document.getElementById('qty-0').value = '8';
+    document.getElementById('type1-0').value = 'Spot';
+    generateRequest(0);
+    const ppt = getFixPpt(calendarUtils.formatDate(new Date()));
+    const out = document.getElementById('output-0').textContent;
+    expect(out).toBe(`LME Request: Buy 8 mt Al Spot ppt ${ppt} against`);
   });
 
   test('shows error for non-numeric quantity', () => {

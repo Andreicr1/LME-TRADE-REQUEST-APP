@@ -46,9 +46,10 @@
           <label><input type="radio" name="side1-0" value="sell" class="mr-1"/> Sell</label><br />
           <div class="flex items-center gap-2 mt-2 mb-2">
             <label class="font-medium">Price Type:</label>
-            <select id="type1-0" class="form-control w-32">
+            <select id="type1-0" class="form-control w-32" onchange="toggleLeg2(0)">
               <option value="AVG">AVG</option>
               <option value="Fix">Fix</option>
+              <option value="Spot">Spot</option>
             </select>
           </div>
           <div class="flex gap-2">
@@ -68,7 +69,7 @@
             </div>
           </div>
         </div>
-        <div>
+        <div id="leg2-0">
           <h2 class="font-semibold">Leg 2</h2>
           <label><input type="radio" name="side2-0" value="buy" checked class="mr-1"/> Buy</label>
           <label><input type="radio" name="side2-0" value="sell" class="mr-1"/> Sell</label><br />

@@ -120,8 +120,10 @@ const leg1Side = document.querySelector(`input[name='side1-${index}']:checked`).
 const leg1Type = document.getElementById(`type1-${index}`)?.value || 'AVG';
 const month = document.getElementById(`month1-${index}`).value;
 const year = parseInt(document.getElementById(`year1-${index}`).value);
-const leg2Side = document.querySelector(`input[name='side2-${index}']:checked`).value;
-const leg2Type = document.getElementById(`type2-${index}`).value;
+const leg2SideEl = document.querySelector(`input[name='side2-${index}']:checked`);
+const leg2Side = leg2SideEl ? leg2SideEl.value : '';
+const leg2TypeEl = document.getElementById(`type2-${index}`);
+const leg2Type = leg2TypeEl ? leg2TypeEl.value : '';
 const fixInput = document.getElementById(`fixDate-${index}`);
 const dateFixRaw = fixInput.value;
 const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
@@ -133,16 +135,20 @@ const pptDateAVG = getSecondBusinessDay(year, monthIndex);
 let leg1;
 if (leg1Type === 'AVG') {
   leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year} Flat`;
+} else if (leg1Type === 'Spot') {
+  const spot = formatDate(new Date());
+  const pptSpot = getFixPpt(spot);
+  leg1 = `${capitalize(leg1Side)} ${q} mt Al Spot ppt ${pptSpot}`;
 } else {
   const pptFixLeg1 = getFixPpt(dateFix);
   leg1 = `${capitalize(leg1Side)} ${q} mt Al Fix ppt ${pptFixLeg1}`;
 }
-let leg2;
-if (leg2Type === 'AVG') {
-const month2 = document.getElementById(`month2-${index}`).value;
-const year2 = parseInt(document.getElementById(`year2-${index}`).value);
-leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
-} else if (leg2Type === 'Fix') {
+let leg2 = '';
+if (leg1Type !== 'Spot' && leg2Type === 'AVG') {
+  const month2 = document.getElementById(`month2-${index}`).value;
+  const year2 = parseInt(document.getElementById(`year2-${index}`).value);
+  leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
+} else if (leg1Type !== 'Spot' && leg2Type === 'Fix') {
   let pptFix;
   if (useSamePPT) {
     pptFix = pptDateAVG;
@@ -150,12 +156,14 @@ leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2} Flat`;
     pptFix = getFixPpt(dateFix);
   }
   leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
-} else if (leg2Type === 'C2R') {
+} else if (leg1Type !== 'Spot' && leg2Type === 'C2R') {
   const pptFix = getFixPpt(dateFix);
   leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix} ppt ${pptFix}`;
 }
 
-  const result = `LME Request: ${leg1} and ${leg2} against`;
+  const result = leg1Type === 'Spot'
+    ? `LME Request: ${leg1} against`
+    : `LME Request: ${leg1} and ${leg2} against`;
   if (outputEl) outputEl.textContent = result;
   updateFinalOutput();
 } catch (e) {
@@ -219,6 +227,18 @@ if (!opt.disabled) opt.checked = true;
 }
 }
 
+function toggleLeg2(index) {
+  const type = document.getElementById(`type1-${index}`)?.value;
+  const leg2Div = document.getElementById(`leg2-${index}`);
+  if (!leg2Div) return;
+  const hide = type === 'Spot';
+  leg2Div.style.display = hide ? 'none' : '';
+  leg2Div.querySelectorAll('input, select').forEach(el => {
+    el.disabled = hide;
+  });
+  if (!hide) syncLegSides(index);
+}
+
 async function copyAll() {
   const textarea = document.getElementById('final-output');
   const text = textarea.value.trim();
@@ -265,10 +285,13 @@ div.className = 'trade-block';
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
+  const type1Select = div.querySelector(`#type1-${index}`);
+  if (type1Select) type1Select.addEventListener('change', () => toggleLeg2(index));
   document.querySelectorAll(`input[name='side1-${index}']`).forEach(r => {
   r.addEventListener('change', () => syncLegSides(index));
   });
   syncLegSides(index);
+  toggleLeg2(index);
 
   renumberTrades();
 }
