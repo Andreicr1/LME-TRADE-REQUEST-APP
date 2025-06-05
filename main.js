@@ -127,6 +127,21 @@ const dateFixRaw = fixInput.value;
 const dateFix = dateFixRaw ? formatDate(parseInputDate(dateFixRaw)) : '';
 fixInput.classList.remove('border-red-500');
 const useSamePPT = document.getElementById(`samePpt-${index}`).checked;
+
+const startInput = document.getElementById(`startDate-${index}`);
+const endInput = document.getElementById(`endDate-${index}`);
+const startDateRaw = startInput ? startInput.value : '';
+const endDateRaw = endInput ? endInput.value : '';
+const start = parseInputDate(startDateRaw);
+const end = parseInputDate(endDateRaw);
+if (start && end && start > end) {
+  if (startInput) startInput.classList.add('border-red-500');
+  if (endInput) endInput.classList.add('border-red-500');
+  if (outputEl) outputEl.textContent = 'Start date must be before end date.';
+  return;
+}
+if (startInput) startInput.classList.remove('border-red-500');
+if (endInput) endInput.classList.remove('border-red-500');
 const monthIndex = new Date(`${month} 1, ${year}`).getMonth();
 const pptDateAVG = getSecondBusinessDay(year, monthIndex);
 
