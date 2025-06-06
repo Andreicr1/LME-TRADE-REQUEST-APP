@@ -114,6 +114,7 @@ function getFixPpt(dateFix) {
 function getLastBusinessDay(year, month) {
   const holidays = lmeHolidays[year] || [];
   let date = new Date(year, month + 1, 0); // last day of month
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     const isoDate = date.toISOString().split("T")[0];
     const day = date.getDay();
@@ -805,39 +806,37 @@ function buildConfirmationText(index) {
   );
 }
 
-let pendingIndex = null;
+let confirmCallback = null;
+
+function showConfirmationPopup(text, callback) {
+  const modal = document.getElementById("confirmation-modal");
+  const msg = document.getElementById("confirmation-text");
+  if (msg) msg.textContent = text;
+  confirmCallback = callback;
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeConfirmationPopup() {
+  const modal = document.getElementById("confirmation-modal");
+  if (modal) modal.classList.add("hidden");
+  confirmCallback = null;
+}
+
+function confirmModal() {
+  if (typeof confirmCallback === "function") {
+    confirmCallback();
+  }
+  closeConfirmationPopup();
+}
 
 function openConfirmModal(index) {
   try {
     const text = buildConfirmationText(index);
-    const modal = document.getElementById("confirm-modal");
-    const msg = document.getElementById("confirm-text");
-    if (msg) msg.textContent = text;
-    if (modal) {
-      modal.classList.remove("hidden");
-      modal.classList.add("block");
-    }
-    pendingIndex = index;
+    showConfirmationPopup(text, () => generateRequest(index));
   } catch (err) {
     const out = document.getElementById(`output-${index}`);
     if (out) out.textContent = err.message;
   }
-}
-
-function closeConfirmModal() {
-  const modal = document.getElementById("confirm-modal");
-  if (modal) {
-    modal.classList.add("hidden");
-    modal.classList.remove("block");
-  }
-  pendingIndex = null;
-}
-
-function confirmModal() {
-  if (pendingIndex !== null) {
-    generateRequest(pendingIndex);
-  }
-  closeConfirmModal();
 }
 
 /**
@@ -942,10 +941,10 @@ function addTrade() {
 window.onload = () => {
   loadHolidayData().finally(() => {
     addTrade();
-    const ok = document.getElementById("confirm-ok");
-    const cancel = document.getElementById("confirm-cancel");
+    const ok = document.getElementById("confirmation-ok");
+    const cancel = document.getElementById("confirmation-cancel");
     if (ok) ok.addEventListener("click", confirmModal);
-    if (cancel) cancel.addEventListener("click", closeConfirmModal);
+    if (cancel) cancel.addEventListener("click", closeConfirmationPopup);
   });
 };
 if ("serviceWorker" in navigator) {
@@ -973,9 +972,10 @@ if (typeof module !== "undefined" && module.exports) {
     openHelp,
     closeHelp,
     buildConfirmationText,
-    openConfirmModal,
-    closeConfirmModal,
+    showConfirmationPopup,
+    closeConfirmationPopup,
     confirmModal,
+    openConfirmModal,
     setMinDates,
     updateEndDateMin,
     updateMonthOptions,
