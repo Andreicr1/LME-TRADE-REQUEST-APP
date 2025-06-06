@@ -23,7 +23,8 @@
           id="final-output"
           class="form-control w-full"
           style="height: 10rem"
-          placeholder="All trade requests will appear here..."
+          placeholder="Generated trade requests will appear here. Copy or share when ready."
+          aria-label="Generated trade requests"
         ></textarea>
         <div
           id="trade-controls"
@@ -31,29 +32,44 @@
         >
           <button
             onclick="addTrade()"
-            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-32"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Add a new trade"
           >
+            <span aria-hidden="true">➕</span>
             Add Trade
           </button>
           <button
             onclick="copyAll()"
-            class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded w-32"
+            class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Copy all trades to clipboard"
           >
+            <span aria-hidden="true">📋</span>
             Copy All
           </button>
           <button
             onclick="generateAll()"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded w-32"
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Generate text for all trades"
           >
+            <span aria-hidden="true">⚙️</span>
             Generate All
           </button>
           <button
             onclick="shareWhatsApp()"
-            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-32"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Share via WhatsApp"
           >
+            <span aria-hidden="true">📤</span>
             WhatsApp
           </button>
-          <button onclick="openHelp()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded w-32">Ajuda</button>
+          <button
+            onclick="openHelp()"
+            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Open help"
+          >
+            <span aria-hidden="true">❓</span>
+            Ajuda
+          </button>
         </div>
       </div>
     </div>
@@ -249,20 +265,26 @@
         <div class="flex flex-wrap items-center gap-2 justify-center">
           <button
             name="generate"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-32"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Generate trade text"
           >
+            <span aria-hidden="true">⚙️</span>
             Generate
           </button>
           <button
             name="clear"
-            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-32"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Clear trade fields"
           >
+            <span aria-hidden="true">🧹</span>
             Clear
           </button>
           <button
             name="remove"
-            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-32"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-full sm:w-32 font-medium flex items-center justify-center gap-1"
+            aria-label="Remove trade"
           >
+            <span aria-hidden="true">🗑️</span>
             Remove
           </button>
         </div>
@@ -272,7 +294,7 @@
 
     <div
       id="help-modal"
-      class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-10"
+      class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-10 transition-opacity duration-300 opacity-0"
     >
       <div class="bg-white p-6 rounded-lg max-w-lg mx-2" role="dialog" aria-modal="true">
         <h2 class="text-xl font-semibold mb-4">Ajuda</h2>
@@ -285,8 +307,10 @@
         </ul>
         <button
           onclick="closeHelp()"
-          class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded font-medium flex items-center justify-center gap-1"
+          aria-label="Close help"
         >
+          <span aria-hidden="true">✖️</span>
           Fechar
         </button>
       </div>
