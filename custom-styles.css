@@ -1,4 +1,9 @@
 body,
+body,
+html {
+  overflow: visible !important;
+  position: static !important;
+}
 input,
 select,
 textarea,
@@ -10,4 +15,36 @@ button {
   padding: 0.5rem;
   border: 1px solid #d1d5db; /* gray-300 */
   border-radius: 0.25rem;
+}
+.modal-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important;
+}
+
+.modal-box {
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  width: 90% !important;
+  max-width: 520px;
+}
+
+.confirmation-text {
+  margin-bottom: 4rem; /* Espaço entre o texto e os botões */
+}
+
+.modal-box .button-row {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;         /* Espaço entre os botões */
+  margin-top: 1rem;  /* Espaço acima da linha dos botões */
 }
