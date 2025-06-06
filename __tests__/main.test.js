@@ -10,6 +10,7 @@ document.getElementById('calendarType').value = 'gregorian';
 const {
   parseInputDate,
   getSecondBusinessDay,
+  getLastBusinessDay,
   getFixPpt,
   updateEndDateMin,
   updateAvgRestrictions,
@@ -36,6 +37,11 @@ describe('business day helpers', () => {
   test('getFixPpt computes two business days after fix date', () => {
     const res = getFixPpt('02/01/25');
     expect(res).toBe('06/01/25');
+  });
+
+  test('getLastBusinessDay finds month end', () => {
+    const res = getLastBusinessDay(2025, 0);
+    expect(res).toBe('31/01/25');
   });
 });
 

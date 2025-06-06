@@ -104,6 +104,25 @@ function getFixPpt(dateFix) {
   return formatDate(date);
 }
 
+/**
+ * Determines the last business day of a given month.
+ *
+ * @param {number} year - Four digit year.
+ * @param {number} month - Zero‑based month.
+ * @returns {string} Formatted date string for the last business day.
+ */
+function getLastBusinessDay(year, month) {
+  const holidays = lmeHolidays[year] || [];
+  let date = new Date(year, month + 1, 0); // last day of month
+  while (true) {
+    const isoDate = date.toISOString().split("T")[0];
+    const day = date.getDay();
+    if (day !== 0 && day !== 6 && !holidays.includes(isoDate)) break;
+    date.setDate(date.getDate() - 1);
+  }
+  return formatDate(date);
+}
+
 function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -297,6 +316,8 @@ function generateRequest(index) {
       ? new Date(`${avgMonth} 1, ${avgYear}`).getMonth()
       : 0;
     const pptDateAVG = avgMonth ? getSecondBusinessDay(avgYear, monthIndex) : "";
+    const lastBizDay = avgMonth ? getLastBusinessDay(avgYear, monthIndex) : "";
+    const lastBizDate = lastBizDay ? parseDate(lastBizDay) : null;
 
     let leg1;
     const showPptAvg =
@@ -310,11 +331,22 @@ function generateRequest(index) {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
       if (!start || !end)
-        throw new Error("Start and end dates are required for AVG Inter.");
+        throw new Error("Start and end dates are required for AVG Period.");
       const startStr = formatDate(start);
       const endStr = formatDate(end);
       leg1 = `${capitalize(leg1Side)} ${q} mt Al Fixing AVG ${startStr} to ${endStr}`;
       if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
+    } else if (leg1Type === "Fix" && leg2Type === "AVG") {
+      if (useSamePPT1) {
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
+      } else {
+        if (!dateFix1Raw) throw new Error("Please provide a fixing date.");
+        const d = parseDate(dateFix1);
+        if (!d) throw new Error("Fixing date is invalid.");
+        if (lastBizDate && d > lastBizDate)
+          throw new Error(`Fixing date must be on or before ${lastBizDay}.`);
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}, ppt ${pptDateAVG}`;
+      }
     } else {
       let pptFixLeg1;
       if (useSamePPT1) {
@@ -347,6 +379,17 @@ function generateRequest(index) {
       const eStr = formatDate(end);
       leg2 = `${capitalize(leg2Side)} ${q} mt Al Fixing AVG ${sStr} to ${eStr}`;
       if (showPptAvg) leg2 += ` ppt ${pptDateAVG}`;
+    } else if (leg2Type === "Fix" && leg1Type === "AVG") {
+      if (useSamePPT2) {
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
+      } else {
+        if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
+        const d = parseDate(dateFix2);
+        if (!d) throw new Error("Fixing date is invalid.");
+        if (lastBizDate && d > lastBizDate)
+          throw new Error(`Fixing date must be on or before ${lastBizDay}.`);
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}, ppt ${pptDateAVG}`;
+      }
     } else if (leg2Type === "Fix") {
       let pptFix;
       if (useSamePPT2) {
@@ -490,8 +533,8 @@ function toggleLeg1Fields(index) {
       const month = document.getElementById(`month2-${index}`).value;
       const year = parseInt(document.getElementById(`year2-${index}`).value);
       const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
-      const pptStr = getSecondBusinessDay(year, monthIdx);
-      const date = parseDate(pptStr);
+      const lastStr = getLastBusinessDay(year, monthIdx);
+      const date = parseDate(lastStr);
       if (fixInput) fixInput.value = date.toISOString().split("T")[0];
     }
   }
@@ -533,8 +576,8 @@ function toggleLeg2Fields(index) {
         document.getElementById(`year${avgLeg}-${index}`).value,
       );
       const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
-      const pptStr = getSecondBusinessDay(year, monthIdx);
-      const date = parseDate(pptStr);
+      const lastStr = getLastBusinessDay(year, monthIdx);
+      const date = parseDate(lastStr);
       if (fixInput) fixInput.value = date.toISOString().split("T")[0];
     }
   }
@@ -723,6 +766,7 @@ if (typeof module !== "undefined" && module.exports) {
   module.exports = {
     parseInputDate,
     getSecondBusinessDay,
+    getLastBusinessDay,
     getFixPpt,
     generateRequest,
     toggleLeg1Fields,

@@ -10,7 +10,7 @@ document.getElementById("calendarType").value = "gregorian";
 const {
   toggleLeg1Fields,
   toggleLeg2Fields,
-  getSecondBusinessDay,
+  getLastBusinessDay,
 } = require("../main");
 
 beforeEach(() => {
@@ -61,8 +61,8 @@ test("Leg2 fields toggle and checkbox sets PPT", () => {
   expect(document.getElementById("samePpt1-0").parentElement.style.display).toBe(
     "none",
   );
-  const ppt = getSecondBusinessDay(2025, 0);
-  const date = calendarUtils.parseDateGregorian(ppt);
+  const last = getLastBusinessDay(2025, 0);
+  const date = calendarUtils.parseDateGregorian(last);
   expect(document.getElementById("fixDate-0").value).toBe(
     date.toISOString().split("T")[0],
   );

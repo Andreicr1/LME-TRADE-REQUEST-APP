@@ -30,28 +30,17 @@ Make sure to visit the full path to `index.html` (not just `/`) because the serv
 Enter quantities as finite positive numbers. Values of zero or negative amounts
 will trigger an error message.
 
-When selecting the price type for Leg 1 you can choose **AVG Inter** to specify an averaging period. Pick a start and end date in the Leg 1 section and the request text will reflect that range.
+When selecting the price type for Leg 1 you can choose **AVG Period** to specify an averaging period. Pick a start and end date in the Leg 1 section and the request text will reflect that range.
 
-If one leg uses **Fix** pricing while the other uses **AVG**, a checkbox labeled
-"Use AVG PPT Date" appears next to the fixing date field on the fixed leg. When
-selected, this option fills that field with the averaging leg's second business
-day (its PPT date). Leg&nbsp;2's checkbox is visible when Leg&nbsp;1 is set to
-**AVG** and Leg&nbsp;2 is **Fix**. Likewise, Leg&nbsp;1's checkbox appears when
-Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG**.
+If one leg uses **Fix** pricing while the other uses **AVG**, a checkbox labeled "Use AVG PPT Date" appears next to the fixing date field on the fixed leg. When selected, this option fills that field with the averaging leg's **last business day of the month**. The generated request then omits the fixing date and uses the averaging leg's PPT (second business day of the following month) for both sides. Leg&nbsp;2's checkbox is visible when Leg&nbsp;1 is set to **AVG** and Leg&nbsp;2 is **Fix**. Likewise, Leg&nbsp;1's checkbox appears when Leg&nbsp;1 is **Fix** and Leg&nbsp;2 is **AVG**.
 
-Only the leg priced as **Fix** shows this checkbox. When checked the generated
-request uses the averaging leg's PPT for that fixed leg and displays the date
-only on the fixed side. If you enter a specific fixing date instead, the request
-shows PPT dates for both legs (two business days after the fixing date for the
-fixed leg and the averaging leg's second business day of the following month).
+Only the leg priced as **Fix** shows this checkbox. When checked the generated request uses the averaging leg's PPT for that fixed leg and the fixing date does not appear in the text. If you enter a specific fixing date instead, the PPT still matches the averaging leg's PPT but the fixing date is shown before it.
 
 The Buy/Sell options of the two legs are synchronised: selecting **Buy** on Leg
 1 automatically selects **Sell** on Leg 2 and vice versa.
 
 Fixing date inputs only appear when a leg uses **Fix** pricing (Leg&nbsp;2 also
-shows it for **C2R**). When one leg is **AVG** and the other **Fix**, checking
-the "Use AVG PPT Date" option automatically fills the fixed leg's date with the
-averaging leg's PPT.
+shows it for **C2R (Cash)**). When one leg is **AVG** and the other **Fix**, checking the "Use AVG PPT Date" option automatically fills the fixed leg's date with the averaging leg's last business day.
 
 ## Building
 
