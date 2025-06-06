@@ -783,7 +783,7 @@ function openConfirmModal(index) {
     if (msg) msg.textContent = text;
     if (modal) {
       modal.classList.remove("hidden");
-      modal.classList.add("flex");
+      modal.classList.add("block");
     }
     pendingIndex = index;
   } catch (err) {
@@ -796,7 +796,7 @@ function closeConfirmModal() {
   const modal = document.getElementById("confirm-modal");
   if (modal) {
     modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    modal.classList.remove("block");
   }
   pendingIndex = null;
 }
