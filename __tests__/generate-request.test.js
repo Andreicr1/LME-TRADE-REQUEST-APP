@@ -19,7 +19,7 @@ function setupDom() {
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
-    <select id="type1-0"><option value="">Select</option><option value="AVG">AVG</option><option value="AVGInter">AVG Inter</option><option value="Fix">Fix</option><option value="C2R">C2R</option></select>
+    <select id="type1-0"><option value="">Select</option><option value="AVG">AVG</option><option value="AVGInter">AVG Period</option><option value="Fix">Fix</option><option value="C2R">C2R (Cash)</option></select>
     <select id="month1-0"><option>January</option><option>February</option><option>October</option></select>
     <select id="year1-0"><option>2025</option></select>
     <input id="startDate-0" type="date" />
@@ -29,7 +29,7 @@ function setupDom() {
     <input id="endDate2-0" type="date" />
     <input type="radio" name="side2-0" value="buy">
     <input type="radio" name="side2-0" value="sell" checked>
-    <select id="type2-0"><option value="">Select</option><option value="AVG">AVG</option><option value="AVGInter">AVG Inter</option><option value="Fix">Fix</option><option value="C2R">C2R</option></select>
+    <select id="type2-0"><option value="">Select</option><option value="AVG">AVG</option><option value="AVGInter">AVG Period</option><option value="Fix">Fix</option><option value="C2R">C2R (Cash)</option></select>
     <select id="month2-0"><option>February</option><option>October</option></select>
     <select id="year2-0"><option>2025</option></select>
     <input id="fixDate-0" />
@@ -64,7 +64,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al AVG January 2025 ppt 04/02/25 Flat and Sell 5 mt Al USD ppt 06/01/25 against",
+      "LME Request: Buy 5 mt Al AVG January 2025 ppt 04/02/25 Flat and Sell 5 mt Al USD 02/01/25, ppt 04/02/25 against",
     );
   });
 
@@ -147,6 +147,19 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe("Please provide a fixing date.");
+  });
+
+  test("rejects fix date after last business day", () => {
+    document.getElementById("qty-0").value = "5";
+    document.getElementById("type1-0").value = "AVG";
+    document.getElementById("type2-0").value = "Fix";
+    document.getElementById("month1-0").value = "January";
+    document.getElementById("year1-0").value = "2025";
+    document.getElementById("fixDate-0").value = "2025-02-02";
+    toggleLeg2Fields(0);
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe("Fixing date must be on or before 31/01/25.");
   });
 });
 
