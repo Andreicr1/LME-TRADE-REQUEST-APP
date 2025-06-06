@@ -185,7 +185,9 @@ function setMinDates(index) {
 }
 
 function updateEndDateMin(index, leg) {
-  const start = document.getElementById(`startDate${leg === 2 ? 2 : ""}-${index}`);
+  const start = document.getElementById(
+    `startDate${leg === 2 ? 2 : ""}-${index}`,
+  );
   const end = document.getElementById(`endDate${leg === 2 ? 2 : ""}-${index}`);
   if (!start || !end) return;
   const d = parseInputDate(start.value);
@@ -218,7 +220,9 @@ function updateAvgRestrictions(index) {
     return;
   }
 
-  const end = document.getElementById(`endDate${interLeg === 2 ? 2 : ""}-${index}`);
+  const end = document.getElementById(
+    `endDate${interLeg === 2 ? 2 : ""}-${index}`,
+  );
   const monthSel = document.getElementById(`month${avgLeg}-${index}`);
   const yearSel = document.getElementById(`year${avgLeg}-${index}`);
   if (!end || !monthSel || !yearSel) return;
@@ -233,7 +237,8 @@ function updateAvgRestrictions(index) {
     o.disabled = yr < limitYear;
   });
 
-  if (parseInt(yearSel.value, 10) < limitYear) yearSel.value = String(limitYear);
+  if (parseInt(yearSel.value, 10) < limitYear)
+    yearSel.value = String(limitYear);
 
   const selectedYear = parseInt(yearSel.value, 10);
   Array.from(monthSel.options).forEach((o, idx) => {
@@ -315,7 +320,9 @@ function generateRequest(index) {
     const monthIndex = avgMonth
       ? new Date(`${avgMonth} 1, ${avgYear}`).getMonth()
       : 0;
-    const pptDateAVG = avgMonth ? getSecondBusinessDay(avgYear, monthIndex) : "";
+    const pptDateAVG = avgMonth
+      ? getSecondBusinessDay(avgYear, monthIndex)
+      : "";
     const lastBizDay = avgMonth ? getLastBusinessDay(avgYear, monthIndex) : "";
     const lastBizDate = lastBizDay ? parseDate(lastBizDay) : null;
 
@@ -662,6 +669,145 @@ function closeHelp() {
   }
 }
 
+function buildConfirmationText(index) {
+  const qtyInput = document.getElementById(`qty-${index}`);
+  const q = parseFloat(qtyInput.value);
+  if (!isFinite(q) || q <= 0) throw new Error("Quantidade inválida.");
+
+  const side1 = document.querySelector(
+    `input[name='side1-${index}']:checked`,
+  ).value;
+  const side2 = document.querySelector(
+    `input[name='side2-${index}']:checked`,
+  ).value;
+  const type1 = document.getElementById(`type1-${index}`)?.value || "AVG";
+  const type2 = document.getElementById(`type2-${index}`)?.value || "AVG";
+
+  const month1 = document.getElementById(`month1-${index}`)?.value;
+  const year1 = parseInt(document.getElementById(`year1-${index}`)?.value);
+  const month2 = document.getElementById(`month2-${index}`)?.value;
+  const year2 = parseInt(document.getElementById(`year2-${index}`)?.value);
+  const sDate1 = document.getElementById(`startDate-${index}`)?.value;
+  const eDate1 = document.getElementById(`endDate-${index}`)?.value;
+  const sDate2 = document.getElementById(`startDate2-${index}`)?.value;
+  const eDate2 = document.getElementById(`endDate2-${index}`)?.value;
+  const fix1Raw = document.getElementById(`fixDate1-${index}`)?.value || "";
+  const fix2Raw = document.getElementById(`fixDate-${index}`)?.value || "";
+
+  const fix1 = fix1Raw ? formatDate(parseInputDate(fix1Raw)) : "";
+  const fix2 = fix2Raw ? formatDate(parseInputDate(fix2Raw)) : "";
+
+  const monthsPt = [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro",
+  ];
+
+  const monthPt = (m) => {
+    const idx = monthNames.indexOf(m);
+    return idx >= 0 ? monthsPt[idx] : m;
+  };
+
+  const gerund = (s) => (s === "buy" ? "comprando" : "vendendo");
+
+  const detail = (type, opts) => {
+    switch (type) {
+      case "AVG":
+        return `a média dos preços diários do alumínio no mês de ${monthPt(opts.month)} de ${opts.year}`;
+      case "AVGInter":
+        return `a média dos preços de alumínio entre os dias ${formatDate(parseInputDate(opts.start))} e ${formatDate(parseInputDate(opts.end))}`;
+      case "Fix":
+        return `com preço fixado em ${opts.fix}`;
+      case "C2R":
+        return `no contrato C2R com fixing em ${opts.fix}`;
+      default:
+        return "";
+    }
+  };
+
+  const part1 = `${gerund(side1)} ${q} toneladas de alumínio ${detail(type1, {
+    month: month1,
+    year: year1,
+    start: sDate1,
+    end: eDate1,
+    fix: fix1,
+  })}`;
+  const part2 = `${gerund(side2)} ${detail(type2, {
+    month: month2,
+    year: year2,
+    start: sDate2,
+    end: eDate2,
+    fix: fix2,
+  })}`;
+
+  let ppt = "";
+  let avgMonth, avgYear;
+  if (type1.startsWith("AVG")) {
+    avgMonth = month1;
+    avgYear = year1;
+  } else if (type2.startsWith("AVG")) {
+    avgMonth = month2;
+    avgYear = year2;
+  }
+  if (avgMonth) {
+    const idx = new Date(`${avgMonth} 1, ${avgYear}`).getMonth();
+    ppt = getSecondBusinessDay(avgYear, idx);
+  } else if (fix1Raw) {
+    ppt = getFixPpt(fix1 ? fix1 : "");
+  } else if (fix2Raw) {
+    ppt = getFixPpt(fix2 ? fix2 : "");
+  }
+
+  return `Você está ${part1} e ${part2}.$${ppt ? ` A liquidação financeira será em ${ppt}.` : ""}`.replace(
+    "$",
+    "",
+  );
+}
+
+let pendingIndex = null;
+
+function openConfirmModal(index) {
+  try {
+    const text = buildConfirmationText(index);
+    const modal = document.getElementById("confirm-modal");
+    const msg = document.getElementById("confirm-text");
+    if (msg) msg.textContent = text;
+    if (modal) {
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+    pendingIndex = index;
+  } catch (err) {
+    const out = document.getElementById(`output-${index}`);
+    if (out) out.textContent = err.message;
+  }
+}
+
+function closeConfirmModal() {
+  const modal = document.getElementById("confirm-modal");
+  if (modal) {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+  pendingIndex = null;
+}
+
+function confirmModal() {
+  if (pendingIndex !== null) {
+    generateRequest(pendingIndex);
+  }
+  closeConfirmModal();
+}
+
 /**
  * Clones the trade template and inserts a new trade block into the page.
  *
@@ -686,7 +832,7 @@ function addTrade() {
   if (title) title.textContent = `Trade ${index + 1}`;
   clone
     .querySelector("button[name='generate']")
-    .setAttribute("onclick", `generateRequest(${index})`);
+    .setAttribute("onclick", `openConfirmModal(${index})`);
   clone
     .querySelector("button[name='clear']")
     .setAttribute("onclick", `clearTrade(${index})`);
@@ -714,12 +860,10 @@ function addTrade() {
     toggleLeg2Fields(index);
     updateAvgRestrictions(index);
   });
-  document
-    .getElementById(`type2-${index}`)
-    .addEventListener("change", () => {
-      toggleLeg2Fields(index);
-      updateAvgRestrictions(index);
-    });
+  document.getElementById(`type2-${index}`).addEventListener("change", () => {
+    toggleLeg2Fields(index);
+    updateAvgRestrictions(index);
+  });
   document
     .getElementById(`samePpt1-${index}`)
     .addEventListener("change", () => toggleLeg1Fields(index));
@@ -730,14 +874,18 @@ function addTrade() {
   const end1 = document.getElementById(`endDate-${index}`);
   const start2 = document.getElementById(`startDate2-${index}`);
   const end2 = document.getElementById(`endDate2-${index}`);
-  if (start1) start1.addEventListener("change", () => updateEndDateMin(index, 1));
-  if (start2) start2.addEventListener("change", () => updateEndDateMin(index, 2));
+  if (start1)
+    start1.addEventListener("change", () => updateEndDateMin(index, 1));
+  if (start2)
+    start2.addEventListener("change", () => updateEndDateMin(index, 2));
   if (end1) end1.addEventListener("change", () => updateAvgRestrictions(index));
   if (end2) end2.addEventListener("change", () => updateAvgRestrictions(index));
   const year1 = document.getElementById(`year1-${index}`);
   const year2 = document.getElementById(`year2-${index}`);
-  if (year1) year1.addEventListener("change", () => updateAvgRestrictions(index));
-  if (year2) year2.addEventListener("change", () => updateAvgRestrictions(index));
+  if (year1)
+    year1.addEventListener("change", () => updateAvgRestrictions(index));
+  if (year2)
+    year2.addEventListener("change", () => updateAvgRestrictions(index));
   toggleLeg1Fields(index);
   toggleLeg2Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach((r) => {
@@ -752,7 +900,13 @@ function addTrade() {
 }
 
 window.onload = () => {
-  loadHolidayData().finally(() => addTrade());
+  loadHolidayData().finally(() => {
+    addTrade();
+    const ok = document.getElementById("confirm-ok");
+    const cancel = document.getElementById("confirm-cancel");
+    if (ok) ok.addEventListener("click", confirmModal);
+    if (cancel) cancel.addEventListener("click", closeConfirmModal);
+  });
 };
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker
@@ -778,6 +932,10 @@ if (typeof module !== "undefined" && module.exports) {
     shareWhatsApp,
     openHelp,
     closeHelp,
+    buildConfirmationText,
+    openConfirmModal,
+    closeConfirmModal,
+    confirmModal,
     setMinDates,
     updateEndDateMin,
     updateAvgRestrictions,
