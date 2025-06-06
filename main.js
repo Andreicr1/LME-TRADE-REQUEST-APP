@@ -807,6 +807,7 @@ function buildConfirmationText(index) {
 }
 
 let confirmCallback = null;
+let activeTradeIndex = null;
 
 function showConfirmationPopup(text, callback) {
   const modal = document.getElementById("confirmation-modal");
@@ -820,6 +821,7 @@ function closeConfirmationPopup() {
   const modal = document.getElementById("confirmation-modal");
   if (modal) modal.classList.add("hidden");
   confirmCallback = null;
+  activeTradeIndex = null;
 }
 
 function confirmModal() {
@@ -829,9 +831,17 @@ function confirmModal() {
   closeConfirmationPopup();
 }
 
+function cancelModal() {
+  if (activeTradeIndex !== null) {
+    clearTrade(activeTradeIndex);
+  }
+  closeConfirmationPopup();
+}
+
 function openConfirmModal(index) {
   try {
     const text = buildConfirmationText(index);
+    activeTradeIndex = index;
     showConfirmationPopup(text, () => generateRequest(index));
   } catch (err) {
     const out = document.getElementById(`output-${index}`);
@@ -944,7 +954,7 @@ window.onload = () => {
     const ok = document.getElementById("confirmation-ok");
     const cancel = document.getElementById("confirmation-cancel");
     if (ok) ok.addEventListener("click", confirmModal);
-    if (cancel) cancel.addEventListener("click", closeConfirmationPopup);
+    if (cancel) cancel.addEventListener("click", cancelModal);
   });
 };
 if ("serviceWorker" in navigator) {
