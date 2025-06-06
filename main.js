@@ -343,10 +343,10 @@ function generateRequest(index) {
     const useSamePPT2 = document.getElementById(`samePpt2-${index}`)?.checked;
     // Determine which leg is averaging to compute its PPT
     let avgMonth, avgYear;
-    if (leg1Type.startsWith("AVG")) {
+    if (leg1Type === "AVG") {
       avgMonth = month;
       avgYear = year;
-    } else if (leg2Type.startsWith("AVG")) {
+    } else if (leg2Type === "AVG") {
       avgMonth = month2;
       avgYear = year2;
     }
@@ -360,9 +360,13 @@ function generateRequest(index) {
     const lastBizDate = lastBizDay ? parseDate(lastBizDay) : null;
 
     let leg1;
-    const showPptAvg =
+    const showPptAvgFix =
       (leg2Type === "Fix" && dateFix2Raw && !useSamePPT2) ||
       (leg1Type === "Fix" && dateFix1Raw && !useSamePPT1);
+    const showPptAvgInter =
+      (leg1Type === "AVGInter" && leg2Type === "AVG") ||
+      (leg2Type === "AVGInter" && leg1Type === "AVG");
+    const showPptAvg = showPptAvgFix || showPptAvgInter;
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
       leg1 += " Flat";
@@ -374,7 +378,7 @@ function generateRequest(index) {
       const startStr = formatDate(start);
       const endStr = formatDate(end);
       leg1 = `${capitalize(leg1Side)} ${q} mt Al Fixing AVG ${startStr} to ${endStr}`;
-      if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
+      if (showPptAvg) leg1 += `${showPptAvgInter ? "," : ""} ppt ${pptDateAVG}`;
     } else if (leg1Type === "Fix" && leg2Type === "AVG") {
       if (useSamePPT1) {
         leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
@@ -416,7 +420,7 @@ function generateRequest(index) {
       const sStr = formatDate(start);
       const eStr = formatDate(end);
       leg2 = `${capitalize(leg2Side)} ${q} mt Al Fixing AVG ${sStr} to ${eStr}`;
-      if (showPptAvg) leg2 += ` ppt ${pptDateAVG}`;
+      if (showPptAvg) leg2 += `${showPptAvgInter ? "," : ""} ppt ${pptDateAVG}`;
     } else if (leg2Type === "Fix" && leg1Type === "AVG") {
       if (useSamePPT2) {
         leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
@@ -784,10 +788,10 @@ function buildConfirmationText(index) {
 
   let ppt = "";
   let avgMonth, avgYear;
-  if (type1.startsWith("AVG")) {
+  if (type1 === "AVG") {
     avgMonth = month1;
     avgYear = year1;
-  } else if (type2.startsWith("AVG")) {
+  } else if (type2 === "AVG") {
     avgMonth = month2;
     avgYear = year2;
   }

@@ -120,7 +120,22 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al Fixing AVG 01/09/25 to 10/09/25 and Sell 5 mt Al AVG October 2025 Flat against",
+      "LME Request: Buy 5 mt Al Fixing AVG 01/09/25 to 10/09/25, ppt 04/11/25 and Sell 5 mt Al AVG October 2025 Flat against",
+    );
+  });
+
+  test("creates AVG vs AVGInter text", () => {
+    document.getElementById("qty-0").value = "4";
+    document.getElementById("type1-0").value = "AVG";
+    document.getElementById("month1-0").value = "January";
+    document.getElementById("year1-0").value = "2025";
+    document.getElementById("type2-0").value = "AVGInter";
+    document.getElementById("startDate2-0").value = "2025-02-20";
+    document.getElementById("endDate2-0").value = "2025-02-25";
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Buy 4 mt Al AVG January 2025 Flat and Sell 4 mt Al Fixing AVG 20/02/25 to 25/02/25, ppt 04/02/25 against",
     );
   });
 
