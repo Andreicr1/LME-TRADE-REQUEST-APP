@@ -24,6 +24,7 @@ beforeEach(() => {
   jest.resetModules();
   ({ addTrade, clearTrade, removeTrade } = require('../main'));
   setupDom();
+  global.confirm = jest.fn(() => true);
 });
 
 test('clearTrade resets fields and output', () => {

@@ -403,6 +403,7 @@ function clearTrade(index) {
 }
 
 function removeTrade(index) {
+  if (!confirm("Remove this trade?")) return;
   const trade = document.getElementById(`trade-${index}`);
   if (trade) {
     trade.classList.add("opacity-0", "transition-opacity", "duration-300");
