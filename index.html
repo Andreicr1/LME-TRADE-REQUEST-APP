@@ -10,7 +10,21 @@
     />
     <link href="tailwind.min.css" rel="stylesheet" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="stylesheet" href="custom-styles.css" />
+    <style>
+      body,
+      input,
+      select,
+      textarea,
+      button {
+        font-family: "Inter", sans-serif;
+      }
+      .form-control {
+        height: 2.5rem; /* ensures uniform input height */
+        padding: 0.5rem;
+        border: 1px solid #d1d5db; /* gray-300 */
+        border-radius: 0.25rem;
+      }
+    </style>
   </head>
   <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen p-6">
     <div class="max-w-4xl mx-auto space-y-6">
@@ -32,28 +46,24 @@
           <button
             onclick="addTrade()"
             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded w-32"
+            aria-label="Add Trade"
           >
             Add Trade
           </button>
           <button
             onclick="copyAll()"
             class="bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded w-32"
+            aria-label="Copy all generated text"
           >
             Copy All
           </button>
           <button
-            onclick="generateAll()"
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded w-32"
-          >
-            Generate All
-          </button>
-          <button
             onclick="shareWhatsApp()"
             class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded w-32"
+            aria-label="Share via WhatsApp"
           >
             WhatsApp
           </button>
-          <button onclick="openHelp()" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded w-32">Ajuda</button>
         </div>
       </div>
     </div>
@@ -69,7 +79,7 @@
             class="form-control w-32"
             min="0"
             step="0.01"
-            placeholder="Ex.: 100"
+            aria-label="Quantity in metric tons"
           />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -131,7 +141,7 @@
                   type="date"
                   id="startDate-0"
                   class="form-control w-36"
-                  placeholder="Ex.: 2024-01-01"
+                  aria-label="Start date for averaging"
                 />
               </div>
               <div style="display: none">
@@ -140,7 +150,7 @@
                   type="date"
                   id="endDate-0"
                   class="form-control w-36"
-                  placeholder="Ex.: 2024-01-31"
+                  aria-label="End date for averaging"
                 />
               </div>
             </div>
@@ -153,7 +163,7 @@
                 type="date"
                 id="fixDate1-0"
                 class="form-control w-24"
-                placeholder="Ex.: 2024-02-01"
+                aria-label="Fixing date for Leg 1"
               />
             </div>
             <label style="display: none"
@@ -211,14 +221,14 @@
                 </select>
               </div>
             </div>
-            <div class="flex gap-2 mt-2">
+              <div class="flex gap-2 mt-2">
               <div style="display: none">
                 <label class="block mb-1">Start Date:</label>
                 <input
                   type="date"
                   id="startDate2-0"
                   class="form-control w-36"
-                  placeholder="Ex.: 2024-01-01"
+                  aria-label="Start date for averaging"
                 />
               </div>
               <div style="display: none">
@@ -227,7 +237,7 @@
                   type="date"
                   id="endDate2-0"
                   class="form-control w-36"
-                  placeholder="Ex.: 2024-01-31"
+                  aria-label="End date for averaging"
                 />
               </div>
             </div>
@@ -238,7 +248,7 @@
                 type="date"
                 id="fixDate-0"
                 class="form-control w-24"
-                placeholder="Ex.: 2024-02-01"
+                aria-label="Fixing date for Leg 2"
               />
             </div>
             <label style="display: none"
@@ -269,28 +279,6 @@
         <p id="output-0" class="mt-2 font-mono text-sm"></p>
       </div>
     </template>
-
-    <div
-      id="help-modal"
-      class="hidden fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-10"
-    >
-      <div class="bg-white p-6 rounded-lg max-w-lg mx-2" role="dialog" aria-modal="true">
-        <h2 class="text-xl font-semibold mb-4">Ajuda</h2>
-        <ul class="list-disc pl-5 space-y-2 text-sm">
-          <li><strong>Quantity (mt)</strong>: quantidade em toneladas.</li>
-          <li><strong>Price Type</strong>: escolha AVG, AVG Inter, Fix ou C2R.</li>
-          <li><strong>Start/End Date</strong>: usados apenas para AVG Inter.</li>
-          <li><strong>Fixing Date</strong>: obrigatório para tipos Fix e C2R.</li>
-          <li><strong>Use AVG PPT Date</strong>: usa o PPT do leg em AVG.</li>
-        </ul>
-        <button
-          onclick="closeHelp()"
-          class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-        >
-          Fechar
-        </button>
-      </div>
-    </div>
     <script src="solarlunar.min.js"></script>
     <script src="calendar-utils.js"></script>
     <script src="main.js"></script>
