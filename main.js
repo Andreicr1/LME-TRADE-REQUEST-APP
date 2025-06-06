@@ -169,6 +169,38 @@ const monthNames = [
   "December",
 ];
 
+function updateMonthOptions(index, leg) {
+  const monthSel = document.getElementById(`month${leg}-${index}`);
+  const yearSel = document.getElementById(`year${leg}-${index}`);
+  if (!monthSel || !yearSel) return;
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth();
+  const selectedYear = parseInt(yearSel.value, 10);
+  const prev = monthSel.value;
+
+  Array.from(monthSel.options).forEach((opt, idx) => {
+    if (selectedYear === currentYear) {
+      opt.hidden = idx < currentMonth;
+    } else {
+      opt.hidden = false;
+    }
+  });
+
+  const valid = Array.from(monthSel.options).find(
+    (o) => !o.hidden && o.value === prev,
+  );
+  if (valid) {
+    monthSel.value = valid.value;
+  } else {
+    for (const opt of monthSel.options) {
+      if (!opt.hidden) {
+        monthSel.value = opt.value;
+        break;
+      }
+    }
+  }
+}
+
 function setMinDates(index) {
   const today = new Date().toISOString().split("T")[0];
   [
@@ -851,6 +883,8 @@ function addTrade() {
   const currentYear = new Date().getFullYear();
   populateYearOptions(`year1-${index}`, currentYear, 3);
   populateYearOptions(`year2-${index}`, currentYear, 3);
+  updateMonthOptions(index, 1);
+  updateMonthOptions(index, 2);
   setMinDates(index);
   updateEndDateMin(index, 1);
   updateEndDateMin(index, 2);
@@ -883,9 +917,15 @@ function addTrade() {
   const year1 = document.getElementById(`year1-${index}`);
   const year2 = document.getElementById(`year2-${index}`);
   if (year1)
-    year1.addEventListener("change", () => updateAvgRestrictions(index));
+    year1.addEventListener("change", () => {
+      updateMonthOptions(index, 1);
+      updateAvgRestrictions(index);
+    });
   if (year2)
-    year2.addEventListener("change", () => updateAvgRestrictions(index));
+    year2.addEventListener("change", () => {
+      updateMonthOptions(index, 2);
+      updateAvgRestrictions(index);
+    });
   toggleLeg1Fields(index);
   toggleLeg2Fields(index);
   document.querySelectorAll(`input[name='side1-${index}']`).forEach((r) => {
@@ -938,6 +978,7 @@ if (typeof module !== "undefined" && module.exports) {
     confirmModal,
     setMinDates,
     updateEndDateMin,
+    updateMonthOptions,
     updateAvgRestrictions,
   };
 }
