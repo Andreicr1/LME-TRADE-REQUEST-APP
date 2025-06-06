@@ -325,7 +325,6 @@ function generateRequest(index) {
       (leg1Type === "Fix" && dateFix1Raw && !useSamePPT1);
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
-      if (showPptAvg) leg1 += ` ppt ${pptDateAVG}`;
       leg1 += " Flat";
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
@@ -364,7 +363,6 @@ function generateRequest(index) {
     let leg2;
     if (leg2Type === "AVG") {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
-      if (showPptAvg) leg2 += ` ppt ${pptDateAVG}`;
       leg2 += " Flat";
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
