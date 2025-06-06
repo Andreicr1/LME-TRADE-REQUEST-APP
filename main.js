@@ -608,21 +608,16 @@ function shareWhatsApp() {
 function openHelp() {
   const modal = document.getElementById("help-modal");
   if (modal) {
-    modal.classList.remove("hidden", "opacity-0");
+    modal.classList.remove("hidden");
     modal.classList.add("flex");
-    requestAnimationFrame(() => modal.classList.add("opacity-100"));
   }
 }
 
 function closeHelp() {
   const modal = document.getElementById("help-modal");
   if (modal) {
-    modal.classList.remove("opacity-100");
-    modal.classList.add("opacity-0");
-    setTimeout(() => {
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    }, 300);
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
   }
 }
 
