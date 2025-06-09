@@ -371,7 +371,7 @@ function generateRequest(index) {
     const showPptAvg = showPptAvgFix || showPptAvgInter;
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
-      leg1 += tradeType === "Forward" ? " Flat (AVG)" : " Flat";
+      leg1 += " Flat";
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
@@ -383,7 +383,6 @@ function generateRequest(index) {
       ppt1 = pptDateAVG;
       if (showPptAvg) {
         leg1 += `${showPptAvgInter ? "," : ""} ppt ${ppt1}`;
-        if (tradeType === "Forward") leg1 += " (AVG Period)";
       }
     } else if (leg1Type === "Fix" && leg2Type === "AVG") {
       ppt1 = pptDateAVG;
@@ -412,7 +411,7 @@ function generateRequest(index) {
     let ppt2 = "";
     if (leg2Type === "AVG") {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
-      leg2 += tradeType === "Forward" ? " Flat (AVG)" : " Flat";
+      leg2 += " Flat";
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
         document.getElementById(`startDate2-${index}`)?.value || "",
@@ -428,7 +427,6 @@ function generateRequest(index) {
       ppt2 = pptDateAVG;
       if (showPptAvg) {
         leg2 += `${showPptAvgInter ? "," : ""} ppt ${ppt2}`;
-        if (tradeType === "Forward") leg2 += " (AVG Period)";
       }
     } else if (leg2Type === "Fix" && leg1Type === "AVG") {
       ppt2 = pptDateAVG;
