@@ -16,6 +16,8 @@ document.getElementById("calendarType").value = "gregorian";
 
 function setupDom() {
   document.body.innerHTML += `
+    <input type="radio" name="company" value="Alcast Brasil" checked>
+    <input type="radio" name="company" value="Alcast Trading">
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
@@ -175,6 +177,16 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe("Fixing date must be on or before 31/01/25.");
+  });
+
+  test("final output includes selected company", () => {
+    document.getElementById("qty-0").value = "10";
+    document.getElementById("type2-0").value = "AVG";
+    generateRequest(0);
+    const finalOut = document.getElementById("final-output").value;
+    expect(finalOut).toBe(
+      "Alcast Brasil Request\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
+    );
   });
 });
 
