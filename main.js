@@ -720,9 +720,14 @@ function monthNamePt(m) {
   return idx >= 0 ? monthsPt[idx] : m;
 }
 
-function readableLeg(type, qty, start, end, month, year) {
+function readableLeg(type, qty, start, end, month, year, fix) {
   switch (type) {
     case "Fix":
+      if (fix) {
+        return `${qty} toneladas de Al com preço fixado em ${formatDate(
+          parseInputDate(fix),
+        )}`;
+      }
       return `${qty} toneladas de Al com preço fixado`;
     case "C2R":
       return `${qty} toneladas de Al com preço fixo em dinheiro`;
@@ -751,6 +756,8 @@ function generateConfirmationMessage(trade) {
     year2,
     side1,
     side2,
+    fix1,
+    fix2,
   } = trade;
 
   let pptDate = "";
@@ -772,8 +779,12 @@ function generateConfirmationMessage(trade) {
   const sideStr1 = side1 === "buy" ? "comprando" : "vendendo";
   const sideStr2 = side2 === "sell" ? "vendendo" : "comprando";
 
-  const leg1 = readableLeg(type1, qty, start1, end1, month1, year1);
-  const leg2 = readableLeg(type2, qty, start2, end2, month2, year2);
+  const leg1 = readableLeg(type1, qty, start1, end1, month1, year1, fix1);
+  const leg2 = readableLeg(type2, qty, start2, end2, month2, year2, fix2);
+
+  if (type2 === "Fix" && type1 !== "Fix") {
+    return `Você está ${sideStr1} ${leg1}, e ${sideStr2} ${leg2}, ppt ${pptDate}. Confirma?`;
+  }
 
   return `Você está ${sideStr1} ${leg1}, ppt ${pptDate}, e ${sideStr2} ${leg2}. Confirma?`;
 }
@@ -797,6 +808,8 @@ function buildConfirmationText(index) {
     end1: document.getElementById(`endDate-${index}`)?.value,
     start2: document.getElementById(`startDate2-${index}`)?.value,
     end2: document.getElementById(`endDate2-${index}`)?.value,
+    fix1: document.getElementById(`fixDate1-${index}`)?.value,
+    fix2: document.getElementById(`fixDate-${index}`)?.value,
   };
 
   return generateConfirmationMessage(trade);

@@ -42,7 +42,7 @@ describe('buildConfirmationText', () => {
     document.getElementById('type2-0').value = 'Fix';
     const text = buildConfirmationText(0);
     expect(text).toBe(
-      'Você está comprando 5 toneladas de Al pela média de janeiro/2025, ppt 04/02/25, e vendendo 5 toneladas de Al com preço fixado. Confirma?'
+      'Você está comprando 5 toneladas de Al pela média de janeiro/2025, e vendendo 5 toneladas de Al com preço fixado, ppt 04/02/25. Confirma?'
     );
   });
 
@@ -53,6 +53,24 @@ describe('buildConfirmationText', () => {
     const text = buildConfirmationText(0);
     expect(text).toBe(
       'Você está comprando 3 toneladas de Al com preço fixado, ppt 04/03/25, e vendendo 3 toneladas de Al pela média de fevereiro/2025. Confirma?'
+    );
+  });
+
+  test('handles AVGInter versus Fix ordering', () => {
+    document.getElementById('qty-0').value = '5';
+    const typeSel = document.getElementById('type1-0');
+    typeSel.appendChild(new Option('AVGInter', 'AVGInter'));
+    typeSel.value = 'AVGInter';
+    document.getElementById('startDate-0').value = '2025-06-16';
+    document.getElementById('endDate-0').value = '2025-06-19';
+    document.getElementById('type2-0').value = 'Fix';
+    const fixInput = document.createElement('input');
+    fixInput.id = 'fixDate-0';
+    document.body.appendChild(fixInput);
+    document.getElementById('fixDate-0').value = '2025-06-19';
+    const text = buildConfirmationText(0);
+    expect(text).toBe(
+      'Você está comprando 5 toneladas de Al fixando a média de 16/06/25 a 19/06/25, e vendendo 5 toneladas de Al com preço fixado em 19/06/25, ppt 23/06/25. Confirma?'
     );
   });
 });
