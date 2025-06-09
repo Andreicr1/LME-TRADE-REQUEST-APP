@@ -125,6 +125,16 @@
             aria-label="Quantity in metric tons"
           />
         </div>
+        <div class="flex items-center gap-4 flex-wrap">
+          <label class="font-medium">Trade Type:</label>
+          <select id="tradeType-0" class="form-control w-32">
+            <option value="Swap" selected>Swap</option>
+            <option value="Forward">Forward</option>
+          </select>
+          <label class="flex items-center">
+            <input type="checkbox" id="syncPpt-0" class="mr-1" /> Syncronize PPT
+          </label>
+        </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h2 class="font-semibold">Leg 1</h2>
