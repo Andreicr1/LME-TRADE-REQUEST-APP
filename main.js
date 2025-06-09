@@ -339,8 +339,6 @@ function generateRequest(index) {
     const dateFix2 = dateFix2Raw ? formatDate(parseInputDate(dateFix2Raw)) : "";
     if (fixInputLeg1) fixInputLeg1.classList.remove("border-red-500");
     fixInput.classList.remove("border-red-500");
-    const useSamePPT1 = document.getElementById(`samePpt1-${index}`)?.checked;
-    const useSamePPT2 = document.getElementById(`samePpt2-${index}`)?.checked;
     // Determine which leg is averaging to compute its PPT
     let avgMonth, avgYear;
     if (leg1Type === "AVG") {
@@ -361,8 +359,8 @@ function generateRequest(index) {
 
     let leg1;
     const showPptAvgFix =
-      (leg2Type === "Fix" && dateFix2Raw && !useSamePPT2) ||
-      (leg1Type === "Fix" && dateFix1Raw && !useSamePPT1);
+      (leg2Type === "Fix" && dateFix2Raw && !fixInput.readOnly) ||
+      (leg1Type === "Fix" && dateFix1Raw && !(fixInputLeg1 && fixInputLeg1.readOnly));
     const showPptAvgInter =
       (leg1Type === "AVGInter" && leg2Type === "AVG") ||
       (leg2Type === "AVGInter" && leg1Type === "AVG");
@@ -380,29 +378,24 @@ function generateRequest(index) {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al Fixing AVG ${startStr} to ${endStr}`;
       if (showPptAvg) leg1 += `${showPptAvgInter ? "," : ""} ppt ${pptDateAVG}`;
     } else if (leg1Type === "Fix" && leg2Type === "AVG") {
-      if (useSamePPT1) {
-        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
-      } else {
-        if (!dateFix1Raw) throw new Error("Please provide a fixing date.");
-        const d = parseDate(dateFix1);
-        if (!d) throw new Error("Fixing date is invalid.");
-        if (lastBizDate && d > lastBizDate)
-          throw new Error(`Fixing date must be on or before ${lastBizDay}.`);
-        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}, ppt ${pptDateAVG}`;
-      }
-    } else {
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
+    } else if (leg1Type === "Fix" && leg2Type === "AVGInter") {
+      const end = parseInputDate(document.getElementById(`endDate2-${index}`)?.value || "");
+      if (!end) throw new Error("End date is required for AVG Period.");
+      const ppt = getFixPpt(formatDate(end));
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${ppt}`;
+    } else if (leg1Type === "Fix") {
+      if (!dateFix1Raw) throw new Error("Please provide a fixing date.");
       let pptFixLeg1;
-      if (useSamePPT1) {
-        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
-      } else {
-        try {
-          pptFixLeg1 = getFixPpt(dateFix1);
-        } catch (err) {
-          err.fixInputId = `fixDate1-${index}`;
-          throw err;
-        }
-        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptFixLeg1}`;
+      try {
+        pptFixLeg1 = getFixPpt(dateFix1);
+      } catch (err) {
+        err.fixInputId = `fixDate1-${index}`;
+        throw err;
       }
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}, ppt ${pptFixLeg1}`;
+    } else {
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al ${leg1Type}`;
     }
     let leg2;
     if (leg2Type === "AVG") {
@@ -422,29 +415,22 @@ function generateRequest(index) {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al Fixing AVG ${sStr} to ${eStr}`;
       if (showPptAvg) leg2 += `${showPptAvgInter ? "," : ""} ppt ${pptDateAVG}`;
     } else if (leg2Type === "Fix" && leg1Type === "AVG") {
-      if (useSamePPT2) {
-        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
-      } else {
-        if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
-        const d = parseDate(dateFix2);
-        if (!d) throw new Error("Fixing date is invalid.");
-        if (lastBizDate && d > lastBizDate)
-          throw new Error(`Fixing date must be on or before ${lastBizDay}.`);
-        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}, ppt ${pptDateAVG}`;
-      }
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
+    } else if (leg2Type === "Fix" && leg1Type === "AVGInter") {
+      const end = parseInputDate(document.getElementById(`endDate-${index}`)?.value || "");
+      if (!end) throw new Error("End date is required for AVG Period.");
+      const ppt = getFixPpt(formatDate(end));
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${ppt}`;
     } else if (leg2Type === "Fix") {
+      if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
       let pptFix;
-      if (useSamePPT2) {
-        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
-      } else {
-        try {
-          pptFix = getFixPpt(dateFix2);
-        } catch (err) {
-          err.fixInputId = `fixDate-${index}`;
-          throw err;
-        }
-        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptFix}`;
+      try {
+        pptFix = getFixPpt(dateFix2);
+      } catch (err) {
+        err.fixInputId = `fixDate-${index}`;
+        throw err;
       }
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}, ppt ${pptFix}`;
     } else if (leg2Type === "C2R") {
       let pptFix;
       try {
@@ -555,7 +541,6 @@ function toggleLeg1Fields(index) {
   const startInput = document.getElementById(`startDate-${index}`);
   const endInput = document.getElementById(`endDate-${index}`);
   const fixInput = document.getElementById(`fixDate1-${index}`);
-  const samePpt = document.getElementById(`samePpt1-${index}`);
   if (!typeSel) return;
 
   const val = typeSel.value;
@@ -564,21 +549,29 @@ function toggleLeg1Fields(index) {
     startInput.parentElement.style.display = val === "AVGInter" ? "" : "none";
   if (endInput && endInput.parentElement)
     endInput.parentElement.style.display = val === "AVGInter" ? "" : "none";
-  if (fixInput && fixInput.parentElement)
+  if (fixInput && fixInput.parentElement) {
     fixInput.parentElement.style.display =
       val === "Fix" || val === "C2R" ? "" : "none";
-
-  if (samePpt && samePpt.parentElement) {
-    const showChk = val === "Fix" && type2 === "AVG";
-    samePpt.parentElement.style.display = showChk ? "" : "none";
-    if (!showChk) samePpt.checked = false;
-    if (showChk && samePpt.checked) {
-      const month = document.getElementById(`month2-${index}`).value;
-      const year = parseInt(document.getElementById(`year2-${index}`).value);
-      const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
-      const lastStr = getLastBusinessDay(year, monthIdx);
-      const date = parseDate(lastStr);
-      if (fixInput) fixInput.value = date.toISOString().split("T")[0];
+    if (val !== "Fix" && val !== "C2R") {
+      fixInput.value = "";
+      fixInput.readOnly = false;
+    } else {
+      fixInput.readOnly = false;
+      if (val === "Fix" && type2 === "AVG") {
+        const month = document.getElementById(`month2-${index}`).value;
+        const year = parseInt(document.getElementById(`year2-${index}`).value);
+        const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
+        const lastStr = getLastBusinessDay(year, monthIdx);
+        const date = parseDate(lastStr);
+        fixInput.value = date.toISOString().split("T")[0];
+        fixInput.readOnly = true;
+      } else if (val === "Fix" && type2 === "AVGInter") {
+        const endVal = document.getElementById(`endDate2-${index}`)?.value;
+        if (endVal) {
+          fixInput.value = endVal;
+          fixInput.readOnly = true;
+        }
+      }
     }
   }
 }
@@ -587,7 +580,6 @@ function toggleLeg2Fields(index) {
   const type1 = document.getElementById(`type1-${index}`)?.value;
   const type2Sel = document.getElementById(`type2-${index}`);
   const fixInput = document.getElementById(`fixDate-${index}`);
-  const samePpt = document.getElementById(`samePpt2-${index}`);
   const monthWrap = document.getElementById(`avgFields2-${index}`);
   const startInput = document.getElementById(`startDate2-${index}`);
   const endInput = document.getElementById(`endDate2-${index}`);
@@ -604,24 +596,26 @@ function toggleLeg2Fields(index) {
   if (fixInput && fixInput.parentElement) {
     fixInput.parentElement.style.display =
       type2 === "Fix" || type2 === "C2R" ? "" : "none";
-    if (type2 !== "Fix" && type2 !== "C2R") fixInput.value = "";
-  }
-
-  if (samePpt && samePpt.parentElement) {
-    const showChk = type1 === "AVG" && type2 === "Fix";
-    samePpt.parentElement.style.display = showChk ? "" : "none";
-    if (!showChk) samePpt.checked = false;
-
-    if (showChk && samePpt.checked) {
-      const avgLeg = type1 === "AVG" ? 1 : 2;
-      const month = document.getElementById(`month${avgLeg}-${index}`).value;
-      const year = parseInt(
-        document.getElementById(`year${avgLeg}-${index}`).value,
-      );
-      const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
-      const lastStr = getLastBusinessDay(year, monthIdx);
-      const date = parseDate(lastStr);
-      if (fixInput) fixInput.value = date.toISOString().split("T")[0];
+    if (type2 !== "Fix" && type2 !== "C2R") {
+      fixInput.value = "";
+      fixInput.readOnly = false;
+    } else {
+      fixInput.readOnly = false;
+      if (type2 === "Fix" && type1 === "AVG") {
+        const month = document.getElementById(`month1-${index}`).value;
+        const year = parseInt(document.getElementById(`year1-${index}`).value);
+        const monthIdx = new Date(`${month} 1, ${year}`).getMonth();
+        const lastStr = getLastBusinessDay(year, monthIdx);
+        const date = parseDate(lastStr);
+        fixInput.value = date.toISOString().split("T")[0];
+        fixInput.readOnly = true;
+      } else if (type2 === "Fix" && type1 === "AVGInter") {
+        const endVal = document.getElementById(`endDate-${index}`)?.value;
+        if (endVal) {
+          fixInput.value = endVal;
+          fixInput.readOnly = true;
+        }
+      }
     }
   }
 }
@@ -766,6 +760,10 @@ function generateConfirmationMessage(trade) {
   } else if (type2 === "AVG") {
     const idx = new Date(`${month2} 1, ${year2}`).getMonth();
     pptDate = getSecondBusinessDay(year2, idx);
+  } else if (type1 === "AVGInter" || type2 === "AVGInter") {
+    const endStr = end1 || end2;
+    const d = parseInputDate(endStr);
+    pptDate = d ? getFixPpt(formatDate(d)) : "";
   } else if (end1 || end2) {
     const d = parseInputDate(end1 || end2);
     pptDate = d ? formatDate(d) : "";
@@ -905,12 +903,6 @@ function addTrade() {
     toggleLeg2Fields(index);
     updateAvgRestrictions(index);
   });
-  document
-    .getElementById(`samePpt1-${index}`)
-    .addEventListener("change", () => toggleLeg1Fields(index));
-  document
-    .getElementById(`samePpt2-${index}`)
-    .addEventListener("change", () => toggleLeg2Fields(index));
   const start1 = document.getElementById(`startDate-${index}`);
   const end1 = document.getElementById(`endDate-${index}`);
   const start2 = document.getElementById(`startDate2-${index}`);

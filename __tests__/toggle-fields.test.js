@@ -20,12 +20,10 @@ beforeEach(() => {
     <div id="startWrap"><input type="date" id="startDate-0"></div>
     <div id="endWrap"><input type="date" id="endDate-0"></div>
     <div id="fix1Wrap"><input type="date" id="fixDate1-0"></div>
-    <label id="sameWrap1"><input type="checkbox" id="samePpt1-0"></label>
     <select id="type2-0"><option value="">Select</option><option value="AVG">AVG</option><option value="Fix">Fix</option><option value="AVGInter">AVGInter</option><option value="C2R">C2R</option></select>
     <div id="startWrap2"><input type="date" id="startDate2-0"></div>
     <div id="endWrap2"><input type="date" id="endDate2-0"></div>
     <div id="fixWrap"><input type="date" id="fixDate-0"></div>
-    <label id="sameWrap2"><input type="checkbox" id="samePpt2-0"></label>
     <select id="month1-0"><option>January</option></select>
     <select id="year1-0"><option>2025</option></select>
     <select id="month2-0"><option>January</option></select>
@@ -47,23 +45,15 @@ test("Leg1 fix fields toggle with price type", () => {
   ).toBe("none");
 });
 
-test("Leg2 fields toggle and checkbox sets PPT", () => {
+test("Leg2 fields toggle autocompletes fix date", () => {
   document.getElementById("type1-0").value = "AVG";
   document.getElementById("type2-0").value = "Fix";
-  const chk = document.getElementById("samePpt2-0");
-  chk.checked = true;
   toggleLeg1Fields(0);
   toggleLeg2Fields(0);
-  expect(document.getElementById("fixDate-0").parentElement.style.display).toBe(
-    "",
-  );
-  expect(chk.parentElement.style.display).toBe("");
-  expect(document.getElementById("samePpt1-0").parentElement.style.display).toBe(
-    "none",
-  );
+  const input = document.getElementById("fixDate-0");
+  expect(input.parentElement.style.display).toBe("");
+  expect(input.readOnly).toBe(true);
   const last = getLastBusinessDay(2025, 0);
   const date = calendarUtils.parseDateGregorian(last);
-  expect(document.getElementById("fixDate-0").value).toBe(
-    date.toISOString().split("T")[0],
-  );
+  expect(input.value).toBe(date.toISOString().split("T")[0]);
 });

@@ -35,8 +35,6 @@ function setupDom() {
     <select id="month2-0"><option>February</option><option>October</option></select>
     <select id="year2-0"><option>2025</option></select>
     <input id="fixDate-0" />
-    <input type="checkbox" id="samePpt1-0" />
-    <input type="checkbox" id="samePpt2-0" />
     <p id="output-0"></p>
     <textarea id="final-output"></textarea>
   `;
@@ -63,10 +61,11 @@ describe("generateRequest", () => {
     document.getElementById("qty-0").value = "5";
     document.getElementById("type2-0").value = "Fix";
     document.getElementById("fixDate-0").value = "2025-01-02";
+    toggleLeg2Fields(0);
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD 02/01/25, ppt 04/02/25 against",
+      "LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD ppt 04/02/25 against",
     );
   });
 
@@ -74,7 +73,6 @@ describe("generateRequest", () => {
     document.getElementById("qty-0").value = "8";
     document.getElementById("type1-0").value = "Fix";
     document.getElementById("type2-0").value = "AVG";
-    document.getElementById("samePpt1-0").checked = true;
     document.getElementById("month2-0").value = "February";
     document.getElementById("year2-0").value = "2025";
     toggleLeg1Fields(0);
@@ -89,7 +87,6 @@ describe("generateRequest", () => {
     document.getElementById("qty-0").value = "12";
     document.getElementById("type1-0").value = "AVG";
     document.getElementById("type2-0").value = "Fix";
-    document.getElementById("samePpt2-0").checked = true;
     document.getElementById("month1-0").value = "October";
     document.getElementById("year1-0").value = "2025";
     toggleLeg2Fields(0);
@@ -166,7 +163,7 @@ describe("generateRequest", () => {
     expect(out).toBe("Please provide a fixing date.");
   });
 
-  test("rejects fix date after last business day", () => {
+  test("ignores manual fix date when paired with AVG", () => {
     document.getElementById("qty-0").value = "5";
     document.getElementById("type1-0").value = "AVG";
     document.getElementById("type2-0").value = "Fix";
@@ -176,7 +173,9 @@ describe("generateRequest", () => {
     toggleLeg2Fields(0);
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
-    expect(out).toBe("Fixing date must be on or before 31/01/25.");
+    expect(out).toBe(
+      "LME Request: Buy 5 mt Al AVG January 2025 Flat and Sell 5 mt Al USD ppt 04/02/25 against",
+    );
   });
 
   test("final output includes selected company", () => {
