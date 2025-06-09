@@ -706,34 +706,7 @@ function closeHelp() {
   }
 }
 
-function buildConfirmationText(index) {
-  const qtyInput = document.getElementById(`qty-${index}`);
-  const q = parseFloat(qtyInput.value);
-  if (!isFinite(q) || q <= 0) throw new Error("Quantidade inválida.");
-
-  const side1 = document.querySelector(
-    `input[name='side1-${index}']:checked`,
-  ).value;
-  const side2 = document.querySelector(
-    `input[name='side2-${index}']:checked`,
-  ).value;
-  const type1 = document.getElementById(`type1-${index}`)?.value || "AVG";
-  const type2 = document.getElementById(`type2-${index}`)?.value || "AVG";
-
-  const month1 = document.getElementById(`month1-${index}`)?.value;
-  const year1 = parseInt(document.getElementById(`year1-${index}`)?.value);
-  const month2 = document.getElementById(`month2-${index}`)?.value;
-  const year2 = parseInt(document.getElementById(`year2-${index}`)?.value);
-  const sDate1 = document.getElementById(`startDate-${index}`)?.value;
-  const eDate1 = document.getElementById(`endDate-${index}`)?.value;
-  const sDate2 = document.getElementById(`startDate2-${index}`)?.value;
-  const eDate2 = document.getElementById(`endDate2-${index}`)?.value;
-  const fix1Raw = document.getElementById(`fixDate1-${index}`)?.value || "";
-  const fix2Raw = document.getElementById(`fixDate-${index}`)?.value || "";
-
-  const fix1 = fix1Raw ? formatDate(parseInputDate(fix1Raw)) : "";
-  const fix2 = fix2Raw ? formatDate(parseInputDate(fix2Raw)) : "";
-
+function monthNamePt(m) {
   const monthsPt = [
     "janeiro",
     "fevereiro",
@@ -748,66 +721,80 @@ function buildConfirmationText(index) {
     "novembro",
     "dezembro",
   ];
+  const idx = monthNames.indexOf(m);
+  return idx >= 0 ? monthsPt[idx] : m;
+}
 
-  const monthPt = (m) => {
-    const idx = monthNames.indexOf(m);
-    return idx >= 0 ? monthsPt[idx] : m;
+function readableLeg(type, qty, start, end, month, year) {
+  switch (type) {
+    case "Fix":
+      return `${qty} toneladas de Al com preço fixado`;
+    case "C2R":
+      return `${qty} toneladas de Al com preço fixo em dinheiro`;
+    case "AVG":
+      return `${qty} toneladas de Al pela média de ${monthNamePt(month).toLowerCase()}/${year}`;
+    case "AVGInter":
+    case "AVGPeriod":
+      return `${qty} toneladas de Al fixando a média de ${formatDate(parseInputDate(start))} a ${formatDate(parseInputDate(end))}`;
+    default:
+      return "";
+  }
+}
+
+function generateConfirmationMessage(trade) {
+  const {
+    qty,
+    type1,
+    type2,
+    start1,
+    end1,
+    month1,
+    year1,
+    start2,
+    end2,
+    month2,
+    year2,
+    side1,
+    side2,
+  } = trade;
+
+  const monthIdx2 = new Date(`${month2} 1, ${year2}`).getMonth();
+  const pptDate =
+    type2 === "AVG"
+      ? getSecondBusinessDay(year2, monthIdx2)
+      : formatDate(parseInputDate(end1 || end2));
+
+  const sideStr1 = side1 === "buy" ? "comprando" : "vendendo";
+  const sideStr2 = side2 === "sell" ? "vendendo" : "comprando";
+
+  const leg1 = readableLeg(type1, qty, start1, end1, month1, year1);
+  const leg2 = readableLeg(type2, qty, start2, end2, month2, year2);
+
+  return `Você está ${sideStr1} ${leg1}, ppt ${pptDate}, e ${sideStr2} ${leg2}. Confirma?`;
+}
+
+function buildConfirmationText(index) {
+  const qtyInput = document.getElementById(`qty-${index}`);
+  const q = parseFloat(qtyInput.value);
+  if (!isFinite(q) || q <= 0) throw new Error("Quantidade inválida.");
+
+  const trade = {
+    qty: q,
+    side1: document.querySelector(`input[name='side1-${index}']:checked`).value,
+    side2: document.querySelector(`input[name='side2-${index}']:checked`).value,
+    type1: document.getElementById(`type1-${index}`)?.value || "AVG",
+    type2: document.getElementById(`type2-${index}`)?.value || "AVG",
+    month1: document.getElementById(`month1-${index}`)?.value,
+    year1: parseInt(document.getElementById(`year1-${index}`)?.value),
+    month2: document.getElementById(`month2-${index}`)?.value,
+    year2: parseInt(document.getElementById(`year2-${index}`)?.value),
+    start1: document.getElementById(`startDate-${index}`)?.value,
+    end1: document.getElementById(`endDate-${index}`)?.value,
+    start2: document.getElementById(`startDate2-${index}`)?.value,
+    end2: document.getElementById(`endDate2-${index}`)?.value,
   };
 
-  const gerund = (s) => (s === "buy" ? "comprando" : "vendendo");
-
-  const detail = (type, opts) => {
-    switch (type) {
-      case "AVG":
-        return `a média dos preços diários do alumínio no mês de ${monthPt(opts.month)} de ${opts.year}`;
-      case "AVGInter":
-        return `a média dos preços de alumínio entre os dias ${formatDate(parseInputDate(opts.start))} e ${formatDate(parseInputDate(opts.end))}`;
-      case "Fix":
-        return `com preço fixado em ${opts.fix}`;
-      case "C2R":
-        return `no contrato C2R com fixing em ${opts.fix}`;
-      default:
-        return "";
-    }
-  };
-
-  const part1 = `${gerund(side1)} ${q} toneladas de alumínio ${detail(type1, {
-    month: month1,
-    year: year1,
-    start: sDate1,
-    end: eDate1,
-    fix: fix1,
-  })}`;
-  const part2 = `${gerund(side2)} ${detail(type2, {
-    month: month2,
-    year: year2,
-    start: sDate2,
-    end: eDate2,
-    fix: fix2,
-  })}`;
-
-  let ppt = "";
-  let avgMonth, avgYear;
-  if (type1 === "AVG") {
-    avgMonth = month1;
-    avgYear = year1;
-  } else if (type2 === "AVG") {
-    avgMonth = month2;
-    avgYear = year2;
-  }
-  if (avgMonth) {
-    const idx = new Date(`${avgMonth} 1, ${avgYear}`).getMonth();
-    ppt = getSecondBusinessDay(avgYear, idx);
-  } else if (fix1Raw) {
-    ppt = getFixPpt(fix1 ? fix1 : "");
-  } else if (fix2Raw) {
-    ppt = getFixPpt(fix2 ? fix2 : "");
-  }
-
-  return `Você está ${part1} e ${part2}.$${ppt ? ` A liquidação financeira será em ${ppt}.` : ""}`.replace(
-    "$",
-    "",
-  );
+  return generateConfirmationMessage(trade);
 }
 
 let confirmCallback = null;
