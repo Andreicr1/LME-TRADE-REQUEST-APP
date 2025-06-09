@@ -758,11 +758,17 @@ function generateConfirmationMessage(trade) {
     side2,
   } = trade;
 
-  const monthIdx2 = new Date(`${month2} 1, ${year2}`).getMonth();
-  const pptDate =
-    type2 === "AVG"
-      ? getSecondBusinessDay(year2, monthIdx2)
-      : formatDate(parseInputDate(end1 || end2));
+  let pptDate = "";
+  if (type1 === "AVG") {
+    const idx = new Date(`${month1} 1, ${year1}`).getMonth();
+    pptDate = getSecondBusinessDay(year1, idx);
+  } else if (type2 === "AVG") {
+    const idx = new Date(`${month2} 1, ${year2}`).getMonth();
+    pptDate = getSecondBusinessDay(year2, idx);
+  } else if (end1 || end2) {
+    const d = parseInputDate(end1 || end2);
+    pptDate = d ? formatDate(d) : "";
+  }
 
   const sideStr1 = side1 === "buy" ? "comprando" : "vendendo";
   const sideStr2 = side2 === "sell" ? "vendendo" : "comprando";
