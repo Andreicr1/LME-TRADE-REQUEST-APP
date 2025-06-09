@@ -114,7 +114,7 @@
     <template id="trade-template">
       <div class="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6 trade-card">
         <h2 class="text-xl font-semibold trade-title">Trade 1</h2>
-        <div class="flex items-end gap-3 flex-wrap">
+        <div class="flex items-end gap-4 flex-wrap">
           <label class="font-semibold">Quantity (mt):</label>
           <input
             type="number"
@@ -124,8 +124,6 @@
             step="0.01"
             aria-label="Quantity in metric tons"
           />
-        </div>
-        <div class="flex items-center gap-4 flex-wrap">
           <label class="font-medium">Trade Type:</label>
           <select id="tradeType-0" class="form-control w-32">
             <option value="Swap" selected>Swap</option>
@@ -207,10 +205,7 @@
                 />
               </div>
             </div>
-            <div
-              class="flex items-center gap-2 mr-2 mt-2"
-              style="display: none"
-            >
+            <div class="flex items-center gap-2 mt-2" style="display: none">
               <span>Fixing Date:</span>
               <input
                 type="date"
@@ -292,7 +287,7 @@
               </div>
             </div>
 
-            <div class="flex items-center gap-2 mr-2" style="display: none">
+            <div class="flex items-center gap-2 mt-2" style="display: none">
               <span>Fixing Date:</span>
               <input
                 type="date"
