@@ -188,7 +188,7 @@ describe("generateRequest", () => {
     document.getElementById("year1-0").value = "2025";
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
-    expect(out).toBe("LME Request: Buy 6 mt Al AVG January 2025 Flat (AVG)");
+    expect(out).toBe("LME Request: Buy 6 mt Al AVG January 2025 Flat");
   });
 
   test("forward with two legs sync PPT", () => {
@@ -205,8 +205,8 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al Fixing AVG 16/05/25 to 19/05/25, ppt 04/08/25 (AVG Period)\n" +
-        "LME Request: Buy 5 mt Al AVG July 2025 Flat (AVG)"
+      "LME Request: Buy 5 mt Al Fixing AVG 16/05/25 to 19/05/25, ppt 04/08/25\n" +
+        "LME Request: Buy 5 mt Al AVG July 2025 Flat"
     );
   });
 
