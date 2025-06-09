@@ -508,11 +508,12 @@ function renumberTrades() {
 
 function updateFinalOutput() {
   const allOutputs = document.querySelectorAll("[id^='output-']");
-  const finalOutput = Array.from(allOutputs)
+  const lines = Array.from(allOutputs)
     .map((el) => el.textContent.trim())
-    .filter((t) => t)
-    .join("\n");
-  document.getElementById("final-output").value = finalOutput;
+    .filter((t) => t);
+  const company = document.querySelector("input[name='company']:checked")?.value;
+  if (company && lines.length) lines.unshift(`${company} Request`);
+  document.getElementById("final-output").value = lines.join("\n");
 }
 
 function syncLegSides(index, changedLeg) {
@@ -952,6 +953,9 @@ window.onload = () => {
     const cancel = document.getElementById("confirmation-cancel");
     if (ok) ok.addEventListener("click", confirmModal);
     if (cancel) cancel.addEventListener("click", cancelModal);
+    document
+      .querySelectorAll("input[name='company']")
+      .forEach((el) => el.addEventListener("change", updateFinalOutput));
   });
 };
 if ("serviceWorker" in navigator) {
