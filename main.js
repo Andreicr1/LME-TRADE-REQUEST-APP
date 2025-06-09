@@ -442,7 +442,20 @@ function generateRequest(index) {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix2} ppt ${pptFix}`;
     }
 
-    const result = `LME Request: ${leg1} and ${leg2} against`;
+    const fixTypes = ["Fix", "C2R"];
+    const avgTypes = ["AVG", "AVGInter", "AVGPeriod"];
+    let firstLeg = leg1;
+    let secondLeg = leg2;
+    if (
+      fixTypes.includes(leg2Type) &&
+      avgTypes.includes(leg1Type) &&
+      !fixTypes.includes(leg1Type)
+    ) {
+      firstLeg = leg2;
+      secondLeg = leg1;
+    }
+
+    const result = `LME Request: ${firstLeg} and ${secondLeg} against`;
     if (outputEl) outputEl.textContent = result;
     updateFinalOutput();
   } catch (e) {
@@ -782,11 +795,34 @@ function generateConfirmationMessage(trade) {
   const leg1 = readableLeg(type1, qty, start1, end1, month1, year1, fix1);
   const leg2 = readableLeg(type2, qty, start2, end2, month2, year2, fix2);
 
-  if (type2 === "Fix" && type1 !== "Fix") {
-    return `Você está ${sideStr1} ${leg1}, e ${sideStr2} ${leg2}, ppt ${pptDate}. Confirma?`;
+  const fixTypes = ["Fix", "C2R"];
+  const avgTypes = ["AVG", "AVGInter", "AVGPeriod"];
+
+  let firstLeg = leg1;
+  let secondLeg = leg2;
+  let firstSide = sideStr1;
+  let secondSide = sideStr2;
+  let firstType = type1;
+  let secondType = type2;
+
+  if (
+    fixTypes.includes(type2) &&
+    avgTypes.includes(type1) &&
+    !fixTypes.includes(type1)
+  ) {
+    firstLeg = leg2;
+    secondLeg = leg1;
+    firstSide = sideStr2;
+    secondSide = sideStr1;
+    firstType = type2;
+    secondType = type1;
   }
 
-  return `Você está ${sideStr1} ${leg1}, ppt ${pptDate}, e ${sideStr2} ${leg2}. Confirma?`;
+  if (fixTypes.includes(secondType) && !fixTypes.includes(firstType)) {
+    return `Você está ${firstSide} ${firstLeg}, e ${secondSide} ${secondLeg}, ppt ${pptDate}. Confirma?`;
+  }
+
+  return `Você está ${firstSide} ${firstLeg}, ppt ${pptDate}, e ${secondSide} ${secondLeg}. Confirma?`;
 }
 
 function buildConfirmationText(index) {

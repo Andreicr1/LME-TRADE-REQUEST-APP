@@ -42,7 +42,7 @@ describe('buildConfirmationText', () => {
     document.getElementById('type2-0').value = 'Fix';
     const text = buildConfirmationText(0);
     expect(text).toBe(
-      'Você está comprando 5 toneladas de Al pela média de janeiro/2025, e vendendo 5 toneladas de Al com preço fixado, ppt 04/02/25. Confirma?'
+      'Você está vendendo 5 toneladas de Al com preço fixado, ppt 04/02/25, e comprando 5 toneladas de Al pela média de janeiro/2025. Confirma?'
     );
   });
 
@@ -70,7 +70,7 @@ describe('buildConfirmationText', () => {
     document.getElementById('fixDate-0').value = '2025-06-19';
     const text = buildConfirmationText(0);
     expect(text).toBe(
-      'Você está comprando 5 toneladas de Al fixando a média de 16/06/25 a 19/06/25, e vendendo 5 toneladas de Al com preço fixado em 19/06/25, ppt 23/06/25. Confirma?'
+      'Você está vendendo 5 toneladas de Al com preço fixado em 19/06/25, ppt 23/06/25, e comprando 5 toneladas de Al fixando a média de 16/06/25 a 19/06/25. Confirma?'
     );
   });
 });
