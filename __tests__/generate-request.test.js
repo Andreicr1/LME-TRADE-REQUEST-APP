@@ -18,11 +18,13 @@ function setupDom() {
   document.body.innerHTML += `
     <input type="radio" name="company" value="Alcast Brasil" checked>
     <input type="radio" name="company" value="Alcast Trading">
+    <select id="tradeType-0"><option value="Swap">Swap</option><option value="Forward">Forward</option></select>
+    <input type="checkbox" id="syncPpt-0">
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
     <select id="type1-0"><option value="">Select</option><option value="AVG">AVG</option><option value="AVGInter">AVG Period</option><option value="Fix">Fix</option><option value="C2R">C2R (Cash)</option></select>
-    <select id="month1-0"><option>January</option><option>February</option><option>October</option></select>
+    <select id="month1-0"><option>January</option><option>February</option><option>July</option><option>October</option></select>
     <select id="year1-0"><option>2025</option></select>
     <input id="startDate-0" type="date" />
     <input id="endDate-0" type="date" />
@@ -32,7 +34,7 @@ function setupDom() {
     <input type="radio" name="side2-0" value="buy">
     <input type="radio" name="side2-0" value="sell" checked>
     <select id="type2-0"><option value="">Select</option><option value="AVG">AVG</option><option value="AVGInter">AVG Period</option><option value="Fix">Fix</option><option value="C2R">C2R (Cash)</option></select>
-    <select id="month2-0"><option>February</option><option>October</option></select>
+    <select id="month2-0"><option>February</option><option>July</option><option>October</option></select>
     <select id="year2-0"><option>2025</option></select>
     <input id="fixDate-0" />
     <p id="output-0"></p>
@@ -175,6 +177,36 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against",
+    );
+  });
+
+  test("creates single leg forward AVG request", () => {
+    document.getElementById("tradeType-0").value = "Forward";
+    document.getElementById("qty-0").value = "6";
+    document.getElementById("type1-0").value = "AVG";
+    document.getElementById("month1-0").value = "January";
+    document.getElementById("year1-0").value = "2025";
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe("LME Request: Buy 6 mt Al AVG January 2025 Flat (AVG)");
+  });
+
+  test("forward with two legs sync PPT", () => {
+    document.getElementById("tradeType-0").value = "Forward";
+    document.querySelector("input[name='side2-0'][value='buy']").checked = true;
+    document.getElementById("qty-0").value = "5";
+    document.getElementById("type1-0").value = "AVGInter";
+    document.getElementById("startDate-0").value = "2025-05-16";
+    document.getElementById("endDate-0").value = "2025-05-19";
+    document.getElementById("type2-0").value = "AVG";
+    document.getElementById("month2-0").value = "July";
+    document.getElementById("year2-0").value = "2025";
+    document.getElementById("syncPpt-0").checked = true;
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Buy 5 mt Al Fixing AVG 16/05/25 to 19/05/25, ppt 04/08/25 (AVG Period)\n" +
+        "LME Request: Buy 5 mt Al AVG July 2025 Flat (AVG)"
     );
   });
 

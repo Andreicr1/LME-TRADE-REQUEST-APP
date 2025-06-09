@@ -316,6 +316,9 @@ function generateRequest(index) {
       return;
     }
     qtyInput.classList.remove("border-red-500");
+    const tradeType =
+      document.getElementById(`tradeType-${index}`)?.value || "Swap";
+    const syncPpt = document.getElementById(`syncPpt-${index}`)?.checked;
     const leg1Side = document.querySelector(
       `input[name='side1-${index}']:checked`,
     ).value;
@@ -358,6 +361,7 @@ function generateRequest(index) {
     const lastBizDate = lastBizDay ? parseDate(lastBizDay) : null;
 
     let leg1;
+    let ppt1 = "";
     const showPptAvgFix =
       (leg2Type === "Fix" && dateFix2Raw && !fixInput.readOnly) ||
       (leg1Type === "Fix" && dateFix1Raw && !(fixInputLeg1 && fixInputLeg1.readOnly));
@@ -367,7 +371,7 @@ function generateRequest(index) {
     const showPptAvg = showPptAvgFix || showPptAvgInter;
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
-      leg1 += " Flat";
+      leg1 += tradeType === "Forward" ? " Flat (AVG)" : " Flat";
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
@@ -376,14 +380,20 @@ function generateRequest(index) {
       const startStr = formatDate(start);
       const endStr = formatDate(end);
       leg1 = `${capitalize(leg1Side)} ${q} mt Al Fixing AVG ${startStr} to ${endStr}`;
-      if (showPptAvg) leg1 += `${showPptAvgInter ? "," : ""} ppt ${pptDateAVG}`;
+      ppt1 = pptDateAVG;
+      if (showPptAvg) {
+        leg1 += `${showPptAvgInter ? "," : ""} ppt ${ppt1}`;
+        if (tradeType === "Forward") leg1 += " (AVG Period)";
+      }
     } else if (leg1Type === "Fix" && leg2Type === "AVG") {
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
+      ppt1 = pptDateAVG;
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${ppt1}`;
     } else if (leg1Type === "Fix" && leg2Type === "AVGInter") {
       const end = parseInputDate(document.getElementById(`endDate2-${index}`)?.value || "");
       if (!end) throw new Error("End date is required for AVG Period.");
       const ppt = getFixPpt(formatDate(end));
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${ppt}`;
+      ppt1 = ppt;
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ppt ${ppt1}`;
     } else if (leg1Type === "Fix") {
       if (!dateFix1Raw) throw new Error("Please provide a fixing date.");
       let pptFixLeg1;
@@ -393,14 +403,16 @@ function generateRequest(index) {
         err.fixInputId = `fixDate1-${index}`;
         throw err;
       }
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}, ppt ${pptFixLeg1}`;
+      ppt1 = pptFixLeg1;
+      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}, ppt ${ppt1}`;
     } else {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al ${leg1Type}`;
     }
     let leg2;
+    let ppt2 = "";
     if (leg2Type === "AVG") {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
-      leg2 += " Flat";
+      leg2 += tradeType === "Forward" ? " Flat (AVG)" : " Flat";
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
         document.getElementById(`startDate2-${index}`)?.value || "",
@@ -413,14 +425,20 @@ function generateRequest(index) {
       const sStr = formatDate(start);
       const eStr = formatDate(end);
       leg2 = `${capitalize(leg2Side)} ${q} mt Al Fixing AVG ${sStr} to ${eStr}`;
-      if (showPptAvg) leg2 += `${showPptAvgInter ? "," : ""} ppt ${pptDateAVG}`;
+      ppt2 = pptDateAVG;
+      if (showPptAvg) {
+        leg2 += `${showPptAvgInter ? "," : ""} ppt ${ppt2}`;
+        if (tradeType === "Forward") leg2 += " (AVG Period)";
+      }
     } else if (leg2Type === "Fix" && leg1Type === "AVG") {
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${pptDateAVG}`;
+      ppt2 = pptDateAVG;
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${ppt2}`;
     } else if (leg2Type === "Fix" && leg1Type === "AVGInter") {
       const end = parseInputDate(document.getElementById(`endDate-${index}`)?.value || "");
       if (!end) throw new Error("End date is required for AVG Period.");
       const ppt = getFixPpt(formatDate(end));
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${ppt}`;
+      ppt2 = ppt;
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ppt ${ppt2}`;
     } else if (leg2Type === "Fix") {
       if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
       let pptFix;
@@ -430,7 +448,8 @@ function generateRequest(index) {
         err.fixInputId = `fixDate-${index}`;
         throw err;
       }
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}, ppt ${pptFix}`;
+      ppt2 = pptFix;
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}, ppt ${ppt2}`;
     } else if (leg2Type === "C2R") {
       let pptFix;
       try {
@@ -439,7 +458,8 @@ function generateRequest(index) {
         err.fixInputId = `fixDate-${index}`;
         throw err;
       }
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix2} ppt ${pptFix}`;
+      ppt2 = pptFix;
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix2} ppt ${ppt2}`;
     }
 
     const fixTypes = ["Fix", "C2R"];
@@ -455,7 +475,24 @@ function generateRequest(index) {
       secondLeg = leg1;
     }
 
-    const result = `LME Request: ${firstLeg} and ${secondLeg} against`;
+    let result;
+    if (tradeType === "Swap") {
+      result = `LME Request: ${firstLeg} and ${secondLeg} against`;
+    } else {
+      if (secondLeg) {
+        if (syncPpt && ppt1 && ppt2) {
+          const d1 = parseDate(ppt1);
+          const d2 = parseDate(ppt2);
+          let latest = ppt1;
+          if (d1 && d2 && d2 > d1) latest = ppt2;
+          firstLeg = firstLeg.replace(ppt1, latest);
+          secondLeg = secondLeg.replace(ppt2, latest);
+        }
+        result = `LME Request: ${firstLeg}\nLME Request: ${secondLeg}`;
+      } else {
+        result = `LME Request: ${firstLeg}`;
+      }
+    }
     if (outputEl) outputEl.textContent = result;
     updateFinalOutput();
   } catch (e) {

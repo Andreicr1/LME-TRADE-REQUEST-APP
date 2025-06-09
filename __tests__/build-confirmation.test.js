@@ -11,6 +11,8 @@ const { buildConfirmationText } = require('../main');
 
 function setupDom() {
   document.body.innerHTML += `
+    <select id="tradeType-0"><option value="Swap">Swap</option><option value="Forward">Forward</option></select>
+    <input type="checkbox" id="syncPpt-0">
     <input id="qty-0" />
     <input type="radio" name="side1-0" value="buy" checked>
     <input type="radio" name="side1-0" value="sell">
