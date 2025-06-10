@@ -53,7 +53,7 @@
       <h1 class="text-3xl font-bold mb-6 text-center">
         LME Trade Request Generator
       </h1>
-      <div id="company-select" class="flex items-center gap-4 justify-center">
+      <div id="company-select" class="flex items-center gap-2 justify-center">
         <label>
           <input
             type="radio"
@@ -112,47 +112,63 @@
     </div>
 
     <template id="trade-template">
-      <div class="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6 trade-card">
+      <div class="bg-white p-6 rounded-lg shadow-md space-y-6 mb-6 trade-card">
         <h2 class="text-xl font-semibold trade-title">Trade 1</h2>
-        <div class="flex items-end gap-4 flex-wrap">
-          <label class="font-semibold">Quantity (mt):</label>
-          <input
-            type="number"
-            id="qty-0"
-            class="form-control w-32"
-            min="0"
-            step="0.01"
-            aria-label="Quantity in metric tons"
-          />
-          <label class="font-medium">Trade Type:</label>
-          <select id="tradeType-0" class="form-control w-32">
-            <option value="Swap" selected>Swap</option>
-            <option value="Forward">Forward</option>
-          </select>
-          <label class="flex items-center">
-            <input type="checkbox" id="syncPpt-0" class="mr-1" /> Syncronize PPT
+
+        <!-- Seção superior com espaçamento melhorado -->
+        <div class="flex flex-wrap items-end gap-2 py-3"> 
+          <div class="flex items-center gap-3">
+            <label class="font-semibold whitespace-nowrap" for="qty-0">Quantity (mt):</label>
+            <input
+              type="number"
+              id="qty-0"
+              class="form-control w-32"
+              min="0"
+              step="1"
+              aria-label="Quantity in metric tons"
+
+            />
+          </div>
+
+          <div class="flex items-center gap-3">
+            <label class="font-semibold whitespace-nowrap" for="tradeType-0">Trade Type:</label>
+            <select id="tradeType-0" class="form-control w-36">
+              <option value="Swap" selected>Swap</option>
+              <option value="Forward">Forward</option>
+            </select>
+          </div>
+
+          <label class="flex items-center gap-2">
+            <input type="checkbox" id="syncPpt-0" />
+            <span class="whitespace-nowrap">Synchronize PPT</span>
           </label>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h2 class="font-semibold">Leg 1</h2>
-            <label
-              ><input
-                type="radio"
-                name="side1-0"
-                value="buy"
-                checked
-                class="mr-1"
-              />
-              Buy</label
-            >
-            <label
-              ><input type="radio" name="side1-0" value="sell" class="mr-1" />
-              Sell</label
-            ><br />
-            <div class="flex items-center gap-2 mt-2 mb-2">
-              <label class="font-medium">Price Type:</label>
-              <select id="type1-0" class="form-control w-32">
+
+        <!-- Grid das Legs com espaçamento melhorado -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <!-- Leg 1 -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold">Leg 1</h3>
+            
+            <div class="flex items-center gap-2">
+              <label class="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="side1-0"
+                  value="buy"
+                  checked
+                />
+                <span>Buy</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="side1-0" value="sell" />
+                <span>Sell</span>
+              </label>
+            </div>
+
+            <div class="flex items-center gap-3 mt-3">
+              <label class="font-medium whitespace-nowrap">Price Type:</label>
+              <select id="type1-0" class="form-control w-36">
                 <option value="">Select</option>
                 <option value="AVG">AVG</option>
                 <option value="AVGInter">AVG Period</option>
@@ -160,10 +176,11 @@
                 <option value="C2R">C2R (Cash)</option>
               </select>
             </div>
-            <div class="flex gap-2" id="avgFields1-0" style="display: none">
+
+            <div class="flex gap-4 mt-3" id="avgFields1-0" style="display: none">
               <div>
-                <label class="block mb-1">Month:</label>
-                <select id="month1-0" class="form-control w-28">
+                <label class="block mb-2 text-sm font-medium">Month:</label>
+                <select id="month1-0" class="form-control w-32">
                   <option>January</option>
                   <option>February</option>
                   <option>March</option>
@@ -179,61 +196,68 @@
                 </select>
               </div>
               <div>
-                <label class="block mb-1">Year:</label>
+                <label class="block mb-2 text-sm font-medium">Year:</label>
                 <select id="year1-0" class="form-control w-28">
                   <!-- Options populated via JavaScript -->
                 </select>
               </div>
             </div>
-            <div class="flex gap-2 mt-2">
+
+            <div class="flex gap-4 mt-3">
               <div style="display: none">
-                <label class="block mb-1">Start Date:</label>
+                <label class="block mb-2 text-sm font-medium">Start Date:</label>
                 <input
                   type="date"
                   id="startDate-0"
-                  class="form-control w-36"
+                  class="form-control w-40"
                   aria-label="Start date for averaging"
                 />
               </div>
               <div style="display: none">
-                <label class="block mb-1">End Date:</label>
+                <label class="block mb-2 text-sm font-medium">End Date:</label>
                 <input
                   type="date"
                   id="endDate-0"
-                  class="form-control w-36"
+                  class="form-control w-40"
                   aria-label="End date for averaging"
                 />
               </div>
             </div>
-            <div class="flex items-center gap-2 mt-2" style="display: none">
-              <span>Fixing Date:</span>
+
+            <div class="flex items-center gap-3 mt-3" style="display: none">
+              <label class="font-medium whitespace-nowrap">Fixing Date:</label>
               <input
                 type="date"
                 id="fixDate1-0"
-                class="form-control w-24"
+                class="form-control w-40"
                 aria-label="Fixing date for Leg 1"
               />
             </div>
           </div>
-          <div>
-            <h2 class="font-semibold">Leg 2</h2>
-            <label
-              ><input
-                type="radio"
-                name="side2-0"
-                value="buy"
-                checked
-                class="mr-1"
-              />
-              Buy</label
-            >
-            <label
-              ><input type="radio" name="side2-0" value="sell" class="mr-1" />
-              Sell</label
-            ><br />
-            <div class="flex items-center gap-2 mt-2 mb-2">
-              <label class="font-medium">Price Type:</label>
-              <select id="type2-0" class="form-control w-32">
+
+          <!-- Leg 2 -->
+          <div class="space-y-4">
+            <h3 class="text-lg font-semibold">Leg 2</h3>
+            
+            <div class="flex items-center gap-2">
+              <label class="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="side2-0"
+                  value="buy"
+                  checked
+                />
+                <span>Buy</span>
+              </label>
+              <label class="flex items-center gap-2">
+                <input type="radio" name="side2-0" value="sell" />
+                <span>Sell</span>
+              </label>
+            </div>
+
+            <div class="flex items-center gap-3 mt-3">
+              <label class="font-medium whitespace-nowrap">Price Type:</label>
+              <select id="type2-0" class="form-control w-36">
                 <option value="">Select</option>
                 <option value="AVG">AVG</option>
                 <option value="AVGInter">AVG Period</option>
@@ -241,10 +265,11 @@
                 <option value="C2R">C2R (Cash)</option>
               </select>
             </div>
-            <div class="flex gap-2" id="avgFields2-0" style="display: none">
+
+            <div class="flex gap-4 mt-3" id="avgFields2-0" style="display: none">
               <div>
-                <label class="block mb-1">Month:</label>
-                <select id="month2-0" class="form-control w-28">
+                <label class="block mb-2 text-sm font-medium">Month:</label>
+                <select id="month2-0" class="form-control w-32">
                   <option>January</option>
                   <option>February</option>
                   <option>March</option>
@@ -260,44 +285,47 @@
                 </select>
               </div>
               <div>
-                <label class="block mb-1">Year:</label>
+                <label class="block mb-2 text-sm font-medium">Year:</label>
                 <select id="year2-0" class="form-control w-28">
                   <!-- Options populated via JavaScript -->
                 </select>
               </div>
             </div>
-            <div class="flex gap-2 mt-2">
+
+            <div class="flex gap-4 mt-3">
               <div style="display: none">
-                <label class="block mb-1">Start Date:</label>
+                <label class="block mb-2 text-sm font-medium">Start Date:</label>
                 <input
                   type="date"
                   id="startDate2-0"
-                  class="form-control w-36"
+                  class="form-control w-40"
                   aria-label="Start date for averaging"
                 />
               </div>
               <div style="display: none">
-                <label class="block mb-1">End Date:</label>
+                <label class="block mb-2 text-sm font-medium">End Date:</label>
                 <input
                   type="date"
                   id="endDate2-0"
-                  class="form-control w-36"
+                  class="form-control w-40"
                   aria-label="End date for averaging"
                 />
               </div>
             </div>
 
-            <div class="flex items-center gap-2 mt-2" style="display: none">
-              <span>Fixing Date:</span>
+            <div class="flex items-center gap-3 mt-3" style="display: none">
+              <label class="font-medium whitespace-nowrap">Fixing Date:</label>
               <input
                 type="date"
                 id="fixDate-0"
-                class="form-control w-24"
+                class="form-control w-40"
                 aria-label="Fixing date for Leg 2"
               />
             </div>
           </div>
         </div>
+
+        <!-- Botões mantidos inalterados -->
         <div class="flex flex-wrap items-center gap-2 justify-center">
           <button
             name="generate"
@@ -318,7 +346,7 @@
             Remove
           </button>
         </div>
-        <p id="output-0" class="mt-2 font-mono text-sm"></p>
+        <p id="output-0" class="mt-4 font-mono text-sm bg-gray-50 p-3 rounded border"></p>
       </div>
     </template>
 

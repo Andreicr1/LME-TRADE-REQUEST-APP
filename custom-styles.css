@@ -12,8 +12,8 @@ button {
 }
 .form-control {
   height: 2.5rem; /* ensures uniform input height */
-  padding: 0.5rem;
-  border: 1px solid #d1d5db; /* gray-300 */
+  padding: 1rem;
+  border: 1px solid #dde7e3; /* gray-300 */
   border-radius: 0.25rem;
 }
 .modal-container {
@@ -47,4 +47,27 @@ button {
   justify-content: flex-end;
   gap: 1rem;         /* Espaço entre os botões */
   margin-top: 1rem;  /* Espaço acima da linha dos botões */
+}
+
+/* Melhorar aparência dos inputs de data */
+input[type="date"] {
+  font-family: "Inter", sans-serif;
+  text-align: center;
+}
+
+/* Placeholder personalizado para inputs de data */
+input[type="date"]::-webkit-datetime-edit-text {
+  color: #6b7280;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field {
+  color: #374151;
+}
+
+input[type="date"]::-webkit-datetime-edit-day-field {
+  color: #374151;
+}
+
+input[type="date"]::-webkit-datetime-edit-year-field {
+  color: #374151;
 }
