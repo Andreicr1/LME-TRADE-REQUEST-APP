@@ -46,14 +46,20 @@
       .hidden {
         display: none !important;
       }
+      .button-row {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
     </style>
   </head>
   <body class="bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen p-6">
-    <div class="max-w-4xl mx-auto space-y-6">
+    <div class="max-w-4xl mx-auto space-y-8">
       <h1 class="text-3xl font-bold mb-6 text-center">
         LME Trade Request Generator
       </h1>
-      <div id="company-select" class="flex items-center gap-4 justify-center">
+      <div id="company-select" class="flex items-center gap-4 justify-center mb-6">
         <label>
           <input
             type="radio"
@@ -75,7 +81,7 @@
         </label>
       </div>
       <div id="trades" class="space-y-6"></div>
-      <div class="space-y-2 bg-white p-6 rounded-lg shadow-md">
+      <div class="space-y-4 bg-white p-6 rounded-lg shadow-md">
         <textarea
           id="final-output"
           class="form-control w-full"
@@ -84,7 +90,7 @@
         ></textarea>
         <div
           id="trade-controls"
-          class="flex flex-wrap items-center gap-2 justify-center pt-2"
+          class="flex flex-wrap items-center gap-3 justify-center pt-4"
         >
           <button
             onclick="addTrade()"
@@ -114,7 +120,7 @@
     <template id="trade-template">
       <div class="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6 trade-card">
         <h2 class="text-xl font-semibold trade-title">Trade 1</h2>
-        <div class="flex items-end gap-4 flex-wrap">
+        <div class="flex items-end gap-4 flex-wrap mb-4">
           <label class="font-semibold">Quantity (mt):</label>
           <input
             type="number"
@@ -298,7 +304,7 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-2 justify-center">
+        <div class="flex flex-wrap items-center gap-3 justify-center mt-4">
           <button
             name="generate"
             class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-32"
