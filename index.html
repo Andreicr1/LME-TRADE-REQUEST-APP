@@ -81,7 +81,7 @@
         </label>
       </div>
       <div id="trades" class="space-y-6"></div>
-      <div class="space-y-4 bg-white p-6 rounded-lg shadow-md">
+      <div class="space-y-4 bg-white p-6 rounded-lg shadow-md mt-6">
         <textarea
           id="final-output"
           class="form-control w-full"
@@ -119,8 +119,8 @@
 
     <template id="trade-template">
       <div class="bg-white p-6 rounded-lg shadow-md space-y-4 mb-6 trade-card">
-        <h2 class="text-xl font-semibold trade-title">Trade 1</h2>
-        <div class="flex items-end gap-4 flex-wrap mb-4">
+        <h2 class="text-xl font-semibold trade-title mb-4">Trade 1</h2>
+        <div class="flex items-baseline gap-4 flex-wrap mb-4">
           <label class="font-semibold">Quantity (mt):</label>
           <input
             type="number"
@@ -130,7 +130,7 @@
             step="0.01"
             aria-label="Quantity in metric tons"
           />
-          <label class="font-medium">Trade Type:</label>
+          <label class="font-medium self-center">Trade Type:</label>
           <select id="tradeType-0" class="form-control w-32">
             <option value="Swap" selected>Swap</option>
             <option value="Forward">Forward</option>
@@ -156,7 +156,7 @@
               ><input type="radio" name="side1-0" value="sell" class="mr-1" />
               Sell</label
             ><br />
-            <div class="flex items-center gap-2 mt-2 mb-2">
+            <div class="flex items-center gap-6 mt-2 mb-2">
               <label class="font-medium">Price Type:</label>
               <select id="type1-0" class="form-control w-32">
                 <option value="">Select</option>
@@ -166,7 +166,7 @@
                 <option value="C2R">C2R (Cash)</option>
               </select>
             </div>
-            <div class="flex gap-2" id="avgFields1-0" style="display: none">
+            <div class="flex gap-6" id="avgFields1-0" style="display: none">
               <div>
                 <label class="block mb-1">Month:</label>
                 <select id="month1-0" class="form-control w-28">
@@ -191,7 +191,7 @@
                 </select>
               </div>
             </div>
-            <div class="flex gap-2 mt-2">
+            <div class="flex gap-6 mt-2">
               <div style="display: none">
                 <label class="block mb-1">Start Date:</label>
                 <input
@@ -211,7 +211,7 @@
                 />
               </div>
             </div>
-            <div class="flex items-center gap-2 mt-2" style="display: none">
+            <div class="flex items-center gap-6 mt-2" style="display: none">
               <span>Fixing Date:</span>
               <input
                 type="date"
@@ -237,7 +237,7 @@
               ><input type="radio" name="side2-0" value="sell" class="mr-1" />
               Sell</label
             ><br />
-            <div class="flex items-center gap-2 mt-2 mb-2">
+            <div class="flex items-center gap-6 mt-2 mb-2">
               <label class="font-medium">Price Type:</label>
               <select id="type2-0" class="form-control w-32">
                 <option value="">Select</option>
@@ -247,7 +247,7 @@
                 <option value="C2R">C2R (Cash)</option>
               </select>
             </div>
-            <div class="flex gap-2" id="avgFields2-0" style="display: none">
+            <div class="flex gap-6" id="avgFields2-0" style="display: none">
               <div>
                 <label class="block mb-1">Month:</label>
                 <select id="month2-0" class="form-control w-28">
@@ -272,7 +272,7 @@
                 </select>
               </div>
             </div>
-            <div class="flex gap-2 mt-2">
+            <div class="flex gap-6 mt-2">
               <div style="display: none">
                 <label class="block mb-1">Start Date:</label>
                 <input
@@ -293,7 +293,7 @@
               </div>
             </div>
 
-            <div class="flex items-center gap-2 mt-2" style="display: none">
+            <div class="flex items-center gap-6 mt-2" style="display: none">
               <span>Fixing Date:</span>
               <input
                 type="date"
@@ -304,22 +304,22 @@
             </div>
           </div>
         </div>
-        <div class="flex flex-wrap items-center gap-3 justify-center mt-4">
+        <div class="flex flex-wrap items-center gap-4 justify-center mt-6">
           <button
             name="generate"
-            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-32"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded w-32 h-10"
           >
             Generate
           </button>
           <button
             name="clear"
-            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-32"
+            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded w-32 h-10"
           >
             Clear
           </button>
           <button
             name="remove"
-            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-32"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded w-32 h-10"
           >
             Remove
           </button>
