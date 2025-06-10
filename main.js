@@ -369,9 +369,12 @@ function generateRequest(index) {
       (leg1Type === "AVGInter" && leg2Type === "AVG") ||
       (leg2Type === "AVGInter" && leg1Type === "AVG");
     const showPptAvg = showPptAvgFix || showPptAvgInter;
+    
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
-      leg1 += " Flat";
+      // ALTERAÇÃO: Adicionar PPT para AVG também
+      leg1 += ` Flat, ppt ${pptDateAVG}`;
+      ppt1 = pptDateAVG;
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
@@ -407,11 +410,14 @@ function generateRequest(index) {
     } else {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al ${leg1Type}`;
     }
+    
     let leg2;
     let ppt2 = "";
     if (leg2Type === "AVG") {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
-      leg2 += " Flat";
+      // ALTERAÇÃO: Adicionar PPT para AVG também
+      leg2 += ` Flat, ppt ${pptDateAVG}`;
+      ppt2 = pptDateAVG;
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
         document.getElementById(`startDate2-${index}`)?.value || "",
@@ -1128,7 +1134,12 @@ function sendEmail() {
 
   // Criar o link mailto
   const recipient = "hamburgdesk@StoneX.com";
-  const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+  const ccRecipients = [
+    "paula.didiego@fazcapital.com.br",
+    "andrei@previsecp.com",
+    "brian.johnson@previsecp.com"
+  ].join(",");
+  const mailtoLink = `mailto:${recipient}?cc=${encodeURIComponent(ccRecipients)}&subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
   
   // Abrir o cliente de e-mail
   window.location.href = mailtoLink;
