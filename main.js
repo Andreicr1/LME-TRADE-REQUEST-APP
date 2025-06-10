@@ -1071,6 +1071,7 @@ if (typeof module !== "undefined" && module.exports) {
     generateAll,
     copyAll,
     shareWhatsApp,
+    sendEmail, // Adicionar aqui
     openHelp,
     closeHelp,
     buildConfirmationText,
@@ -1083,4 +1084,52 @@ if (typeof module !== "undefined" && module.exports) {
     updateMonthOptions,
     updateAvgRestrictions,
   };
+}
+
+function sendEmail() {
+  const textarea = document.getElementById("final-output");
+  const text = textarea.value.trim(); // Esta linha estava faltando
+  if (!text) {
+    alert("Nothing to send.");
+    textarea.focus();
+    return;
+  }
+
+  const company = document.querySelector("input[name='company']:checked")?.value; // Esta linha estava faltando
+  
+  // Remover o cabeçalho da empresa do texto original se existir
+  let cleanText = text;
+  if (company) {
+    const companyHeaders = [
+      "For Alcast Brasil Account -",
+      "For Alcast Trading Account -"
+    ];
+    
+    companyHeaders.forEach(header => {
+      if (cleanText.startsWith(header)) {
+        cleanText = cleanText.substring(header.length).trim();
+      }
+    });
+  }
+
+  // Criar a mensagem do e-mail
+  let emailSubject = "LME Trade Request";
+  let emailBody = "";
+  
+  if (company) {
+    emailSubject = `LME Trade Request - ${company}`;
+    emailBody = `For ${company} Account – please quote the following trade request:\n\n`;
+  } else {
+    emailBody = "Please quote the following trade request:\n\n";
+  }
+  
+  emailBody += cleanText;
+  emailBody += "\n\nPlease respond within 5 minutes.\n\nBest regards";
+
+  // Criar o link mailto
+  const recipient = "hamburgdesk@StoneX.com";
+  const mailtoLink = `mailto:${recipient}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+  
+  // Abrir o cliente de e-mail
+  window.location.href = mailtoLink;
 }

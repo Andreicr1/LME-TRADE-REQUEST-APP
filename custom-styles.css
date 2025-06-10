@@ -1,5 +1,4 @@
 body,
-body,
 html {
   overflow: visible !important;
   position: static !important;
@@ -12,16 +11,13 @@ button {
 }
 .form-control {
   height: 2.5rem; /* ensures uniform input height */
-  padding: 1rem;
-  border: 1px solid #dde7e3; /* gray-300 */
+  padding: 0.5rem;
+  border: 1px solid #d1d5db; /* gray-300 */
   border-radius: 0.25rem;
 }
 .modal-container {
   position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5) !important;
   display: flex !important;
   align-items: center !important;
@@ -30,12 +26,12 @@ button {
 }
 
 .modal-box {
-  padding: 1.5rem;
+  padding: 2rem;
   background-color: white;
-  border-radius: 12px;
+  border-radius: 0.75rem;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   width: 90% !important;
-  max-width: 520px;
+  max-width: 600px;
 }
 
 .confirmation-text {
@@ -70,4 +66,43 @@ input[type="date"]::-webkit-datetime-edit-day-field {
 
 input[type="date"]::-webkit-datetime-edit-year-field {
   color: #374151;
+}
+
+#trade-controls {
+  gap: 1rem; /* Aumenta o espaço entre os botões */
+  padding-top: 1rem; /* Aumenta o espaço acima dos botões */
+  min-height: 50px;
+  overflow: visible !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#trade-controls button {
+  flex-shrink: 0;
+  display: inline-block !important;
+  visibility: visible !important;
+}
+
+/* Especificamente para o botão de e-mail */
+button[onclick="sendEmail()"] {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 1001 !important;
+  background-color: #7c3aed !important; /* purple-600 */
+  color: white !important;
+  border: 1px solid #6d28d9 !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 0.25rem !important;
+  width: 8rem !important;
+  height: auto !important;
+  font-weight: 400 !important;
+  cursor: pointer !important;
+}
+
+button[onclick="sendEmail()"]:hover {
+  background-color: #6d28d9 !important; /* purple-700 */
 }
