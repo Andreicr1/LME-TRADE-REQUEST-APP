@@ -545,8 +545,23 @@ function updateFinalOutput() {
   const lines = Array.from(allOutputs)
     .map((el) => el.textContent.trim())
     .filter((t) => t);
+  
   const company = document.querySelector("input[name='company']:checked")?.value;
-  if (company && lines.length) lines.unshift(`${company} Request`);
+  
+  if (company && lines.length) {
+    // Alterar o texto baseado na empresa selecionada
+    let companyHeader = "";
+    if (company === "Alcast Brasil") {
+      companyHeader = "For Alcast Brasil Account -";
+    } else if (company === "Alcast Trading") {
+      companyHeader = "For Alcast Trading Account -";
+    }
+    
+    if (companyHeader) {
+      lines.unshift(companyHeader);
+    }
+  }
+  
   document.getElementById("final-output").value = lines.join("\n");
 }
 
