@@ -75,4 +75,38 @@ describe('buildConfirmationText', () => {
       'Você está vendendo 5 toneladas de Al com preço fixado em 19/06/25, ppt 23/06/25, e comprando 5 toneladas de Al fixando a média de 16/06/25 a 19/06/25. Confirma?'
     );
   });
+
+  test('includes order type text for Limit', () => {
+    document.getElementById('qty-0').value = '2';
+    document.getElementById('type1-0').value = 'Fix';
+    const fixInput = document.createElement('input');
+    fixInput.id = 'fixDate-0';
+    document.body.appendChild(fixInput);
+    document.getElementById('fixDate-0').value = '2025-01-05';
+    const orderSel = document.createElement('select');
+    orderSel.id = 'orderType1-0';
+    orderSel.innerHTML = `<option value="Limit" selected>Limit</option>`;
+    document.body.appendChild(orderSel);
+    const price = document.createElement('input');
+    price.id = 'limitPrice1-0';
+    price.value = '2300';
+    document.body.appendChild(price);
+    const text = buildConfirmationText(0);
+    expect(text).toContain('Limit 2300');
+  });
+
+  test('includes order type text for Resting', () => {
+    document.getElementById('qty-0').value = '1';
+    document.getElementById('type1-0').value = 'Fix';
+    const fixInput = document.createElement('input');
+    fixInput.id = 'fixDate-0';
+    document.body.appendChild(fixInput);
+    document.getElementById('fixDate-0').value = '2025-01-05';
+    const orderSel = document.createElement('select');
+    orderSel.id = 'orderType1-0';
+    orderSel.innerHTML = `<option value="Resting" selected>Resting</option>`;
+    document.body.appendChild(orderSel);
+    const text = buildConfirmationText(0);
+    expect(text).toContain('Resting');
+  });
 });

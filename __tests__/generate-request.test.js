@@ -210,14 +210,42 @@ describe("generateRequest", () => {
     );
   });
 
-  test("final output includes selected company", () => {
+  test("final output includes new execution header", () => {
     document.getElementById("qty-0").value = "10";
     document.getElementById("type2-0").value = "AVG";
     generateRequest(0);
     const finalOut = document.getElementById("final-output").value;
     expect(finalOut).toBe(
-      "Alcast Brasil Request\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
+      "Alcast Brasil Execution Instruction\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
     );
+  });
+
+  test("adds execution block for Limit order", () => {
+    document.getElementById("qty-0").value = "4";
+    document.getElementById("type2-0").value = "Fix";
+    const orderType = document.createElement("select");
+    orderType.id = "orderType2-0";
+    orderType.innerHTML = `<option value=\"Limit\" selected>Limit</option>`;
+    document.body.appendChild(orderType);
+    const limit = document.createElement("input");
+    limit.id = "limitPrice2-0";
+    limit.value = "2500";
+    document.body.appendChild(limit);
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toContain("Limit 2500");
+  });
+
+  test("adds execution block for Resting order", () => {
+    document.getElementById("qty-0").value = "2";
+    document.getElementById("type2-0").value = "Fix";
+    const orderType = document.createElement("select");
+    orderType.id = "orderType2-0";
+    orderType.innerHTML = `<option value=\"Resting\" selected>Resting</option>`;
+    document.body.appendChild(orderType);
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toContain("Resting");
   });
 });
 
