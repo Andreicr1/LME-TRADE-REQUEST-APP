@@ -1193,17 +1193,7 @@ function updateFinalOutput() {
   const company = document.querySelector("input[name='company']:checked")?.value;
   
   if (company && lines.length) {
-    // Alterar o texto baseado na empresa selecionada
-    let companyHeader = "";
-    if (company === "Alcast Brasil") {
-      companyHeader = "Alcast Brasil Request";
-    } else if (company === "Alcast Trading") {
-      companyHeader = "Alcast Trading Request";
-    }
-    
-    if (companyHeader) {
-      lines.unshift(companyHeader);
-    }
+    lines.unshift(`For ${company} Account -`);
   }
   
   document.getElementById("final-output").value = lines.join("\n");
