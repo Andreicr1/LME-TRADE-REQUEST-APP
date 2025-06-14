@@ -1,108 +1,233 @@
-body,
-html {
-  overflow: visible !important;
-  position: static !important;
-}
-input,
-select,
-textarea,
-button {
+/* Estilo geral */
+body {
   font-family: "Inter", sans-serif;
+  background-color: #f9fafb;
+  color: #333;
 }
-.form-control {
-  height: 2.5rem; /* ensures uniform input height */
-  padding: 0.5rem;
-  border: 1px solid #d1d5db; /* gray-300 */
-  border-radius: 0.25rem;
+
+/* Estilo para os cards de trade */
+.trade-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  background-color: #fff;
 }
+
+/* Estilo para os botões */
+button {
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+  font-weight: 600;
+}
+
+button:hover {
+  filter: brightness(90%);
+  transform: scale(1.02);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Botões específicos */
+button[name="generate"] {
+  background-color: #007bff; /* Azul */
+  color: white;
+}
+
+button[name="clear"] {
+  background-color: #ffc107; /* Amarelo */
+  color: white;
+}
+
+button[name="remove"] {
+  background-color: #dc3545; /* Vermelho */
+  color: white;
+}
+
+button[name="generate"]:hover {
+  background-color: #0056b3;
+}
+
+button[name="clear"]:hover {
+  background-color: #e0a800;
+}
+
+button[name="remove"]:hover {
+  background-color: #c82333;
+}
+
+/* Estilo para o modal */
 .modal-container {
-  position: fixed !important;
+  position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  z-index: 9999 !important;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
 .modal-box {
-  padding: 2rem;
   background-color: white;
+  padding: 2rem;
   border-radius: 0.75rem;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  width: 90% !important;
   max-width: 600px;
+  width: 90%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-.confirmation-text {
-  margin-bottom: 4rem; /* Espaço entre o texto e os botões */
+.modal-box p {
+  font-size: 1rem;
+  color: #333;
 }
 
-.modal-box .button-row {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;         /* Espaço entre os botões */
-  margin-top: 1rem;  /* Espaço acima da linha dos botões */
+.modal-box button {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
 }
 
-/* Melhorar aparência dos inputs de data */
-input[type="date"] {
-  font-family: "Inter", sans-serif;
+.modal-box button.bg-red-600 {
+  background-color: #dc3545; /* Vermelho */
+}
+
+.modal-box button.bg-red-600:hover {
+  background-color: #c82333;
+}
+
+.modal-box button.bg-blue-600 {
+  background-color: #007bff; /* Azul */
+}
+
+.modal-box button.bg-blue-600:hover {
+  background-color: #0056b3;
+}
+
+/* Estilo para o botão Cancelar no modal */
+button#confirmation-cancel {
+  background-color: #dc3545; /* Vermelho */
+  color: white;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+button#confirmation-cancel:hover {
+  background-color: #c82333; /* Vermelho mais escuro */
+}
+
+button#confirmation-cancel:active {
+  transform: scale(0.98);
+}
+
+/* Estilo para os campos de entrada */
+.form-control {
+  height: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+textarea#final-output {
+  resize: vertical;
+  min-height: 10rem !important; /* Coloque o !important fora do valor */
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+/* Estilo para campos específicos */
+#limitField2-0 input,
+#rangeFields2-0 input {
+  height: 2.25rem;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+/* Estilo para o título */
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
   text-align: center;
+  color: #333;
 }
 
-/* Placeholder personalizado para inputs de data */
-input[type="date"]::-webkit-datetime-edit-text {
-  color: #6b7280;
-}
-
-input[type="date"]::-webkit-datetime-edit-month-field {
-  color: #374151;
-}
-
-input[type="date"]::-webkit-datetime-edit-day-field {
-  color: #374151;
-}
-
-input[type="date"]::-webkit-datetime-edit-year-field {
-  color: #374151;
-}
-
+/* Estilo para os controles de trade */
 #trade-controls {
-  gap: 1rem; /* Aumenta o espaço entre os botões */
-  padding-top: 1rem; /* Aumenta o espaço acima dos botões */
-  min-height: 50px;
-  overflow: visible !important;
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  justify-content: center !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
 }
 
 #trade-controls button {
-  flex-shrink: 0;
-  display: inline-block !important;
-  visibility: visible !important;
+  width: 8rem;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
 }
 
-/* Especificamente para o botão de e-mail */
-button[onclick="sendEmail()"] {
-  display: inline-block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  position: relative !important;
-  z-index: 1001 !important;
-  background-color: #7c3aed !important; /* purple-600 */
-  color: white !important;
-  border: 1px solid #6d28d9 !important;
-  padding: 0.5rem 1rem !important;
-  border-radius: 0.25rem !important;
-  width: 8rem !important;
-  height: auto !important;
-  font-weight: 400 !important;
-  cursor: pointer !important;
+/* Estilo para os campos de seleção */
+select {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
 }
 
-button[onclick="sendEmail()"]:hover {
-  background-color: #6d28d9 !important; /* purple-700 */
+/* Estilo para os campos de entrada numérica */
+input[type="number"] {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+/* Estilo para os campos de texto */
+input[type="text"] {
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+/* Estilo para os campos de rádio */
+input[type="radio"] {
+  margin-right: 0.5rem;
+}
+
+/* Estilo para os campos de checkbox */
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+/* Estilo para os labels */
+label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Estilo para os grids */
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+/* Garantir que a altura mínima seja aplicada */
+.space-y-2.bg-white.p-6.rounded-lg.shadow-md {
+  min-height: 210rem !important; /* Força uma altura mínima maior */
+  height: auto !important; /* Garante que a altura seja ajustável */
 }
