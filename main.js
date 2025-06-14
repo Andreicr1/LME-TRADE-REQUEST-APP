@@ -756,6 +756,8 @@ function generateRequest(index) {
     const avgTypes = ["AVG", "AVGInter", "AVGPeriod"];
     let firstLeg = leg1;
     let secondLeg = leg2;
+    let instr1 = getExecutionInstruction(index, 1, leg1Side);
+    let instr2 = getExecutionInstruction(index, 2, leg2Side);
     if (
       fixTypes.includes(leg2Type) &&
       avgTypes.includes(leg1Type) &&
@@ -763,11 +765,16 @@ function generateRequest(index) {
     ) {
       firstLeg = leg2;
       secondLeg = leg1;
+      const tmp = instr1;
+      instr1 = instr2;
+      instr2 = tmp;
     }
 
-    let result;
+    const lines = [];
     if (tradeType === "Swap") {
-      result = `LME Request: ${firstLeg} and ${secondLeg} against`;
+      lines.push(`LME Request: ${firstLeg} and ${secondLeg} against`);
+      if (instr1) lines.push(instr1);
+      if (instr2 && instr2 !== instr1) lines.push(instr2);
     } else {
       if (secondLeg) {
         if (syncPpt && ppt1 && ppt2) {
@@ -778,11 +785,16 @@ function generateRequest(index) {
           firstLeg = firstLeg.replace(ppt1, latest);
           secondLeg = secondLeg.replace(ppt2, latest);
         }
-        result = `LME Request: ${firstLeg}\nLME Request: ${secondLeg}`;
+        lines.push(`LME Request: ${firstLeg}`);
+        if (instr1) lines.push(instr1);
+        lines.push(`LME Request: ${secondLeg}`);
+        if (instr2) lines.push(instr2);
       } else {
-        result = `LME Request: ${firstLeg}`;
+        lines.push(`LME Request: ${firstLeg}`);
+        if (instr1) lines.push(instr1);
       }
     }
+    const result = lines.join("\n");
     if (outputEl) outputEl.textContent = result;
     updateFinalOutput();
   } catch (e) {
@@ -883,6 +895,62 @@ function getOrderTypeText(index, leg) {
     }
   } catch (error) {
     console.error(`❌ Erro ao obter order type text:`, error);
+    return "";
+  }
+}
+
+// Build Execution Instruction line based on order type settings
+function getExecutionInstruction(index, leg, side) {
+  try {
+    const typeSel = document.getElementById(`type${leg}-${index}`);
+    if (!typeSel) return "";
+    const legType = typeSel.value;
+    if (legType !== "Fix" && legType !== "C2R") return "";
+
+    const orderTypeSel = document.getElementById(`orderType${leg}-${index}`);
+    if (!orderTypeSel) return "";
+    const orderType = orderTypeSel.value;
+
+    const validitySel = document.getElementById(`orderValidity${leg}-${index}`);
+    let validity = "Day";
+    if (orderType !== "At Market" && validitySel) {
+      validity = validitySel.value || "Day";
+    } else if (orderType === "At Market" && validitySel && validitySel.value) {
+      validity = validitySel.value;
+    }
+
+    if (validity === "Until Further Notice") {
+      validity = "Until Further Notice";
+    }
+
+    const capSide = capitalize(side);
+
+    switch (orderType) {
+      case "Limit": {
+        const limit = document.getElementById(`limitPrice${leg}-${index}`)?.value;
+        const pricePart = limit ? ` @ USD ${limit}` : "";
+        return `Execution Instruction: Please work this order as a Limit${pricePart} for the ${capSide} side, valid for ${validity}.`;
+      }
+      case "Range": {
+        const from = document.getElementById(`rangeFrom${leg}-${index}`)?.value;
+        const to = document.getElementById(`rangeTo${leg}-${index}`)?.value;
+        let rangePart = "";
+        if (from && to) {
+          rangePart = ` between USD ${from} and ${to}`;
+        } else if (from || to) {
+          rangePart = ` around USD ${from || to}`;
+        }
+        return `Execution Instruction: Please work this order as a Range${rangePart} for the ${capSide} side, valid for ${validity}.`;
+      }
+      case "Resting":
+        return `Execution Instruction: Please work this order posting as the best bid/offer in the book for the ${capSide} side, valid for ${validity}.`;
+      case "At Market":
+        return `Execution Instruction: Please work this order At Market for the ${capSide} side, valid for ${validity}.`;
+      default:
+        return "";
+    }
+  } catch (err) {
+    console.error("Failed to build execution instruction:", err);
     return "";
   }
 }
