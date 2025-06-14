@@ -82,8 +82,8 @@ function formatDate(date) {
   // Formato DD/MM/YYYY
   const day = String(date.getDate()).padStart(2, '0');
   const month = String(date.getMonth() + 1).padStart(2, '0');
-  const year = date.getFullYear();
-  
+  const year = String(date.getFullYear()).slice(-2);
+
   return `${day}/${month}/${year}`;
 }
 
@@ -99,7 +99,8 @@ function parseDate(str) {
     if (parts.length === 3) {
       const day = parseInt(parts[0]);
       const month = parseInt(parts[1]) - 1; // Month is 0-indexed
-      const year = parseInt(parts[2]);
+      let year = parseInt(parts[2]);
+      if (year < 100) year += 2000;
       date = new Date(year, month, day);
     }
   }
@@ -214,18 +215,20 @@ function getFixPpt(fixingDateStr) {
     throw new Error("Invalid fixing date provided.");
   }
 
-  const dayOfWeek = fixingDate.getDay();
   const holidays = lmeHolidays[fixingDate.getFullYear()] || [];
-  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-  const isHoliday = holidays.includes(fixingDate.toISOString().split("T")[0]);
+  let current = new Date(fixingDate);
+  let added = 0;
 
-  if (isWeekend || isHoliday) {
-    throw new Error(
-      "Fixing date cannot be on a weekend or UK bank holiday. Please choose a valid business day.",
-    );
+  while (added < 2) {
+    current.setDate(current.getDate() + 1);
+    const isWeekend = current.getDay() === 0 || current.getDay() === 6;
+    const isHoliday = holidays.includes(current.toISOString().split("T")[0]);
+    if (!isWeekend && !isHoliday) {
+      added++;
+    }
   }
 
-  return fixingDateStr;
+  return formatDate(current);
 }
 
 /**
@@ -630,8 +633,7 @@ function generateRequest(index) {
     
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
-      // Adicionar PPT para AVG também
-      leg1 += ` Flat, ppt ${pptDateAVG}`;
+      leg1 += ` Flat`;
       ppt1 = pptDateAVG;
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
@@ -685,8 +687,7 @@ function generateRequest(index) {
     let ppt2 = "";
     if (leg2Type === "AVG") {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
-      // Adicionar PPT para AVG também
-      leg2 += ` Flat, ppt ${pptDateAVG}`;
+      leg2 += ` Flat`;
       ppt2 = pptDateAVG;
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
@@ -737,6 +738,7 @@ function generateRequest(index) {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}${orderTypeText}, ppt ${ppt2}`;
       
     } else if (leg2Type === "C2R") {
+      if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
       let pptFix;
       try {
         pptFix = getFixPpt(dateFix2);
@@ -745,7 +747,9 @@ function generateRequest(index) {
         throw err;
       }
       ppt2 = pptFix;
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R ${dateFix2} ppt ${pptFix}`;
+
+      const orderTypeText = getOrderTypeText ? getOrderTypeText(index, 2) : "";
+      leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R${orderTypeText} ${dateFix2} ppt ${pptFix}`;
     }
 
     const fixTypes = ["Fix", "C2R"];
@@ -803,6 +807,7 @@ function toggleOrderTypeFields(index, leg) {
     const orderTypeSel = document.getElementById(`orderType${leg}-${index}`);
     const limitField = document.getElementById(`limitField${leg}-${index}`);
     const rangeFields = document.getElementById(`rangeFields${leg}-${index}`);
+    const validityField = document.getElementById(`validityField${leg}-${index}`);
     
     if (!orderTypeSel) {
       console.log(`⚠️ Order type select não encontrado: orderType${leg}-${index}`);
@@ -815,6 +820,7 @@ function toggleOrderTypeFields(index, leg) {
     // Hide all fields first
     if (limitField) limitField.style.display = "none";
     if (rangeFields) rangeFields.style.display = "none";
+    if (validityField) validityField.style.display = "none";
     
     // Show relevant fields
     if (orderType === "Limit" && limitField) {
@@ -823,6 +829,9 @@ function toggleOrderTypeFields(index, leg) {
     } else if (orderType === "Range" && rangeFields) {
       rangeFields.style.display = "";
       console.log(`✅ Mostrando campos Range para trade ${index} leg ${leg}`);
+    }
+    if (orderType !== "At Market" && validityField) {
+      validityField.style.display = "";
     }
     // At Market and Resting don't show additional fields
     
@@ -836,26 +845,39 @@ function getOrderTypeText(index, leg) {
   try {
     const orderTypeSel = document.getElementById(`orderType${leg}-${index}`);
     if (!orderTypeSel) return "";
-    
+
     const orderType = orderTypeSel.value;
-    
+    const validitySel = document.getElementById(`orderValidity${leg}-${index}`);
+    let validityText = "";
+    if (orderType !== "At Market" && validitySel) {
+      let val = validitySel.value || "Day";
+      if (val === "Until Further Notice") {
+        validityText = `valid until Further Notice`;
+      } else {
+        validityText = `valid for ${val}`;
+      }
+    }
+
     switch (orderType) {
       case "At Market":
         return " At Market";
       case "Limit":
         const limitPrice = document.getElementById(`limitPrice${leg}-${index}`)?.value;
-        return limitPrice ? ` Limit ${limitPrice}` : " Limit";
+        const baseLimit = limitPrice ? ` Limit ${limitPrice}` : " Limit";
+        return validityText ? `${baseLimit}, ${validityText}` : baseLimit;
       case "Range":
         const rangeFrom = document.getElementById(`rangeFrom${leg}-${index}`)?.value;
         const rangeTo = document.getElementById(`rangeTo${leg}-${index}`)?.value;
         if (rangeFrom && rangeTo) {
-          return ` Range ${rangeFrom} to ${rangeTo}`;
+          const baseRange = ` Range ${rangeFrom} to ${rangeTo}`;
+          return validityText ? `${baseRange}, ${validityText}` : baseRange;
         } else if (rangeFrom || rangeTo) {
-          return ` Range ${rangeFrom || rangeTo}`;
+          const baseRange = ` Range ${rangeFrom || rangeTo}`;
+          return validityText ? `${baseRange}, ${validityText}` : baseRange;
         }
-        return " Range";
+        return validityText ? ` Range, ${validityText}` : " Range";
       case "Resting":
-        return " Resting";
+        return validityText ? ` Resting, ${validityText}` : " Resting";
       default:
         return "";
     }
@@ -914,9 +936,9 @@ function toggleLeg1Fields(index) {
     }
   }
   
-  // IMPORTANTE: Toggle Order Type fields para Fix
+  // IMPORTANTE: Toggle Order Type fields para Fix/C2R
   if (orderTypeFields) {
-    const shouldShow = val === "Fix";
+    const shouldShow = val === "Fix" || val === "C2R";
     orderTypeFields.style.display = shouldShow ? "" : "none";
     console.log(`Order Type Leg1 ${shouldShow ? 'mostrado' : 'escondido'} para trade ${index}`);
     
@@ -976,9 +998,9 @@ function toggleLeg2Fields(index) {
     }
   }
   
-  // IMPORTANTE: Toggle Order Type fields para Fix
+  // IMPORTANTE: Toggle Order Type fields para Fix/C2R
   if (orderTypeFields) {
-    const shouldShow = type2 === "Fix";
+    const shouldShow = type2 === "Fix" || type2 === "C2R";
     orderTypeFields.style.display = shouldShow ? "" : "none";
     console.log(`Order Type Leg2 ${shouldShow ? 'mostrado' : 'escondido'} para trade ${index}`);
     
@@ -1174,9 +1196,9 @@ function updateFinalOutput() {
     // Alterar o texto baseado na empresa selecionada
     let companyHeader = "";
     if (company === "Alcast Brasil") {
-      companyHeader = "For Alcast Brasil Account -";
+      companyHeader = "Alcast Brasil Request";
     } else if (company === "Alcast Trading") {
-      companyHeader = "For Alcast Trading Account -";
+      companyHeader = "Alcast Trading Request";
     }
     
     if (companyHeader) {
@@ -1241,7 +1263,9 @@ function updateEndDateMin(index, leg) {
   const start = document.getElementById(startId);
   const end = document.getElementById(endId);
   if (start && end && start.value) {
-    end.min = start.value;
+    const d = new Date(start.value);
+    d.setDate(d.getDate() + 1);
+    end.min = d.toISOString().split("T")[0];
   }
 }
 
@@ -1260,21 +1284,46 @@ function updateMonthOptions(index, leg) {
   monthSelect.innerHTML = "";
 
   monthNames.forEach((month, i) => {
-    if (selectedYear > currentYear || i >= currentMonth) {
-      const option = document.createElement("option");
-      option.value = month;
-      option.textContent = month;
-      monthSelect.appendChild(option);
+    const option = document.createElement("option");
+    option.value = month;
+    option.textContent = month;
+    if (selectedYear === currentYear && i < currentMonth) {
+      option.hidden = true;
     }
+    monthSelect.appendChild(option);
   });
 
-  if (monthSelect.options.length > 0) {
-    monthSelect.selectedIndex = 0;
+  const firstVisible = Array.from(monthSelect.options).findIndex(
+    (opt) => !opt.hidden,
+  );
+  if (firstVisible >= 0) {
+    monthSelect.selectedIndex = firstVisible;
   }
 }
 
 function updateAvgRestrictions(index) {
-  // This function can be implemented to add specific restrictions
+  const type1 = document.getElementById(`type1-${index}`)?.value;
+  const type2 = document.getElementById(`type2-${index}`)?.value;
+
+  if (type1 === "AVG" && type2 === "AVGInter") {
+    const end = document.getElementById(`endDate2-${index}`)?.value;
+    const monthSelect = document.getElementById(`month1-${index}`);
+    if (end && monthSelect) {
+      const endMonth = new Date(end).getMonth();
+      Array.from(monthSelect.options).forEach((opt, i) => {
+        opt.disabled = i < endMonth;
+      });
+    }
+  } else if (type2 === "AVG" && type1 === "AVGInter") {
+    const end = document.getElementById(`endDate-${index}`)?.value;
+    const monthSelect = document.getElementById(`month2-${index}`);
+    if (end && monthSelect) {
+      const endMonth = new Date(end).getMonth();
+      Array.from(monthSelect.options).forEach((opt, i) => {
+        opt.disabled = i < endMonth;
+      });
+    }
+  }
 }
 
 function generateAll() {
