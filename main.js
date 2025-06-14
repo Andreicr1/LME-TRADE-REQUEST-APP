@@ -433,6 +433,12 @@ function buildConfirmationText(index) {
     end2: document.getElementById(`endDate2-${index}`)?.value,
     fix1: document.getElementById(`fixDate1-${index}`)?.value,
     fix2: document.getElementById(`fixDate-${index}`)?.value,
+    orderType1: document.getElementById(`orderType1-${index}`)?.value,
+    orderType2: document.getElementById(`orderType2-${index}`)?.value,
+    limitPrice1: document.getElementById(`limitPrice1-${index}`)?.value,
+    limitPrice2: document.getElementById(`limitPrice2-${index}`)?.value,
+    validity1: document.getElementById(`orderValidity1-${index}`)?.value,
+    validity2: document.getElementById(`orderValidity2-${index}`)?.value,
   };
 
   return generateConfirmationMessage(trade);
@@ -455,6 +461,12 @@ function generateConfirmationMessage(trade) {
     side2,
     fix1,
     fix2,
+    orderType1,
+    orderType2,
+    limitPrice1,
+    limitPrice2,
+    validity1,
+    validity2,
   } = trade;
 
   let pptDate = "";
@@ -502,11 +514,34 @@ function generateConfirmationMessage(trade) {
     secondType = type1;
   }
 
-  if (fixTypes.includes(secondType) && !fixTypes.includes(firstType)) {
-    return `Você está ${firstSide} ${firstLeg}, e ${secondSide} ${secondLeg}, ppt ${pptDate}. Confirma?`;
+  let orderText = "";
+  if (fixTypes.includes(type1) && !fixTypes.includes(type2)) {
+    orderText = getOrderConfirmationText(
+      orderType1,
+      side1,
+      limitPrice1,
+      validity1,
+    );
+  } else if (fixTypes.includes(type2) && !fixTypes.includes(type1)) {
+    orderText = getOrderConfirmationText(
+      orderType2,
+      side2,
+      limitPrice2,
+      validity2,
+    );
   }
 
-  return `Você está ${firstSide} ${firstLeg}, ppt ${pptDate}, e ${secondSide} ${secondLeg}. Confirma?`;
+  let baseLine;
+  if (fixTypes.includes(secondType) && !fixTypes.includes(firstType)) {
+    baseLine = `Você está ${firstSide} ${firstLeg}, e ${secondSide} ${secondLeg}, ppt ${pptDate}.`;
+  } else {
+    baseLine = `Você está ${firstSide} ${firstLeg}, ppt ${pptDate}, e ${secondSide} ${secondLeg}.`;
+  }
+
+  if (orderText) {
+    return `${baseLine}\nOrdem ${orderText}. Confirma?`;
+  }
+  return `${baseLine} Confirma?`;
 }
 
 function readableLeg(type, qty, start, end, month, year, fix) {
@@ -547,6 +582,43 @@ function monthNamePt(m) {
   ];
   const idx = monthNames.indexOf(m);
   return idx >= 0 ? monthsPt[idx] : m;
+}
+
+function formatValidityPt(val) {
+  if (!val) return "";
+  switch (val) {
+    case "Day":
+      return "válida até o final do dia";
+    case "GTC":
+      return "válida até ser cancelada";
+    case "Until Further Notice":
+      return "válida até novo aviso";
+    default:
+      return `válida por ${val.toLowerCase().replace('hours', 'horas')}`;
+  }
+}
+
+function getOrderConfirmationText(type, side, limit, validity) {
+  if (!type) return "";
+  let base;
+  switch (type) {
+    case "Resting":
+      base = `resting (${side === "buy" ? "melhor oferta no book" : "melhor bid no book"})`;
+      break;
+    case "At Market":
+      base = "at market";
+      break;
+    case "Limit":
+      base = limit ? `limit ${limit}` : "limit";
+      break;
+    case "Range":
+      base = "range";
+      break;
+    default:
+      base = type.toLowerCase();
+  }
+  const valText = formatValidityPt(validity);
+  return valText ? `${base} ${valText}` : base;
 }
 
 /**

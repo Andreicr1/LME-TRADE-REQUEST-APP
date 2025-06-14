@@ -75,4 +75,24 @@ describe('buildConfirmationText', () => {
       'Você está vendendo 5 toneladas de Al com preço fixado em 19/06/25, ppt 23/06/25, e comprando 5 toneladas de Al fixando a média de 16/06/25 a 19/06/25. Confirma?'
     );
   });
+
+  test('includes order type details in Portuguese', () => {
+    document.getElementById('qty-0').value = '3';
+    document.querySelector("input[name='side1-0'][value='sell']").checked = true;
+    document.querySelector("input[name='side2-0'][value='buy']").checked = true;
+    document.getElementById('type1-0').value = 'AVG';
+    document.getElementById('type2-0').value = 'Fix';
+    const orderType = document.createElement('select');
+    orderType.id = 'orderType2-0';
+    orderType.innerHTML = '<option value="Resting" selected>Resting</option>';
+    document.body.appendChild(orderType);
+    const validity = document.createElement('select');
+    validity.id = 'orderValidity2-0';
+    validity.innerHTML = '<option value="3 Hours" selected>3 Hours</option>';
+    document.body.appendChild(validity);
+    const text = buildConfirmationText(0);
+    expect(text).toBe(
+      'Você está comprando 3 toneladas de Al com preço fixado, ppt 04/02/25, e vendendo 3 toneladas de Al pela média de janeiro/2025.\nOrdem resting (melhor oferta no book) válida por 3 horas. Confirma?'
+    );
+  });
 });
