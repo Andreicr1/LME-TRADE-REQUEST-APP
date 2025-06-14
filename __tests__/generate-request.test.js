@@ -180,6 +180,34 @@ describe("generateRequest", () => {
     );
   });
 
+  test("adds execution instruction for limit orders", () => {
+    document.getElementById("qty-0").value = "5";
+    document.getElementById("type2-0").value = "Fix";
+    document.getElementById("fixDate-0").value = "2025-01-02";
+
+    const ot = document.createElement("select");
+    ot.id = "orderType2-0";
+    ot.innerHTML = '<option value="Limit" selected>Limit</option>';
+    document.body.appendChild(ot);
+
+    const ov = document.createElement("select");
+    ov.id = "orderValidity2-0";
+    ov.innerHTML = '<option value="Day" selected>Day</option>';
+    document.body.appendChild(ov);
+
+    const lp = document.createElement("input");
+    lp.id = "limitPrice2-0";
+    lp.value = "2300";
+    document.body.appendChild(lp);
+
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Sell 5 mt Al USD Limit 2300, valid for Day ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against\n" +
+        "Execution Instruction: Please work this order as a Limit @ USD 2300 for the Sell side, valid for Day."
+    );
+  });
+
   test("creates single leg forward AVG request", () => {
     document.getElementById("tradeType-0").value = "Forward";
     document.getElementById("qty-0").value = "6";
