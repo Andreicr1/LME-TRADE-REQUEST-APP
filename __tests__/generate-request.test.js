@@ -244,7 +244,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const finalOut = document.getElementById("final-output").value;
     expect(finalOut).toBe(
-      "For Alcast Brasil Account -\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
+      "Alcast Brasil Execution Instruction\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
     );
   });
 });
