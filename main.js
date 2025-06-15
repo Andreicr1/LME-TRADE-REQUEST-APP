@@ -116,10 +116,6 @@ function parseDate(str) {
   return isNaN(date.getTime()) ? null : date;
 }
 
-function getCalendarType() {
-  return "gregorian"; // Fixo para gregorian
-}
-
 /**
  * Fetches the latest UK bank holidays and merges them with the local
  * `lmeHolidays` object so offline requests still have up‑to‑date data.
@@ -690,9 +686,6 @@ function generateRequest(index) {
     const pptDateAVG = avgMonth
       ? getSecondBusinessDay(avgYear, monthIndex)
       : "";
-    const lastBizDay = avgMonth ? getLastBusinessDay(avgYear, monthIndex) : "";
-    const lastBizDate = lastBizDay ? parseDate(lastBizDay) : null;
-
     let leg1;
     let ppt1 = "";
     const showPptAvgFix =
@@ -943,13 +936,15 @@ function getOrderTypeText(index, leg) {
     }
 
     switch (orderType) {
-      case "At Market":
+      case "At Market": {
         return " At Market";
-      case "Limit":
+      }
+      case "Limit": {
         const limitPrice = document.getElementById(`limitPrice${leg}-${index}`)?.value;
         const baseLimit = limitPrice ? ` Limit ${limitPrice}` : " Limit";
         return validityText ? `${baseLimit}, ${validityText}` : baseLimit;
-      case "Range":
+      }
+      case "Range": {
         const rangeFrom = document.getElementById(`rangeFrom${leg}-${index}`)?.value;
         const rangeTo = document.getElementById(`rangeTo${leg}-${index}`)?.value;
         if (rangeFrom && rangeTo) {
@@ -960,10 +955,13 @@ function getOrderTypeText(index, leg) {
           return validityText ? `${baseRange}, ${validityText}` : baseRange;
         }
         return validityText ? ` Range, ${validityText}` : " Range";
-      case "Resting":
+      }
+      case "Resting": {
         return validityText ? ` Resting, ${validityText}` : " Resting";
-      default:
+      }
+      default: {
         return "";
+      }
     }
   } catch (error) {
     console.error(`❌ Erro ao obter order type text:`, error);
