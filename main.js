@@ -439,6 +439,8 @@ function buildConfirmationText(index) {
     limitPrice2: document.getElementById(`limitPrice2-${index}`)?.value,
     validity1: document.getElementById(`orderValidity1-${index}`)?.value,
     validity2: document.getElementById(`orderValidity2-${index}`)?.value,
+    orderText1: getOrderTypeText ? getOrderTypeText(index, 1) : "",
+    orderText2: getOrderTypeText ? getOrderTypeText(index, 2) : "",
   };
 
   return generateConfirmationMessage(trade);
@@ -467,6 +469,8 @@ function generateConfirmationMessage(trade) {
     limitPrice2,
     validity1,
     validity2,
+    orderText1,
+    orderText2,
   } = trade;
 
   let pptDate = "";
@@ -488,8 +492,8 @@ function generateConfirmationMessage(trade) {
   const sideStr1 = side1 === "buy" ? "comprando" : "vendendo";
   const sideStr2 = side2 === "sell" ? "vendendo" : "comprando";
 
-  const leg1 = readableLeg(type1, qty, start1, end1, month1, year1, fix1);
-  const leg2 = readableLeg(type2, qty, start2, end2, month2, year2, fix2);
+  const leg1 = readableLeg(type1, qty, start1, end1, month1, year1, fix1, orderText1);
+  const leg2 = readableLeg(type2, qty, start2, end2, month2, year2, fix2, orderText2);
 
   const fixTypes = ["Fix", "C2R"];
   const avgTypes = ["AVG", "AVGInter", "AVGPeriod"];
@@ -544,17 +548,19 @@ function generateConfirmationMessage(trade) {
   return `${baseLine} Confirma?`;
 }
 
-function readableLeg(type, qty, start, end, month, year, fix) {
+function readableLeg(type, qty, start, end, month, year, fix, orderText = "") {
   switch (type) {
     case "Fix":
       if (fix) {
-        return `${qty} toneladas de Al com preço fixado em ${formatDate(
+        let base = `${qty} toneladas de Al com preço fixado em ${formatDate(
           parseInputDate(fix),
         )}`;
+        if (orderText) base += orderText;
+        return base;
       }
-      return `${qty} toneladas de Al com preço fixado`;
+      return `${qty} toneladas de Al com preço fixado${orderText}`;
     case "C2R":
-      return `${qty} toneladas de Al com preço fixo em dinheiro`;
+      return `${qty} toneladas de Al com preço fixo em dinheiro${orderText}`;
     case "AVG":
       return `${qty} toneladas de Al pela média de ${monthNamePt(month).toLowerCase()}/${year}`;
     case "AVGInter":
