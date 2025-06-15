@@ -116,9 +116,6 @@ function parseDate(str) {
   return isNaN(date.getTime()) ? null : date;
 }
 
-function getCalendarType() {
-  return "gregorian"; // Fixo para gregorian
-}
 
 /**
  * Fetches the latest UK bank holidays and merges them with the local
@@ -690,8 +687,6 @@ function generateRequest(index) {
     const pptDateAVG = avgMonth
       ? getSecondBusinessDay(avgYear, monthIndex)
       : "";
-    const lastBizDay = avgMonth ? getLastBusinessDay(avgYear, monthIndex) : "";
-    const lastBizDate = lastBizDay ? parseDate(lastBizDay) : null;
 
     let leg1;
     let ppt1 = "";
