@@ -42,6 +42,12 @@ The Buy/Sell options of the two legs are synchronised: selecting **Buy** on Leg
 Fixing date inputs only appear when a leg uses **Fix** pricing (Leg&nbsp;2 also
 shows it for **C2R (Cash)**). When one leg is **AVG** and the other **Fix**, checking the "Use AVG PPT Date" option automatically fills the fixed leg's date with the averaging leg's last business day.
 
+## Execution Instruction
+
+When a leg uses **Fix** or **C2R** pricing the app adds an *Execution Instruction* line to the final text. This line describes how to handle the order based on the selected order type.
+
+Order types include **At Market**, **Limit**, **Range** and **Resting**. Choosing **Limit** reveals a single *Limit Price* input, **Range** shows *From* and *To* fields and **Resting** posts the order until it trades. Except for **At Market**, an **Order Validity** dropdown lets you specify how long the order remains active (Day, GTC, 3&nbsp;Hours, 6&nbsp;Hours, 12&nbsp;Hours or Until Further Notice). The validity value appears in the Execution Instruction line.
+
 ## Building
 
 No build step is required. The repository only contains static files (`index.html`, `main.js`, `manifest.json` and `service-worker.js`). If you modify the code you simply refresh the browser to see the changes.
@@ -78,7 +84,7 @@ you are connected to the internet when running it.
 
 ## Running tests
 
-Install dependencies once and run the test suite with npm:
+Run `npm install` once to fetch the dependencies and then execute the suite with `npm test`:
 
 ```bash
 npm install
