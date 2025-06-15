@@ -737,19 +737,26 @@ function generateRequest(index) {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al USD${orderTypeText} ppt ${ppt1}`;
       
     } else if (leg1Type === "Fix") {
-      if (!dateFix1Raw) throw new Error("Please provide a fixing date.");
-      let pptFixLeg1;
-      try {
-        pptFixLeg1 = getFixPpt(dateFix1);
-      } catch (err) {
-        err.fixInputId = `fixDate1-${index}`;
-        throw err;
-      }
-      ppt1 = pptFixLeg1;
-      
-      // ADICIONAR: Order Type para Fix
+      // Determine order type details first so we know if fixing date is required
       const orderTypeText = getOrderTypeText ? getOrderTypeText(index, 1) : "";
-      leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}${orderTypeText}, ppt ${ppt1}`;
+      const isLimitOrResting = /\b(Limit|Resting)/.test(orderTypeText);
+      if (!dateFix1Raw && !isLimitOrResting)
+        throw new Error("Please provide a fixing date.");
+
+      if (dateFix1Raw) {
+        let pptFixLeg1;
+        try {
+          pptFixLeg1 = getFixPpt(dateFix1);
+        } catch (err) {
+          err.fixInputId = `fixDate1-${index}`;
+          throw err;
+        }
+        ppt1 = pptFixLeg1;
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD ${dateFix1}${orderTypeText}, ppt ${ppt1}`;
+      } else {
+        // No fixing date provided but allowed for Limit/Resting orders
+        leg1 = `${capitalize(leg1Side)} ${q} mt Al USD${orderTypeText}`;
+      }
       
     } else {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al ${leg1Type}`;
@@ -795,33 +802,44 @@ function generateRequest(index) {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al USD${orderTypeText} ppt ${ppt2}`;
       
     } else if (leg2Type === "Fix") {
-      if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
-      let pptFix;
-      try {
-        pptFix = getFixPpt(dateFix2);
-      } catch (err) {
-        err.fixInputId = `fixDate-${index}`;
-        throw err;
-      }
-      ppt2 = pptFix;
-      
-      // ADICIONAR: Order Type para Fix
       const orderTypeText = getOrderTypeText ? getOrderTypeText(index, 2) : "";
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}${orderTypeText}, ppt ${ppt2}`;
+      const isLimitOrResting = /\b(Limit|Resting)/.test(orderTypeText);
+      if (!dateFix2Raw && !isLimitOrResting)
+        throw new Error("Please provide a fixing date.");
+
+      if (dateFix2Raw) {
+        let pptFix;
+        try {
+          pptFix = getFixPpt(dateFix2);
+        } catch (err) {
+          err.fixInputId = `fixDate-${index}`;
+          throw err;
+        }
+        ppt2 = pptFix;
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD ${dateFix2}${orderTypeText}, ppt ${ppt2}`;
+      } else {
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al USD${orderTypeText}`;
+      }
       
     } else if (leg2Type === "C2R") {
-      if (!dateFix2Raw) throw new Error("Please provide a fixing date.");
-      let pptFix;
-      try {
-        pptFix = getFixPpt(dateFix2);
-      } catch (err) {
-        err.fixInputId = `fixDate-${index}`;
-        throw err;
-      }
-      ppt2 = pptFix;
-
       const orderTypeText = getOrderTypeText ? getOrderTypeText(index, 2) : "";
-      leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R${orderTypeText} ${dateFix2} ppt ${pptFix}`;
+      const isLimitOrResting = /\b(Limit|Resting)/.test(orderTypeText);
+      if (!dateFix2Raw && !isLimitOrResting)
+        throw new Error("Please provide a fixing date.");
+
+      if (dateFix2Raw) {
+        let pptFix;
+        try {
+          pptFix = getFixPpt(dateFix2);
+        } catch (err) {
+          err.fixInputId = `fixDate-${index}`;
+          throw err;
+        }
+        ppt2 = pptFix;
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R${orderTypeText} ${dateFix2} ppt ${pptFix}`;
+      } else {
+        leg2 = `${capitalize(leg2Side)} ${q} mt Al C2R${orderTypeText}`;
+      }
     }
 
     const fixTypes = ["Fix", "C2R"];
