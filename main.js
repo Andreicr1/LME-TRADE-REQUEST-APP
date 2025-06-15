@@ -1331,9 +1331,9 @@ function updateFinalOutput() {
     .filter((t) => t);
   
   const company = document.querySelector("input[name='company']:checked")?.value;
-  
+
   if (company && lines.length) {
-    lines.unshift(`For ${company} Account -`);
+    lines.unshift(`${company} Execution Instruction`);
   }
   
   document.getElementById("final-output").value = lines.join("\n");
@@ -1536,8 +1536,8 @@ function sendEmail() {
   let cleanText = text;
   if (company) {
     const companyHeaders = [
-      "For Alcast Brasil Account -",
-      "For Alcast Trading Account -"
+      "Alcast Brasil Execution Instruction",
+      "Alcast Trading Execution Instruction"
     ];
     
     companyHeaders.forEach(header => {
@@ -1553,7 +1553,7 @@ function sendEmail() {
   
   if (company) {
     emailSubject = `LME Trade Request - ${company}`;
-    emailBody = `For ${company} Account – please quote the following trade request:\n\n`;
+    emailBody = `${company} Execution Instruction – please quote the following trade request:\n\n`;
   } else {
     emailBody = "Please quote the following trade request:\n\n";
   }
