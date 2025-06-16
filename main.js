@@ -1023,7 +1023,7 @@ function getExecutionInstruction(index, leg, side) {
       case "Limit": {
         const limit = document.getElementById(`limitPrice${leg}-${index}`)?.value;
         const pricePart = limit ? ` @ USD ${limit}` : "";
-        return `Execution Instruction: Please work this order as a Limit${pricePart} for the ${capSide} side, valid for ${validity}.`;
+        return `Execution Instruction: Please work this order as a Limit${pricePart} for the Fixed price, valid for ${validity}.`;
       }
       case "Range": {
         const from = document.getElementById(`rangeFrom${leg}-${index}`)?.value;
@@ -1034,12 +1034,14 @@ function getExecutionInstruction(index, leg, side) {
         } else if (from || to) {
           rangePart = ` around USD ${from || to}`;
         }
-        return `Execution Instruction: Please work this order as a Range${rangePart} for the ${capSide} side, valid for ${validity}.`;
+        return `Execution Instruction: Please work this order as a Range${rangePart} for the Fixed price, valid for ${validity}.`;
       }
-      case "Resting":
-        return `Execution Instruction: Please work this order posting as the best bid/offer in the book for the ${capSide} side, valid for ${validity}.`;
+      case "Resting": {
+        const bidOffer = side === 'sell' ? 'best bid' : 'best offer';
+        return `Execution Instruction: Please work this order posting as the ${bidOffer} in the book for the fixed price, valid for ${validity}.`;
+      }
       case "At Market":
-        return `Execution Instruction: Please work this order At Market for the ${capSide} side, valid for ${validity}.`;
+        return `Execution Instruction: Please work this order At Market for the Fixed price, valid for ${validity}.`;
       default:
         return "";
     }
