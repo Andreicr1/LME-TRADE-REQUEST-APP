@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LME Trade Request Generator</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link href="tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom-styles.css" />
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body class="page-background">
+    <div class="container">
+      <h1 class="page-title">LME Trade Request Generator</h1>
+      <div id="company-select" class="company-selection">
+        <label>
+          <input
+            type="radio"
+            name="company"
+            value="Alcast Brasil"
+            checked
+            class="company-radio"
+          />
+          Alcast Brasil
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="company"
+            value="Alcast Trading"
+            class="company-radio"
+          />
+          Alcast Trading
+        </label>
+      </div>
+      <div id="trades" class="trade-section"></div>
+      <div class="output-section">
+        <textarea
+          id="final-output"
+          class="textarea-output"
+          placeholder="All trade requests will appear here..."
+        ></textarea>
+        <div id="trade-controls" class="controls-section">
+          <button onclick="addTrade()" class="btn-primary" aria-label="Add Trade">
+            Add Trade
+          </button>
+          <button
+            onclick="copyAll()"
+            class="btn-secondary"
+            aria-label="Copy all generated text"
+          >
+            Copy All
+          </button>
+          <button
+            onclick="shareWhatsApp()"
+            class="btn-success"
+            aria-label="Share via WhatsApp"
+          >
+            WhatsApp
+          </button>
+          <button
+            onclick="sendEmail()"
+            class="btn-email"
+            aria-label="Send via Email"
+          >
+            E-mail
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <template id="trade-template">
+      <div class="trade-card">
+        <h2 class="trade-title">Trade 1</h2>
+        <div class="trade-inputs">
+          <div class="input-group">
+            <label class="input-label" for="qty-0">Quantity (mt):</label>
+            <input
+              type="number"
+              id="qty-0"
+              class="input-field"
+              min="0"
+              step="1"
+              aria-label="Quantity in metric tons"
+            />
+          </div>
+
+          <div class="input-group">
+            <label class="input-label" for="tradeType-0">Trade Type:</label>
+            <select id="tradeType-0" class="input-field">
+              <option value="Swap" selected>Swap</option>
+              <option value="Forward">Forward</option>
+            </select>
+          </div>
+
+          <label class="checkbox-group">
+            <input type="checkbox" id="syncPpt-0" />
+            <span class="checkbox-label">Synchronize PPT</span>
+          </label>
+        </div>
+
+        <div class="legs-grid">
+          <div class="leg-section">
+            <h3 class="leg-title">Leg 1</h3>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="side1-0" value="buy" checked />
+                <span>Buy</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="side1-0" value="sell" />
+                <span>Sell</span>
+              </label>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Price Type:</label>
+              <select id="type1-0" class="input-field">
+                <option value="">Select</option>
+                <option value="AVG">AVG</option>
+                <option value="AVGInter">AVG Period</option>
+                <option value="Fix">Fix</option>
+                <option value="C2R">C2R (Cash)</option>
+              </select>
+            </div>
+            <div class="avg-fields" id="avgFields1-0">
+              <div>
+                <label class="field-label">Month:</label>
+                <select id="month1-0" class="input-field">
+                  <option>January</option>
+                  <option>February</option>
+                  <option>March</option>
+                  <option>April</option>
+                  <option>May</option>
+                  <option>June</option>
+                  <option>July</option>
+                  <option>August</option>
+                  <option>September</option>
+                  <option>October</option>
+                  <option>November</option>
+                  <option>December</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label">Year:</label>
+                <select id="year1-0" class="input-field"></select>
+              </div>
+            </div>
+          </div>
+          <div class="leg-section">
+            <h3 class="leg-title">Leg 2</h3>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="side2-0" value="buy" checked />
+                <span>Buy</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="side2-0" value="sell" />
+                <span>Sell</span>
+              </label>
+            </div>
+            <div class="input-group">
+              <label class="input-label">Price Type:</label>
+              <select id="type2-0" class="input-field">
+                <option value="">Select</option>
+                <option value="AVG">AVG</option>
+                <option value="AVGInter">AVG Period</option>
+                <option value="Fix">Fix</option>
+                <option value="C2R">C2R (Cash)</option>
+              </select>
+            </div>
+            <div class="avg-fields" id="avgFields2-0">
+              <div>
+                <label class="field-label">Month:</label>
+                <select id="month2-0" class="input-field">
+                  <option>January</option>
+                  <option>February</option>
+                  <option>March</option>
+                  <option>April</option>
+                  <option>May</option>
+                  <option>June</option>
+                  <option>July</option>
+                  <option>August</option>
+                  <option>September</option>
+                  <option>October</option>
+                  <option>November</option>
+                  <option>December</option>
+                </select>
+              </div>
+              <div>
+                <label class="field-label">Year:</label>
+                <select id="year2-0" class="input-field"></select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="trade-buttons">
+          <button name="generate" class="btn-primary">Generate</button>
+          <button name="clear" class="btn-secondary">Clear</button>
+          <button name="remove" class="btn-danger">Remove</button>
+        </div>
+        <p id="output-0" class="output-text"></p>
+      </div>
+    </template>
+
+    <div id="confirmation-modal" class="modal-container hidden">
+      <div class="modal-box">
+        <h2 class="modal-title">Confirmação</h2>
+        <p id="confirmation-text" class="modal-text"></p>
+        <div class="modal-buttons">
+          <button
+            id="confirmation-cancel"
+            onclick="cancelModal()"
+            class="btn-danger"
+          >
+            Cancel
+          </button>
+          <button
+            id="confirmation-ok"
+            onclick="confirmModal()"
+            class="btn-primary"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="solarlunar.min.js"></script>
+    <script src="calendar-utils.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
