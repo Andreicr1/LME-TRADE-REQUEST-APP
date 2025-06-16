@@ -234,3 +234,14 @@ function sendEmail() {
 
   window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
 }
+
+module.exports = {
+  loadHolidayData,
+  addTrade,
+  populateYearOptions,
+  toggleLeg1Fields,
+  toggleLeg2Fields,
+  updateFinalOutput,
+  copyAll,
+  sendEmail
+};
