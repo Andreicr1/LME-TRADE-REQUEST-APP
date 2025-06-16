@@ -92,7 +92,7 @@ describe('buildConfirmationText', () => {
     document.body.appendChild(validity);
     const text = buildConfirmationText(0);
     expect(text).toBe(
-      'Você está comprando 3 toneladas de Al com preço fixado Resting, valid for 3 Hours, ppt 04/02/25, e vendendo 3 toneladas de Al pela média de janeiro/2025.\nOrdem resting (melhor oferta no book) válida por 3 horas. Confirma?'
+      'Você está comprando 3 toneladas de Al com preço fixado Resting, ppt 04/02/25, e vendendo 3 toneladas de Al pela média de janeiro/2025.\nOrdem resting (melhor oferta no book) válida por 3 horas. Confirma?'
     );
   });
 });

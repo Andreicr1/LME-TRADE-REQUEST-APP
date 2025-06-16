@@ -435,8 +435,12 @@ function buildConfirmationText(index) {
     limitPrice2: document.getElementById(`limitPrice2-${index}`)?.value,
     validity1: document.getElementById(`orderValidity1-${index}`)?.value,
     validity2: document.getElementById(`orderValidity2-${index}`)?.value,
-    orderText1: getOrderTypeText ? getOrderTypeText(index, 1) : "",
-    orderText2: getOrderTypeText ? getOrderTypeText(index, 2) : "",
+    orderText1: getOrderTypeText
+      ? getOrderTypeText(index, 1).replace(/, valid for [^,]+/, "")
+      : "",
+    orderText2: getOrderTypeText
+      ? getOrderTypeText(index, 2).replace(/, valid for [^,]+/, "")
+      : "",
   };
 
   return generateConfirmationMessage(trade);
@@ -694,18 +698,27 @@ function generateRequest(index) {
       : "";
     let leg1;
     let ppt1 = "";
+    const orderText1 = getOrderTypeText ? getOrderTypeText(index, 1) : "";
+    const orderText2 = getOrderTypeText ? getOrderTypeText(index, 2) : "";
+
     const showPptAvgFix =
       (leg2Type === "Fix" && dateFix2Raw && !fixInput.readOnly) ||
       (leg1Type === "Fix" && dateFix1Raw && !(fixInputLeg1 && fixInputLeg1.readOnly));
+    const showPptAvgResting =
+      (leg2Type === "Fix" && !dateFix2Raw && /Resting/.test(orderText2) && leg1Type === "AVG") ||
+      (leg1Type === "Fix" && !dateFix1Raw && /Resting/.test(orderText1) && leg2Type === "AVG");
     const showPptAvgInter =
       (leg1Type === "AVGInter" && leg2Type === "AVG") ||
       (leg2Type === "AVGInter" && leg1Type === "AVG");
-    const showPptAvg = showPptAvgFix || showPptAvgInter;
+    const showPptAvg = showPptAvgFix || showPptAvgInter || showPptAvgResting;
     
     if (leg1Type === "AVG") {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
       leg1 += ` Flat`;
       ppt1 = pptDateAVG;
+      if (showPptAvgResting && leg2Type === "Fix") {
+        leg1 += ` ppt ${ppt1}`;
+      }
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
@@ -767,6 +780,9 @@ function generateRequest(index) {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
       leg2 += ` Flat`;
       ppt2 = pptDateAVG;
+      if (showPptAvgResting && leg1Type === "Fix") {
+        leg2 += ` ppt ${ppt2}`;
+      }
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
         document.getElementById(`startDate2-${index}`)?.value || "",
@@ -1023,7 +1039,7 @@ function getExecutionInstruction(index, leg, side) {
       case "Limit": {
         const limit = document.getElementById(`limitPrice${leg}-${index}`)?.value;
         const pricePart = limit ? ` @ USD ${limit}` : "";
-        return `Execution Instruction: Please work this order as a Limit${pricePart} for the ${capSide} side, valid for ${validity}.`;
+        return `Execution Instruction: Please work this order as a Limit${pricePart} for the Fixed price, valid for ${validity}.`;
       }
       case "Range": {
         const from = document.getElementById(`rangeFrom${leg}-${index}`)?.value;
@@ -1037,7 +1053,7 @@ function getExecutionInstruction(index, leg, side) {
         return `Execution Instruction: Please work this order as a Range${rangePart} for the ${capSide} side, valid for ${validity}.`;
       }
       case "Resting":
-        return `Execution Instruction: Please work this order posting as the best bid/offer in the book for the ${capSide} side, valid for ${validity}.`;
+        return `Execution Instruction: Please work this order posting as the best bid/offer in the book for the Fixed price, valid for ${validity}.`;
       case "At Market":
         return `Execution Instruction: Please work this order At Market for the ${capSide} side, valid for ${validity}.`;
       default:
