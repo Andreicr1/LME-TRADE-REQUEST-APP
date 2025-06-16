@@ -435,8 +435,16 @@ function buildConfirmationText(index) {
     limitPrice2: document.getElementById(`limitPrice2-${index}`)?.value,
     validity1: document.getElementById(`orderValidity1-${index}`)?.value,
     validity2: document.getElementById(`orderValidity2-${index}`)?.value,
-    orderText1: getOrderTypeText ? getOrderTypeText(index, 1) : "",
-    orderText2: getOrderTypeText ? getOrderTypeText(index, 2) : "",
+    orderText1: (() => {
+      const rawText = getOrderTypeText ? getOrderTypeText(index, 1) : "";
+      const cleanText = rawText.replace(/, valid (?:for|until)[^,]*/i, "");
+      return cleanText;
+    })(),
+    orderText2: (() => {
+      const rawText = getOrderTypeText ? getOrderTypeText(index, 2) : "";
+      const cleanText = rawText.replace(/, valid (?:for|until)[^,]*/i, "");
+      return cleanText;
+    })(),
   };
 
   return generateConfirmationMessage(trade);
