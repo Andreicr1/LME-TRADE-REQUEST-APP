@@ -676,6 +676,10 @@ function generateRequest(index) {
     const leg2Type = document.getElementById(`type2-${index}`).value;
     const month2 = document.getElementById(`month2-${index}`).value;
     const year2 = parseInt(document.getElementById(`year2-${index}`).value);
+    const orderType1 =
+      document.getElementById(`orderType1-${index}`)?.value || "";
+    const orderType2 =
+      document.getElementById(`orderType2-${index}`)?.value || "";
     const fixInputLeg1 = document.getElementById(`fixDate1-${index}`);
     const fixInput = document.getElementById(`fixDate-${index}`);
     const dateFix1Raw = fixInputLeg1 ? fixInputLeg1.value : "";
@@ -703,8 +707,14 @@ function generateRequest(index) {
     let leg1;
     let ppt1 = "";
     const showPptAvgFix =
-      (leg2Type === "Fix" && dateFix2Raw && !fixInput.readOnly) ||
-      (leg1Type === "Fix" && dateFix1Raw && !(fixInputLeg1 && fixInputLeg1.readOnly));
+      (leg2Type === "Fix" &&
+        ((dateFix2Raw && !fixInput.readOnly) || orderType2 === "Resting")) ||
+      (leg1Type === "Fix" &&
+        ((dateFix1Raw && !(fixInputLeg1 && fixInputLeg1.readOnly)) ||
+          orderType1 === "Resting"));
+    const showPptAvgFixResting =
+      (leg2Type === "Fix" && leg1Type === "AVG" && orderType2 === "Resting") ||
+      (leg1Type === "Fix" && leg2Type === "AVG" && orderType1 === "Resting");
     const showPptAvgInter =
       (leg1Type === "AVGInter" && leg2Type === "AVG") ||
       (leg2Type === "AVGInter" && leg1Type === "AVG");
@@ -714,6 +724,9 @@ function generateRequest(index) {
       leg1 = `${capitalize(leg1Side)} ${q} mt Al AVG ${month} ${year}`;
       leg1 += ` Flat`;
       ppt1 = pptDateAVG;
+      if (showPptAvgFixResting && leg2Type === "Fix") {
+        leg1 += `, ppt ${ppt1}`;
+      }
     } else if (leg1Type === "AVGInter") {
       const start = parseInputDate(startDateRaw);
       const end = parseInputDate(endDateRaw);
@@ -775,6 +788,9 @@ function generateRequest(index) {
       leg2 = `${capitalize(leg2Side)} ${q} mt Al AVG ${month2} ${year2}`;
       leg2 += ` Flat`;
       ppt2 = pptDateAVG;
+      if (showPptAvgFixResting && leg1Type === "Fix") {
+        leg2 += `, ppt ${ppt2}`;
+      }
     } else if (leg2Type === "AVGInter") {
       const start = parseInputDate(
         document.getElementById(`startDate2-${index}`)?.value || "",

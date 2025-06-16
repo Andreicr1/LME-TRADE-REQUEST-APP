@@ -263,6 +263,60 @@ describe("generateRequest", () => {
     );
   });
 
+  test("adds ppt for AVG leg when opposite fix is resting", () => {
+    document.getElementById("qty-0").value = "5";
+    document.getElementById("type1-0").value = "Fix";
+    document.getElementById("type2-0").value = "AVG";
+    document.getElementById("month2-0").value = "February";
+    document.getElementById("year2-0").value = "2025";
+    document.getElementById("fixDate1-0").value = "";
+
+    const ot = document.createElement("select");
+    ot.id = "orderType1-0";
+    ot.innerHTML = '<option value="Resting" selected>Resting</option>';
+    document.body.appendChild(ot);
+
+    const ov = document.createElement("select");
+    ov.id = "orderValidity1-0";
+    ov.innerHTML = '<option value="Day" selected>Day</option>';
+    document.body.appendChild(ov);
+
+    toggleLeg1Fields(0);
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Buy 5 mt Al USD Resting, valid for Day ppt 04/03/25 and Sell 5 mt Al AVG February 2025 Flat, ppt 04/03/25 against\n" +
+        "Execution Instruction: Please work this order posting as the best bid/offer in the book for the Buy side, valid for Day."
+    );
+  });
+
+  test("adds ppt for AVG leg1 when second fix is resting", () => {
+    document.getElementById("qty-0").value = "5";
+    document.getElementById("type1-0").value = "AVG";
+    document.getElementById("month1-0").value = "January";
+    document.getElementById("year1-0").value = "2025";
+    document.getElementById("type2-0").value = "Fix";
+    document.getElementById("fixDate-0").value = "";
+
+    const ot = document.createElement("select");
+    ot.id = "orderType2-0";
+    ot.innerHTML = '<option value="Resting" selected>Resting</option>';
+    document.body.appendChild(ot);
+
+    const ov = document.createElement("select");
+    ov.id = "orderValidity2-0";
+    ov.innerHTML = '<option value="Day" selected>Day</option>';
+    document.body.appendChild(ov);
+
+    toggleLeg2Fields(0);
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Sell 5 mt Al USD Resting, valid for Day ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat, ppt 04/02/25 against\n" +
+        "Execution Instruction: Please work this order posting as the best bid/offer in the book for the Sell side, valid for Day."
+    );
+  });
+
   test("creates single leg forward AVG request", () => {
     document.getElementById("tradeType-0").value = "Forward";
     document.getElementById("qty-0").value = "6";
