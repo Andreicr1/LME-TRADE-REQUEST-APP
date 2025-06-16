@@ -95,4 +95,28 @@ describe('buildConfirmationText', () => {
       'Você está comprando 3 toneladas de Al com preço fixado Resting, ppt 04/02/25, e vendendo 3 toneladas de Al pela média de janeiro/2025.\nOrdem resting (melhor oferta no book) válida por 3 horas. Confirma?'
     );
   });
+
+  test('formats limit order confirmation in Portuguese', () => {
+    document.getElementById('qty-0').value = '2';
+    document.querySelector("input[name='side1-0'][value='sell']").checked = true;
+    document.querySelector("input[name='side2-0'][value='buy']").checked = true;
+    document.getElementById('type1-0').value = 'AVG';
+    document.getElementById('type2-0').value = 'Fix';
+    const orderType = document.createElement('select');
+    orderType.id = 'orderType2-0';
+    orderType.innerHTML = '<option value="Limit" selected>Limit</option>';
+    document.body.appendChild(orderType);
+    const validity = document.createElement('select');
+    validity.id = 'orderValidity2-0';
+    validity.innerHTML = '<option value="3 Hours" selected>3 Hours</option>';
+    document.body.appendChild(validity);
+    const limit = document.createElement('input');
+    limit.id = 'limitPrice2-0';
+    limit.value = '2520';
+    document.body.appendChild(limit);
+    const text = buildConfirmationText(0);
+    expect(text).toBe(
+      'Você está comprando 2 toneladas de Al com preço fixado Limit 2520, ppt 04/02/25, e vendendo 2 toneladas de Al pela média de janeiro/2025.\nOrdem limit @ USD 2.520,00 / mt válida por 3 horas. Confirma?'
+    );
+  });
 });

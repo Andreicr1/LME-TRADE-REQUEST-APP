@@ -286,7 +286,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Buy 5 mt Al USD Resting, valid for Day ppt 04/03/25 and Sell 5 mt Al AVG February 2025 Flat, ppt 04/03/25 against\n" +
-        "Execution Instruction: Please work this order posting as the best bid/offer in the book for the Buy side, valid for Day."
+        "Execution Instruction: Please work this order posting as the best offer in the book for the fixed price, valid for Day."
     );
   });
 
@@ -313,7 +313,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Sell 5 mt Al USD Resting, valid for Day ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat, ppt 04/02/25 against\n" +
-        "Execution Instruction: Please work this order posting as the best bid/offer in the book for the Sell side, valid for Day."
+        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day."
     );
   });
 

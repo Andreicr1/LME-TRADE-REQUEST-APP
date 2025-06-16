@@ -608,6 +608,15 @@ function formatValidityPt(val) {
   }
 }
 
+function formatUsdPt(value) {
+  const num = Number(value);
+  if (!isFinite(num)) return value;
+  return num.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
+
 function getOrderConfirmationText(type, side, limit, validity) {
   if (!type) return "";
   let base;
@@ -619,7 +628,7 @@ function getOrderConfirmationText(type, side, limit, validity) {
       base = "at market";
       break;
     case "Limit":
-      base = limit ? `limit ${limit}` : "limit";
+      base = limit ? `limit @ USD ${formatUsdPt(limit)} / mt` : "limit";
       break;
     case "Range":
       base = "range";
