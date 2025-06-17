@@ -124,6 +124,8 @@ function addTrade() {
 
   tradesContainer.appendChild(div);
 
+  renumberTrades();
+
   requestAnimationFrame(() => div.classList.remove("opacity-0"));
 
   const currentYear = new Date().getFullYear();
@@ -480,10 +482,21 @@ function generateRequest(index) {
 
   const orderType1 = document.getElementById(`orderType1-${index}`)?.value;
   const orderType2 = document.getElementById(`orderType2-${index}`)?.value;
-  const validity1 = document.getElementById(`orderValidity1-${index}`)?.value;
-  const validity2 = document.getElementById(`orderValidity2-${index}`)?.value;
+  let validity1 = document.getElementById(`orderValidity1-${index}`)?.value;
+  let validity2 = document.getElementById(`orderValidity2-${index}`)?.value;
   const limit1 = document.getElementById(`limitPrice1-${index}`)?.value;
   const limit2 = document.getElementById(`limitPrice2-${index}`)?.value;
+
+  if (orderType1 && orderType1 !== "At Market" && !validity1) {
+    validity1 = "Day";
+    const sel = document.getElementById(`orderValidity1-${index}`);
+    if (sel) sel.value = "Day";
+  }
+  if (orderType2 && orderType2 !== "At Market" && !validity2) {
+    validity2 = "Day";
+    const sel = document.getElementById(`orderValidity2-${index}`);
+    if (sel) sel.value = "Day";
+  }
 
   let ppt1 = "";
   let ppt2 = "";
@@ -512,38 +525,40 @@ function generateRequest(index) {
   if (type1 === "AVGInter" && (type2 === "AVG" || syncPpt)) ppt1 = legPpt(month2, year2);
   if (type2 === "AVGInter" && (type1 === "AVG" || syncPpt)) ppt2 = legPpt(month1, year1);
 
-  function legText(side, type, month, year, start, end, fixDate, ppt, orderType, validity, limit) {
+  function legText(side, type, month, year, start, end, fixDate, ppt) {
     const s = side === "buy" ? "Buy" : "Sell";
     let txt = `${s} ${qty} mt Al `;
     if (type === "AVG") {
       txt += `AVG ${month} ${year} Flat`;
-      if (orderType === "Resting" && ppt) txt += `, ppt ${ppt}`;
-    } else if (type === "AVGInter") {
+      return txt;
+    }
+    if (type === "AVGInter") {
       const ss = calendarUtils.formatDate(start, currentCalendar());
       const ee = calendarUtils.formatDate(end, currentCalendar());
       txt += `Fixing AVG ${ss} to ${ee}, ppt ${ppt}`;
-    } else if (type === "Fix") {
-      if (orderType === "Limit") {
-        txt += `USD Limit ${limit}, valid for ${validity}`;
-      } else if (orderType === "Resting") {
-        txt += `USD Resting, valid for ${validity}`;
-      } else if (fixDate) {
+      return txt;
+    }
+    if (type === "Fix") {
+      if (fixDate) {
         const f = calendarUtils.formatDate(fixDate, currentCalendar());
-        txt += `USD ${f},`;
+        txt += `USD fixing on ${f}`;
       } else {
         txt += "USD";
       }
       if (ppt) txt += ` ppt ${ppt}`;
-    } else if (type === "C2R") {
+      return txt;
+    }
+    if (type === "C2R") {
       const f = calendarUtils.formatDate(fixDate, currentCalendar());
       const p = ppt || getFixPpt(f);
       txt += `C2R ${f} ppt ${p}`;
+      return txt;
     }
-    return txt;
+    return txt.trim();
   }
 
-  let l1 = legText(side1, type1, month1, year1, start1, end1, fix1, ppt1, orderType1, validity1, limit1);
-  let l2 = legText(side2, type2, month2, year2, start2, end2, fix2, ppt2, orderType2, validity2, limit2);
+  let l1 = legText(side1, type1, month1, year1, start1, end1, fix1, ppt1);
+  let l2 = legText(side2, type2, month2, year2, start2, end2, fix2, ppt2);
 
   if (type1 === "Fix" && orderType1 === "Resting" && !fix1 && type2 === "AVG") {
     l2 += `, ppt ${ppt1}`;
@@ -564,11 +579,29 @@ function generateRequest(index) {
     else text = `LME Request: ${l1} and ${l2} against`;
   }
 
+  const orderLines = [];
+  function pushOrderLine(orderType, limit, validity) {
+    if (orderType === "Limit") {
+      orderLines.push(`Order Type: Limit at $${limit}, valid for ${validity}`);
+    } else if (orderType === "Resting") {
+      orderLines.push(`Order Type: Resting (top of book), valid for ${validity}`);
+    }
+  }
+
+  if ((type1 === "Fix" || type1 === "C2R") && orderType1 && orderType1 !== "At Market") {
+    pushOrderLine(orderType1, limit1, validity1);
+  }
+  if ((type2 === "Fix" || type2 === "C2R") && orderType2 && orderType2 !== "At Market") {
+    pushOrderLine(orderType2, limit2, validity2);
+  }
+
   if (orderType1 === "Limit" || orderType1 === "Resting") {
     text += `\nExecution Instruction: ${buildExecutionInstruction(orderType1, side1, validity1, limit1)}`;
   } else if (orderType2 === "Limit" || orderType2 === "Resting") {
     text += `\nExecution Instruction: ${buildExecutionInstruction(orderType2, side2, validity2, limit2)}`;
   }
+
+  if (orderLines.length) text += `\n${orderLines.join("\n")}`;
 
   output.textContent = text.trim();
   updateFinalOutput();
@@ -712,10 +745,85 @@ function removeTrade(index) {
   }, 300);
 }
 
+function validateTrade(index) {
+  const qty = parseFloat(document.getElementById(`qty-${index}`)?.value);
+  if (!Number.isFinite(qty) || qty <= 0) {
+    alert("Please enter a valid quantity.");
+    return false;
+  }
+
+  const tradeType = document.getElementById(`tradeType-${index}`)?.value || "Swap";
+  const type1 = document.getElementById(`type1-${index}`)?.value;
+  const type2 = document.getElementById(`type2-${index}`)?.value;
+  if (!type1) {
+    alert("Select price type for Leg 1.");
+    return false;
+  }
+  if (tradeType !== "Forward" && !type2) {
+    alert("Select price type for Leg 2.");
+    return false;
+  }
+
+  const side1 = document.querySelector(`input[name='side1-${index}']:checked`)?.value;
+  const side2 = document.querySelector(`input[name='side2-${index}']:checked`)?.value;
+  if (side1 && side2 && side1 === side2 && type2) {
+    alert("Legs cannot have the same side.");
+    return false;
+  }
+
+  function checkFix(type, leg) {
+    const orderType = document.getElementById(`orderType${leg}-${index}`)?.value;
+    const validitySel = document.getElementById(`orderValidity${leg}-${index}`);
+    let validity = validitySel?.value;
+    const fix = document.getElementById(`${leg === 1 ? "fixDate1" : "fixDate"}-${index}`)?.value;
+    if (orderType === "Limit" && !document.getElementById(`limitPrice${leg}-${index}`)?.value) {
+      alert("Enter limit price.");
+      return false;
+    }
+    if (orderType && orderType !== "At Market" && !validity) {
+      validity = "Day";
+      if (validitySel) validitySel.value = "Day";
+    }
+    if (type === "C2R" && !fix) {
+      alert("Please provide a fixing date.");
+      return false;
+    }
+    if (type === "Fix" && !fix && (!orderType || orderType === "At Market")) {
+      alert("Please provide a fixing date.");
+      return false;
+    }
+    return true;
+  }
+
+  if (type1 === "AVGInter") {
+    if (!document.getElementById(`startDate-${index}`)?.value || !document.getElementById(`endDate-${index}`)?.value) {
+      alert("Fill start and end dates for Leg 1.");
+      return false;
+    }
+  }
+  if (type2 === "AVGInter") {
+    if (!document.getElementById(`startDate2-${index}`)?.value || !document.getElementById(`endDate2-${index}`)?.value) {
+      alert("Fill start and end dates for Leg 2.");
+      return false;
+    }
+  }
+
+  if (type1 === "Fix" || type1 === "C2R") {
+    if (!checkFix(type1, 1)) return false;
+  }
+  if (type2 === "Fix" || type2 === "C2R") {
+    if (!checkFix(type2, 2)) return false;
+  }
+
+  return true;
+}
+
 function openConfirmationModal(index) {
   const modal = document.getElementById("confirmation-modal");
   const textEl = document.getElementById("confirmation-text");
   if (!modal || !textEl) return;
+  if (!validateTrade(index)) return;
+  activeTradeIndex = index;
   textEl.textContent = buildConfirmationText(index);
   confirmCallback = () => generateRequest(index);
   modal.classList.remove("hidden");
@@ -725,11 +833,14 @@ function confirmModal() {
   document.getElementById("confirmation-modal")?.classList.add("hidden");
   if (confirmCallback) confirmCallback();
   confirmCallback = null;
+  activeTradeIndex = null;
 }
 
 function cancelModal() {
   document.getElementById("confirmation-modal")?.classList.add("hidden");
+  if (activeTradeIndex !== null) clearTrade(activeTradeIndex);
   confirmCallback = null;
+  activeTradeIndex = null;
 }
 
 function shareWhatsApp() {
