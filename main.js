@@ -243,6 +243,30 @@ function toggleOrderFields(index, leg) {
     limitWrap.style.display = showOrder && orderType === "Limit" ? "" : "none";
 }
 
+function syncSides(index, changedLeg) {
+  const buy1 = document.querySelector(
+    `input[name='side1-${index}'][value='buy']`
+  );
+  const sell1 = document.querySelector(
+    `input[name='side1-${index}'][value='sell']`
+  );
+  const buy2 = document.querySelector(
+    `input[name='side2-${index}'][value='buy']`
+  );
+  const sell2 = document.querySelector(
+    `input[name='side2-${index}'][value='sell']`
+  );
+  if (!buy1 || !sell1 || !buy2 || !sell2) return;
+
+  if (changedLeg === 1) {
+    if (buy1.checked) sell2.checked = true;
+    else if (sell1.checked) buy2.checked = true;
+  } else if (changedLeg === 2) {
+    if (buy2.checked) sell1.checked = true;
+    else if (sell2.checked) buy1.checked = true;
+  }
+}
+
 // Função para atualizar saída final
 function updateFinalOutput() {
   const allOutputs = document.querySelectorAll("[id^='output-']");
@@ -253,7 +277,7 @@ function updateFinalOutput() {
   const company = document.querySelector("input[name='company']:checked")?.value;
 
   if (company && lines.length) {
-    lines.unshift(`${company} Execution Instruction`);
+    lines.unshift(`For ${company} Account:`);
   }
 
   document.getElementById("final-output").value = lines.join("\n");
@@ -579,21 +603,7 @@ function generateRequest(index) {
     else text = `LME Request: ${l1} and ${l2} against`;
   }
 
-  const orderLines = [];
-  function pushOrderLine(orderType, limit, validity) {
-    if (orderType === "Limit") {
-      orderLines.push(`Order Type: Limit at $${limit}, valid for ${validity}`);
-    } else if (orderType === "Resting") {
-      orderLines.push(`Order Type: Resting (top of book), valid for ${validity}`);
-    }
-  }
 
-  if ((type1 === "Fix" || type1 === "C2R") && orderType1 && orderType1 !== "At Market") {
-    pushOrderLine(orderType1, limit1, validity1);
-  }
-  if ((type2 === "Fix" || type2 === "C2R") && orderType2 && orderType2 !== "At Market") {
-    pushOrderLine(orderType2, limit2, validity2);
-  }
 
   if (orderType1 === "Limit" || orderType1 === "Resting") {
     text += `\nExecution Instruction: ${buildExecutionInstruction(orderType1, side1, validity1, limit1)}`;
@@ -601,7 +611,6 @@ function generateRequest(index) {
     text += `\nExecution Instruction: ${buildExecutionInstruction(orderType2, side2, validity2, limit2)}`;
   }
 
-  if (orderLines.length) text += `\n${orderLines.join("\n")}`;
 
   output.textContent = text.trim();
   updateFinalOutput();
@@ -717,7 +726,10 @@ function clearTrade(index) {
   const buy1 = document.querySelector(`input[name='side1-${index}'][value='buy']`);
   if (buy1) buy1.checked = true;
   const buy2 = document.querySelector(`input[name='side2-${index}'][value='buy']`);
+  const sell2 = document.querySelector(`input[name='side2-${index}'][value='sell']`);
   if (buy2) buy2.checked = false;
+  if (sell2) sell2.checked = true;
+  syncSides(index, 1);
   const type1Sel = document.getElementById(`type1-${index}`);
   const type2Sel = document.getElementById(`type2-${index}`);
   if (type1Sel) type1Sel.value = "";
@@ -879,6 +891,16 @@ function attachTradeHandlers(index) {
   const order2 = document.getElementById(`orderType2-${index}`);
   if (order2)
     order2.addEventListener("change", () => toggleOrderFields(index, 2));
+
+  const side1Radios = document.querySelectorAll(`input[name='side1-${index}']`);
+  side1Radios.forEach((r) =>
+    r.addEventListener("change", () => syncSides(index, 1))
+  );
+  const side2Radios = document.querySelectorAll(`input[name='side2-${index}']`);
+  side2Radios.forEach((r) =>
+    r.addEventListener("change", () => syncSides(index, 2))
+  );
+  syncSides(index, 1);
 
   const sd1 = document.getElementById(`startDate-${index}`);
   if (sd1) sd1.addEventListener("change", () => updateEndDateMin(index, 1));

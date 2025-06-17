@@ -204,8 +204,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against\n" +
-        "Execution Instruction: Please work this order as a Limit @ USD 2300 for the Fixed price, valid for Day.\n" +
-        "Order Type: Limit at $2300, valid for Day"
+        "Execution Instruction: Please work this order as a Limit @ USD 2300 for the Fixed price, valid for Day."
     );
   });
 
@@ -235,8 +234,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Buy 5 mt Al USD fixing on 02/01/25 ppt 06/01/25 and Sell 5 mt Al USD against\n" +
-        "Execution Instruction: Please work this order as a Limit @ USD 2500 for the Fixed price, valid for Day.\n" +
-        "Order Type: Limit at $2500, valid for Day"
+        "Execution Instruction: Please work this order as a Limit @ USD 2500 for the Fixed price, valid for Day."
     );
   });
 
@@ -261,8 +259,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Buy 4 mt Al USD fixing on 02/01/25 ppt 06/01/25 and Sell 4 mt Al USD against\n" +
-        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day.\n" +
-        "Order Type: Resting (top of book), valid for Day"
+        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day."
     );
   });
 
@@ -289,8 +286,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Buy 5 mt Al USD ppt 04/03/25 and Sell 5 mt Al AVG February 2025 Flat, ppt 04/03/25 against\n" +
-        "Execution Instruction: Please work this order posting as the best offer in the book for the fixed price, valid for Day.\n" +
-        "Order Type: Resting (top of book), valid for Day"
+        "Execution Instruction: Please work this order posting as the best offer in the book for the fixed price, valid for Day."
     );
   });
 
@@ -317,8 +313,7 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat, ppt 04/02/25 against\n" +
-        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day.\n" +
-        "Order Type: Resting (top of book), valid for Day"
+        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day."
     );
   });
 
@@ -358,7 +353,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const finalOut = document.getElementById("final-output").value;
     expect(finalOut).toBe(
-      "Alcast Brasil Execution Instruction\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
+      "For Alcast Brasil Account:\nLME Request: Buy 10 mt Al AVG January 2025 Flat and Sell 10 mt Al AVG February 2025 Flat against"
     );
   });
 });
