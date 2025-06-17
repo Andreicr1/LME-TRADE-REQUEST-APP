@@ -119,4 +119,22 @@ describe('buildConfirmationText', () => {
       'Você está comprando 2 toneladas de Al com preço fixado Limit 2520, ppt 04/02/25, e vendendo 2 toneladas de Al pela média de janeiro/2025.\nOrdem limit @ USD 2.520,00 / mt válida por 3 horas. Confirma?'
     );
   });
+
+  test('omits order instructions for market orders', () => {
+    document.getElementById('qty-0').value = '4';
+    document.getElementById('type1-0').value = 'AVG';
+    document.getElementById('type2-0').value = 'Fix';
+    const orderType = document.createElement('select');
+    orderType.id = 'orderType2-0';
+    orderType.innerHTML = '<option value="At Market" selected>At Market</option>';
+    document.body.appendChild(orderType);
+    const validity = document.createElement('select');
+    validity.id = 'orderValidity2-0';
+    validity.innerHTML = '<option value="Day" selected>Day</option>';
+    document.body.appendChild(validity);
+    const text = buildConfirmationText(0);
+    expect(text).toBe(
+      'Você está vendendo 4 toneladas de Al com preço fixado, ppt 04/02/25, e comprando 4 toneladas de Al pela média de janeiro/2025. Confirma?'
+    );
+  });
 });
