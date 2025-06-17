@@ -40,8 +40,7 @@ The Buy/Sell options of the two legs are synchronised: selecting **Buy** on Leg
 1 automatically selects **Sell** on Leg 2 and vice versa.
 
 Selecting a company at the top of the page also adds a header to the final text
-area. Depending on the choice, the first line will be either **Alcast Brasil
-Execution Instruction** or **Alcast Trading Execution Instruction**.
+area. Depending on the choice, the first line will be either **For Alcast Brasil Account:** or **For Alcast Trading Account:**.
 
 Fixing date inputs only appear when a leg uses **Fix** pricing (Leg&nbsp;2 also
 shows it for **C2R (Cash)**). When one leg is **AVG** and the other **Fix**, checking the "Use AVG PPT Date" option automatically fills the fixed leg's date with the averaging leg's last business day.
