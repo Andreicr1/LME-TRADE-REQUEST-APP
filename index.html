@@ -74,7 +74,7 @@
 
     <template id="trade-template">
       <div class="trade-card">
-        <h2 class="trade-title">Trade 1</h2>
+        <h2 class="trade-title"><strong>Trade 1</strong></h2>
         <div class="trade-inputs">
           <div class="input-group">
             <label class="input-label" for="qty-0">Quantity (mt):</label>
@@ -148,6 +148,43 @@
                 <select id="year1-0" class="input-field"></select>
               </div>
             </div>
+            <div class="input-group">
+              <label class="input-label" for="startDate-0">Start Date:</label>
+              <input type="date" id="startDate-0" class="input-field" />
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="endDate-0">End Date:</label>
+              <input type="date" id="endDate-0" class="input-field" />
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="fixDate1-0">Fixing Date:</label>
+              <input type="date" id="fixDate1-0" class="input-field" />
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="orderType1-0">Order Type:</label>
+              <select id="orderType1-0" class="input-field">
+                <option value="">Select</option>
+                <option value="At Market">At Market</option>
+                <option value="Limit">Limit</option>
+                <option value="Resting">Resting</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="orderValidity1-0">Order Validity:</label>
+              <select id="orderValidity1-0" class="input-field">
+                <option value="">Select</option>
+                <option value="Day">Day</option>
+                <option value="GTC">GTC</option>
+                <option value="3 Hours">3 Hours</option>
+                <option value="6 Hours">6 Hours</option>
+                <option value="12 Hours">12 Hours</option>
+                <option value="Until Further Notice">Until Further Notice</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="limitPrice1-0">Limit Price:</label>
+              <input type="number" id="limitPrice1-0" class="input-field" step="0.01" />
+            </div>
           </div>
           <div class="leg-section">
             <h3 class="leg-title">Leg 2</h3>
@@ -193,6 +230,43 @@
                 <label class="field-label">Year:</label>
                 <select id="year2-0" class="input-field"></select>
               </div>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="startDate2-0">Start Date:</label>
+              <input type="date" id="startDate2-0" class="input-field" />
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="endDate2-0">End Date:</label>
+              <input type="date" id="endDate2-0" class="input-field" />
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="fixDate-0">Fixing Date:</label>
+              <input type="date" id="fixDate-0" class="input-field" />
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="orderType2-0">Order Type:</label>
+              <select id="orderType2-0" class="input-field">
+                <option value="">Select</option>
+                <option value="At Market">At Market</option>
+                <option value="Limit">Limit</option>
+                <option value="Resting">Resting</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="orderValidity2-0">Order Validity:</label>
+              <select id="orderValidity2-0" class="input-field">
+                <option value="">Select</option>
+                <option value="Day">Day</option>
+                <option value="GTC">GTC</option>
+                <option value="3 Hours">3 Hours</option>
+                <option value="6 Hours">6 Hours</option>
+                <option value="12 Hours">12 Hours</option>
+                <option value="Until Further Notice">Until Further Notice</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label class="input-label" for="limitPrice2-0">Limit Price:</label>
+              <input type="number" id="limitPrice2-0" class="input-field" step="0.01" />
             </div>
           </div>
         </div>
