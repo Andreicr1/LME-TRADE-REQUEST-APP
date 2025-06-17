@@ -620,8 +620,11 @@ function buildExecutionInstruction(type, side, validity, price) {
   if (type === "Limit") {
     return `Please work this order as a Limit @ USD ${price} for the Fixed price, valid for ${validity}.`;
   }
-  const dir = side === "buy" ? "offer" : "bid";
-  return `Please work this order posting as the best ${dir} in the book for the fixed price, valid for ${validity}.`;
+  if (type === "Resting") {
+    const dir = side === "buy" ? "offer" : "bid";
+    return `Please work this order posting as the best ${dir} in the book for the fixed price, valid for ${validity}.`;
+  }
+  return "";
 }
 
 function ptExecutionInstruction(type, side, validity, price) {
@@ -630,9 +633,12 @@ function ptExecutionInstruction(type, side, validity, price) {
     const v = (validity || "").replace("Hours", "horas");
     return `Ordem limit @ USD ${formatted} / mt válida por ${v.toLowerCase()}.`;
   }
-  const desc = side === "buy" ? "melhor oferta no book" : "melhor oferta";
-  const v = (validity || "").replace("Hours", "horas");
-  return `Ordem resting (${desc}) válida por ${v.toLowerCase()}.`;
+  if (type === "Resting") {
+    const desc = side === "buy" ? "melhor oferta no book" : "melhor oferta";
+    const v = (validity || "").replace("Hours", "horas");
+    return `Ordem resting (${desc}) válida por ${v.toLowerCase()}.`;
+  }
+  return "";
 }
 
 function buildConfirmationText(index) {
