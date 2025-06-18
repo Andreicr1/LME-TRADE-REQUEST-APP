@@ -76,6 +76,24 @@ async function loadHolidayData() {
   }
 }
 
+function openExternalSite() {
+  const url = 'https://portal.lmelive.com/CommodityGroup/MetalSummary?commodityGroupCode=NFG';  
+  const features = 'width=1540,height=900,scrollbars=yes,resizable=yes';
+  const newWindow = window.open(url, '_blank', features);
+
+  if (newWindow) {
+    newWindow.focus();
+  } else {
+    alert('O navegador bloqueou o pop-up. Libere os pop-ups para este site.');
+  }
+}
+
+function closeIframeModal() {
+  document.getElementById('iframe-modal').classList.add('hidden');
+  document.getElementById('external-iframe').src = '';
+}
+
+
 // Função para adicionar um novo trade
 function addTrade() {
   const index = nextIndex++;

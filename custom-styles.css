@@ -1,8 +1,38 @@
-/* === Trade Block: Separação visual entre os Trades === */
+/* === Fundo de página === */
+.page-background {
+  background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+  min-height: 100vh;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.container {
+  max-width: 56rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* === Título Principal === */
+.page-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1f2937;
+  text-align: left;
+  margin-bottom: 2rem;
+  letter-spacing: 0.3px;
+  border-bottom: 2px solid #2563eb;
+  padding-bottom: 0.5rem;
+}
+
+/* === Trade Block === */
 .trade-card {
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   padding: 1.25rem;
   margin-bottom: 1.5rem;
   border-left: 5px solid #2563eb;
@@ -39,15 +69,13 @@
 
 .trade-card.collapsed .collapse-toggle::after {
   content: " Expand";
-  color: #2563eb;
 }
 
 .trade-card:not(.collapsed) .collapse-toggle::after {
   content: " Collapse";
-  color: #2563eb;
 }
 
-/* Alternância de cor entre os trades (opcional) */
+/* Alternância de cor entre trades (opcional) */
 .trade-card:nth-child(odd) {
   background-color: #f9fafb;
 }
@@ -56,7 +84,7 @@
   background-color: #ffffff;
 }
 
-/* === Trade Inputs (Quantidade + Trade Type + Checkbox) === */
+/* === Trade Inputs: Quantidade + Trade Type + Checkbox === */
 .trade-inputs {
   display: flex;
   gap: 1rem;
@@ -110,10 +138,10 @@
 }
 
 .leg-title {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.25rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
 }
 
@@ -147,7 +175,7 @@
 input[type="date"],
 input[type="number"],
 select {
-  border: 1px solid #d1d5db;
+  border: 1px solid #cbd5e1;
   border-radius: 0.375rem;
   padding: 0.5rem;
   font-size: 0.875rem;
@@ -178,6 +206,11 @@ select:focus {
   flex: 1 1 120px;
 }
 
+.trade-buttons {
+  margin-top: 7px;
+}
+
+/* Responsividade para mobile */
 @media (max-width: 700px) {
   .legs-grid {
     flex-direction: column;
@@ -194,26 +227,47 @@ select:focus {
   }
 }
 
-/* === Botões Modernos === */
+/* === Botões === */
 button {
   transition: all 0.15s ease-in-out;
   min-width: 100px;
+  min-height: 40px;
   padding: 0.5rem 1rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border-radius: 0.375rem;
+  margin-right: 0.5rem;
 }
 
 button:hover {
   transform: scale(1.05);
 }
 
-.btn-primary { background-color: #007bff; color: white; }
-.btn-secondary { background-color: #ffc107; color: white; }
-.btn-danger { background-color: #dc3545; color: white; }
-.btn-success { background-color: #13a10e; color: white; }
-.btn-email { background-color: #7c3aed; color: white; }
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #ffc107;
+  color: white;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-success {
+  background-color: #13a10e;
+  color: white;
+}
+
+.btn-email {
+  background-color: #7c3aed;
+  color: white;
+}
 
 .btn-primary:hover { background-color: #0056b3; }
 .btn-secondary:hover { background-color: #e0a800; }
@@ -221,13 +275,13 @@ button:hover {
 .btn-success:hover { background-color: #0f890a; }
 .btn-email:hover { background-color: #6a21d9; }
 
-/* === Output Section (estilo console) === */
+/* === Output Section (estilo console/log) === */
 .output-section {
   background-color: #ffffff;
   padding: 1rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 .output-section textarea {
@@ -244,7 +298,7 @@ button:hover {
   color: #374151;
 }
 
-/* === Modal de Confirmação - Centralizado com Overlay e Animação === */
+/* === Modal Centralizado com Overlay + Animação === */
 .modal-container {
   position: fixed;
   top: 0;
@@ -318,35 +372,29 @@ body {
   line-height: 1.5;
 }
 
-/* === Fundo de página === */
-.page-background {
-  background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
-  min-height: 100vh;
-  padding: 1.5rem;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+.btn-secondary {
+  background-color: #ffc107;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
-.container {
-  max-width: 56rem;
+.btn-secondary:hover {
+  background-color: #e0a800;
+}
+
+#iframe-modal iframe {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
+  height: 100%;
+  border: none;
 }
 
-.page-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 1rem;
-  text-align: left;
-  letter-spacing: 0.3px;
-  border-bottom: 2px solid #2563eb;
-  padding-bottom: 0.5rem;
+#iframe-modal .modal-box {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-
-
-}

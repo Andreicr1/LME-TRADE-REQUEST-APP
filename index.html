@@ -274,11 +274,23 @@
           <button name="generate" class="btn-primary">Generate</button>
           <button name="clear" class="btn-secondary">Clear</button>
           <button name="remove" class="btn-danger">Remove</button>
+          <button onclick="openExternalSite()" class="btn-secondary">LME Live</button>
         </div>
         <p id="output-0" class="output-text"></p>
       </div>
     </template>
 
+<div id="iframe-modal" class="modal-container hidden">
+  <div class="modal-box modal-box-styles">
+    <div class="modal-header">
+      <button onclick="closeIframeModal()" class="btn-danger">Fechar</button>
+    </div>
+    <iframe id="external-iframe" src="" class="iframe-styles" title="External Content"></iframe>
+    <iframe sandbox="allow-same-origin allow-scripts allow-forms" title="Accessible Frame"></iframe>
+  </div>
+</div>
+
+</div>
     <div id="confirmation-modal" class="modal-container hidden">
       <div class="modal-box">
         <h2 class="modal-title">Confirmação</h2>
