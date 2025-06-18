@@ -1,6 +1,5 @@
-/* === Fundo de página === */
 .page-background {
-  background: linear-gradient(145deg, #f8fafc, #e2e8f0);
+  background: linear-gradient(145deg, #d4d4d8, #a1a1aa);
   min-height: 100vh;
   padding: 1.5rem;
   display: flex;
@@ -29,29 +28,38 @@
 }
 
 /* === Trade Block === */
+
 .trade-card {
-  background-color: #ffffff;
+  background-color: #f8f9fa; /* Cinza institucional claro, sem tom infantil */
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
   padding: 1.25rem;
   margin-bottom: 1.5rem;
-  border-left: 5px solid #2563eb;
   transition: all 0.2s ease;
 }
 
+.trade-block {
+  border-left: 5px solid #2563eb; /* Azul institucional na lateral esquerda */
+  padding: 0; /* Não adicione padding ou background no trade-block */
+  background: none; /* Evitar sobreposição de cor */
+}
 .trade-title {
+  background-color: #eef2f7; /* Header levemente destacado, sem azul bebê */
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #d1d5db;
+  border-radius: 6px 6px 0 0;
   font-size: 1.1rem;
   font-weight: 700;
   color: #1f2937;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e5e7eb;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .trade-content {
+  padding: 1.5rem 1rem;
   transition: all 0.2s ease;
 }
 
@@ -75,34 +83,30 @@
   content: " Collapse";
 }
 
-/* Alternância de cor entre trades (opcional) */
-.trade-card:nth-child(odd) {
-  background-color: #f9fafb;
-}
 
-.trade-card:nth-child(even) {
-  background-color: #ffffff;
-}
+/* Alternância de cor entre os trades (se desejar manter) */
+.trade-card:nth-child(odd) { background-color: #f8fafc; }
+.trade-card:nth-child(even) { background-color: #ffffff; }
 
-/* === Trade Inputs: Quantidade + Trade Type + Checkbox === */
+/* === Trade Inputs === */
 .trade-inputs {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   align-items: flex-end;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem; /* Mais espaço antes dos botões */
 }
 
 .trade-inputs .input-group {
-  flex: 0 0 auto;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: none;
 }
 
-.input-group.quantity-group input {
-  width: 120px;
-}
-
+.input-group.quantity-group input,
 .input-group.trade-type-group select {
-  width: 160px;
+  width: 120px;
 }
 
 .checkbox-group {
@@ -112,37 +116,49 @@
   gap: 0.5rem;
 }
 
-/* === Grid horizontal para os dois Legs === */
+.trade-buttons {
+	margin-bottom: 0.5px; /* Mais espaço antes dos Legs */
+	margin-top: 15px;
+}
+.controls-section {
+	margin-top: 15px;
+	margin-bottom: 0.5px;
+}
+
+
+/* === Legs Grid === */
 .legs-grid {
   display: flex;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
   margin-top: 1rem;
 }
 
 .leg-section {
-  flex: 1 1 300px;
+  flex: 1 1 45%;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   padding: 1rem;
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.2s ease, transform 0.1s ease;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  min-width: 300px;
 }
 
 .leg-section:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
 
 .leg-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: #111827;
+  color: #1f2937;
   margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.25rem;
 }
 
 .radio-group {
@@ -163,10 +179,21 @@
   accent-color: #2563eb;
 }
 
-.input-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+/* Campos de input e selects (com a nova borda suave) */
+.input-group,
+.avg-fields > div {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.input-group:hover,
+.avg-fields > div:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
 }
 
 .input-field,
@@ -175,7 +202,7 @@
 input[type="date"],
 input[type="number"],
 select {
-  border: 1px solid #cbd5e1;
+  border: 1px solid #e5e7eb;
   border-radius: 0.375rem;
   padding: 0.5rem;
   font-size: 0.875rem;
@@ -206,21 +233,18 @@ select:focus {
   flex: 1 1 120px;
 }
 
-.trade-buttons {
-  margin-top: 7px;
-}
-
-/* Responsividade para mobile */
 @media (max-width: 700px) {
   .legs-grid {
     flex-direction: column;
   }
-
+  .leg-section {
+    flex: 1 1 100%;
+    min-width: auto;
+  }
   .trade-inputs {
     flex-direction: column;
     align-items: stretch;
   }
-
   .input-group.quantity-group input,
   .input-group.trade-type-group select {
     width: 100%;
@@ -244,44 +268,22 @@ button:hover {
   transform: scale(1.05);
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.btn-secondary {
-  background-color: #ffc107;
-  color: white;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  color: white;
-}
-
-.btn-success {
-  background-color: #13a10e;
-  color: white;
-}
-
-.btn-email {
-  background-color: #7c3aed;
-  color: white;
-}
-
-.btn-primary:hover { background-color: #0056b3; }
-.btn-secondary:hover { background-color: #e0a800; }
-.btn-danger:hover { background-color: #c82333; }
-.btn-success:hover { background-color: #0f890a; }
-.btn-email:hover { background-color: #6a21d9; }
-
 /* === Output Section (estilo console/log) === */
 .output-section {
-  background-color: #ffffff;
-  padding: 1rem;
+  border: 1px solid #cbd5e1;
+  background-color: #f1f5f9;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #ef4444;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 2rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.output-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #b91c1c;
+  margin-bottom: 0.5rem;
 }
 
 .output-section textarea {
@@ -289,16 +291,17 @@ button:hover {
   box-sizing: border-box;
   resize: vertical;
   min-height: 200px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #e5e7eb;
   border-radius: 6px;
   padding: 0.75rem;
   font-family: monospace;
   font-size: 0.9rem;
-  background-color: #f9fafb;
+  background-color: #fefefe;
   color: #374151;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* === Modal Centralizado com Overlay + Animação === */
+/* === Modal (Confirmação e IFrame) === */
 .modal-container {
   position: fixed;
   top: 0;
@@ -346,45 +349,11 @@ button:hover {
   100% { opacity: 1; transform: scale(1); }
 }
 
-.hidden {
-  display: none;
-}
+.hidden { display: none; }
 
-/* === Dark Mode para Modal === */
-body.dark-theme .modal-box {
-  background: #1f2937;
-  color: #f9fafb;
-}
-
-body.dark-theme .modal-text {
-  color: #d1d5db;
-}
-
-body.dark-theme .modal-buttons button {
-  filter: brightness(1.2);
-}
-
-/* === Tipografia geral === */
-body {
-  font-family: 'Inter', sans-serif;
-  color: #1f2937;
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.btn-secondary {
-  background-color: #ffc107;
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.btn-secondary:hover {
-  background-color: #e0a800;
-}
+body.dark-theme .modal-box { background: #1f2937; color: #f9fafb; }
+body.dark-theme .modal-text { color: #d1d5db; }
+body.dark-theme .modal-buttons button { filter: brightness(1.2); }
 
 #iframe-modal iframe {
   width: 100%;
@@ -396,5 +365,96 @@ body {
   background: white;
   border-radius: 8px;
   overflow: hidden;
+}
+
+/* === Tipografia Geral === */
+body {
+  font-family: 'Inter', sans-serif;
+  color: #1f2937;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+
+/* === Botões Institucionais Modernos === */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: 44px;
+  padding: 0 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: linear-gradient(145deg, #e2e8f0, #cbd5e1); /* Cinza com leve gradiente */
+  color: #1f2937;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+button:hover {
+  background: linear-gradient(145deg, #f1f5f9, #d1d5db); /* Tom mais claro no hover */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* === Remover vestígios antigos de estilos específicos === */
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success,
+.btn-email {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  height: 44px;
+  padding: 0 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', sans-serif;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  border-radius: 6px;
+  background: linear-gradient(145deg, #e2e8f0, #cbd5e1);
+  color: #1f2937;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover,
+.btn-secondary:hover,
+.btn-danger:hover,
+.btn-success:hover,
+.btn-email:hover {
+  background: linear-gradient(145deg, #f1f5f9, #d1d5db);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active,
+.btn-secondary:active,
+.btn-danger:active,
+.btn-success:active,
+.btn-email:active {
+  transform: scale(0.98);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
