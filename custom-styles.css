@@ -43,6 +43,8 @@
   border-left: 5px solid #2563eb; /* Azul institucional na lateral esquerda */
   padding: 0; /* Não adicione padding ou background no trade-block */
   background: none; /* Evitar sobreposição de cor */
+
+  border-radius: 8px;
 }
 .trade-title {
   background-color: #eef2f7; /* Header levemente destacado, sem azul bebê */
