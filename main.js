@@ -156,6 +156,7 @@ function addTrade() {
 
   toggleLeg1Fields(index);
   toggleLeg2Fields(index);
+  updatePriceTypeOptions(index);
 
   attachTradeHandlers(index);
 
@@ -259,6 +260,28 @@ function toggleOrderFields(index, leg) {
     validityWrap.style.display = showOrder && orderType && orderType !== "At Market" ? "" : "none";
   if (limitWrap)
     limitWrap.style.display = showOrder && orderType === "Limit" ? "" : "none";
+}
+
+function updatePriceTypeOptions(index) {
+  const tradeType = document.getElementById(`tradeType-${index}`)?.value;
+  const allowed = ["Fix", "C2R"];
+  [1, 2].forEach((leg) => {
+    const sel = document.getElementById(`type${leg}-${index}`);
+    if (!sel) return;
+    Array.from(sel.options).forEach((opt) => {
+      if (!opt.value) return;
+      if (tradeType === "Forward") opt.disabled = !allowed.includes(opt.value);
+      else opt.disabled = false;
+    });
+    if (
+      tradeType === "Forward" &&
+      sel.value &&
+      !allowed.includes(sel.value)
+    ) {
+      sel.value = "";
+      leg === 1 ? toggleLeg1Fields(index) : toggleLeg2Fields(index);
+    }
+  });
 }
 
 function syncSides(index, changedLeg) {
@@ -916,6 +939,10 @@ function attachTradeHandlers(index) {
   if (order2)
     order2.addEventListener("change", () => toggleOrderFields(index, 2));
 
+  const tradeType = document.getElementById(`tradeType-${index}`);
+  if (tradeType)
+    tradeType.addEventListener("change", () => updatePriceTypeOptions(index));
+
   const side1Radios = document.querySelectorAll(`input[name='side1-${index}']`);
   side1Radios.forEach((r) =>
     r.addEventListener("change", () => syncSides(index, 1))
@@ -999,6 +1026,7 @@ if (typeof module !== "undefined" && module.exports) {
     setMinDates,
     updateMonthOptions,
     toggleOrderFields,
+    updatePriceTypeOptions,
     generateRequest,
     buildConfirmationText,
     clearTrade,

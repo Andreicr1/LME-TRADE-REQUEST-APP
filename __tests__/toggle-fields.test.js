@@ -11,11 +11,13 @@ const {
   toggleLeg1Fields,
   toggleLeg2Fields,
   getLastBusinessDay,
+  updatePriceTypeOptions,
 } = require("../main");
 
 beforeEach(() => {
   document.body.innerHTML = `
     <select id="calendarType"></select>
+    <select id="tradeType-0"><option value="Swap">Swap</option><option value="Forward">Forward</option></select>
     <select id="type1-0"><option value="">Select</option><option value="AVG">AVG</option><option value="Fix">Fix</option><option value="AVGInter">AVGInter</option><option value="C2R">C2R</option></select>
     <div id="startWrap"><input type="date" id="startDate-0"></div>
     <div id="endWrap"><input type="date" id="endDate-0"></div>
@@ -56,4 +58,18 @@ test("Leg2 fields toggle autocompletes fix date", () => {
   const last = getLastBusinessDay(2025, 0);
   const date = calendarUtils.parseDateGregorian(last);
   expect(input.value).toBe(date.toISOString().split("T")[0]);
+});
+
+test("updatePriceTypeOptions restricts forward types", () => {
+  document.getElementById("type1-0").value = "AVG";
+  document.getElementById("type2-0").value = "AVGInter";
+  const tradeSel = document.getElementById("tradeType-0");
+  tradeSel.value = "Forward";
+  updatePriceTypeOptions(0);
+  const opt1 = document.querySelector("#type1-0 option[value='AVG']");
+  const opt2 = document.querySelector("#type2-0 option[value='AVGInter']");
+  expect(opt1.disabled).toBe(true);
+  expect(opt2.disabled).toBe(true);
+  expect(document.getElementById("type1-0").value).toBe("");
+  expect(document.getElementById("type2-0").value).toBe("");
 });

@@ -9,6 +9,7 @@ const {
   generateRequest,
   toggleLeg1Fields,
   toggleLeg2Fields,
+  updatePriceTypeOptions,
 } = require("../main");
 
 document.body.innerHTML = '<select id="calendarType"></select>';
@@ -317,15 +318,13 @@ describe("generateRequest", () => {
     );
   });
 
-  test("creates single leg forward AVG request", () => {
+  test("forward trade clears unsupported price types", () => {
     document.getElementById("tradeType-0").value = "Forward";
-    document.getElementById("qty-0").value = "6";
     document.getElementById("type1-0").value = "AVG";
-    document.getElementById("month1-0").value = "January";
-    document.getElementById("year1-0").value = "2025";
-    generateRequest(0);
-    const out = document.getElementById("output-0").textContent;
-    expect(out).toBe("LME Request: Buy 6 mt Al AVG January 2025 Flat");
+    document.getElementById("type2-0").value = "AVGInter";
+    updatePriceTypeOptions(0);
+    expect(document.getElementById("type1-0").value).toBe("");
+    expect(document.getElementById("type2-0").value).toBe("");
   });
 
   test("forward with two legs sync PPT", () => {
