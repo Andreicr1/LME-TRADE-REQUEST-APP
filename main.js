@@ -321,6 +321,14 @@ function toggleLeg1Fields(index) {
     fixInput.parentElement.style.display =
       val === "Fix" || val === "C2R" ? "" : "none";
 
+  if (fixInput) {
+    const type2 = document.getElementById(`type2-${index}`)?.value;
+    if (val === "Fix" && type2 === "AVGInter") {
+      const end = document.getElementById(`endDate2-${index}`)?.value;
+      if (end) fixInput.value = end;
+    }
+  }
+
   toggleOrderFields(index, 1);
 }
 
@@ -355,6 +363,10 @@ function toggleLeg2Fields(index) {
         fixInput.value = d.toISOString().split("T")[0];
         fixInput.readOnly = true;
       }
+    } else if (val === "Fix" && type1 === "AVGInter") {
+      const end = document.getElementById(`endDate-${index}`)?.value;
+      if (end) fixInput.value = end;
+      fixInput.readOnly = false;
     } else {
       fixInput.readOnly = false;
     }
@@ -532,6 +544,22 @@ function updateAvgRestrictions(index) {
   Array.from(monthSel.options).forEach((opt, i) => {
     opt.disabled = selectedYear === endYear && i < endMonth;
   });
+}
+
+function syncFixWithAvgInter(index) {
+  const type1 = document.getElementById(`type1-${index}`)?.value;
+  const type2 = document.getElementById(`type2-${index}`)?.value;
+  const end1 = document.getElementById(`endDate-${index}`)?.value;
+  const end2 = document.getElementById(`endDate2-${index}`)?.value;
+  const fix1 = document.getElementById(`fixDate1-${index}`);
+  const fix2 = document.getElementById(`fixDate-${index}`);
+
+  if ((type1 === "AVGInter") && (type2 === "Fix" || type2 === "C2R") && end1 && fix2) {
+    fix2.value = end1;
+  }
+  if ((type2 === "AVGInter") && (type1 === "Fix" || type1 === "C2R") && end2 && fix1) {
+    fix1.value = end2;
+  }
 }
 
 function getFirstBusinessDay(year, month) {
@@ -785,7 +813,7 @@ function generateRequest(index) {
     const avgInfo = type1 === "AVG" ? { type: "AVG", month: month1, year: year1 } : { type: "AVGInter", start: start1, end: end1 };
     payoffText = buildExpectedPayoff(side2, avgInfo, companyName);
   }
-  if (payoffText) text += `\n\n${payoffText}`;
+  if (payoffText) text += `\n${payoffText}`;
 
 
   output.textContent = text.trim();
@@ -1072,6 +1100,7 @@ function attachTradeHandlers(index) {
     type1.addEventListener("change", () => {
       toggleLeg1Fields(index);
       updateAvgRestrictions(index);
+      syncFixWithAvgInter(index);
     });
 
   const type2 = document.getElementById(`type2-${index}`);
@@ -1079,6 +1108,7 @@ function attachTradeHandlers(index) {
     type2.addEventListener("change", () => {
       toggleLeg2Fields(index);
       updateAvgRestrictions(index);
+      syncFixWithAvgInter(index);
     });
 
   const order1 = document.getElementById(`orderType1-${index}`);
@@ -1105,8 +1135,14 @@ function attachTradeHandlers(index) {
   const sd2 = document.getElementById(`startDate2-${index}`);
   if (sd2) sd2.addEventListener("change", () => updateEndDateMin(index, 2));
 
+  const ed1 = document.getElementById(`endDate-${index}`);
+  if (ed1) ed1.addEventListener("change", () => syncFixWithAvgInter(index));
   const ed2 = document.getElementById(`endDate2-${index}`);
-  if (ed2) ed2.addEventListener("change", () => updateAvgRestrictions(index));
+  if (ed2)
+    ed2.addEventListener("change", () => {
+      updateAvgRestrictions(index);
+      syncFixWithAvgInter(index);
+    });
 
   const year1 = document.getElementById(`year1-${index}`);
   if (year1)

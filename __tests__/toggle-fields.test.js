@@ -57,3 +57,23 @@ test("Leg2 fields toggle autocompletes fix date", () => {
   const date = calendarUtils.parseDateGregorian(last);
   expect(input.value).toBe(date.toISOString().split("T")[0]);
 });
+
+test("Fix leg gets end date from AVGInter leg1", () => {
+  document.getElementById("type1-0").value = "AVGInter";
+  document.getElementById("endDate-0").value = "2025-06-15";
+  document.getElementById("type2-0").value = "Fix";
+  toggleLeg1Fields(0);
+  toggleLeg2Fields(0);
+  const input = document.getElementById("fixDate-0");
+  expect(input.value).toBe("2025-06-15");
+});
+
+test("Fix leg1 gets end date from AVGInter leg2", () => {
+  document.getElementById("type1-0").value = "Fix";
+  document.getElementById("type2-0").value = "AVGInter";
+  document.getElementById("endDate2-0").value = "2025-07-20";
+  toggleLeg1Fields(0);
+  toggleLeg2Fields(0);
+  const input = document.getElementById("fixDate1-0");
+  expect(input.value).toBe("2025-07-20");
+});
