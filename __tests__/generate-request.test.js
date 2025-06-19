@@ -67,7 +67,8 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against",
+      "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against\n\n" +
+        "Expected Payoff:\nIf official Monthly Average of January 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference.",
     );
   });
 
@@ -81,7 +82,8 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 Flat against",
+      "LME Request: Buy 8 mt Al USD ppt 04/03/25 and Sell 8 mt Al AVG February 2025 Flat against\n\n" +
+        "Expected Payoff:\nIf official Monthly Average of February 2025 is higher than the Fixed Price, Alcast receives the difference. If the average is lower, Alcast pays the difference.",
     );
   });
 
@@ -95,7 +97,8 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Sell 12 mt Al USD ppt 04/11/25 and Buy 12 mt Al AVG October 2025 Flat against",
+      "LME Request: Sell 12 mt Al USD ppt 04/11/25 and Buy 12 mt Al AVG October 2025 Flat against\n\n" +
+        "Expected Payoff:\nIf official Monthly Average of October 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference.",
     );
   });
 
@@ -106,7 +109,8 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Sell 7 mt Al C2R 02/01/25 ppt 06/01/25 and Buy 7 mt Al AVG January 2025 Flat against",
+      "LME Request: Sell 7 mt Al C2R 02/01/25 ppt 06/01/25 and Buy 7 mt Al AVG January 2025 Flat against\n\n" +
+        "Expected Payoff:\nIf official Monthly Average of January 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference.",
     );
   });
 
@@ -121,7 +125,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al Fixing AVG 01/09/25 to 10/09/25, ppt 04/11/25 and Sell 5 mt Al AVG October 2025 Flat against",
+      "LME Request: Buy 5 mt Al Fixing AVG 01/09/25 to 10/09/25, ppt 12/09/25 and Sell 5 mt Al AVG October 2025 Flat against",
     );
   });
 
@@ -136,7 +140,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 4 mt Al AVG January 2025 Flat and Sell 4 mt Al Fixing AVG 20/02/25 to 25/02/25, ppt 04/02/25 against",
+      "LME Request: Buy 4 mt Al AVG January 2025 Flat and Sell 4 mt Al Fixing AVG 20/02/25 to 25/02/25, ppt 27/02/25 against",
     );
   });
 
@@ -176,7 +180,25 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against",
+      "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against\n\n" +
+        "Expected Payoff:\nIf official Monthly Average of January 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference.",
+    );
+  });
+
+  test("includes expected payoff text", () => {
+    document.getElementById("qty-0").value = "3";
+    document.querySelector("input[name='side1-0'][value='sell']").checked = true;
+    document.querySelector("input[name='side2-0'][value='buy']").checked = true;
+    document.getElementById("type1-0").value = "Fix";
+    document.getElementById("fixDate1-0").value = "2025-06-01";
+    document.getElementById("type2-0").value = "AVG";
+    document.getElementById("month2-0").value = "July";
+    document.getElementById("year2-0").value = "2025";
+    generateRequest(0);
+    const out = document.getElementById("output-0").textContent;
+    expect(out).toBe(
+      "LME Request: Sell 3 mt Al USD ppt 04/08/25 and Buy 3 mt Al AVG July 2025 Flat against\n\n" +
+        "Expected Payoff:\nIf official Monthly Average of July 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference."
     );
   });
 
@@ -204,7 +226,8 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat against\n" +
-        "Execution Instruction: Please work this order as a Limit @ USD 2300 for the Fixed price, valid for Day."
+        "Execution Instruction: Please work this order as a Limit @ USD 2300 for the Fixed price, valid for Day." +
+        "\n\nExpected Payoff:\nIf official Monthly Average of January 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference."
     );
   });
 
@@ -286,7 +309,8 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Buy 5 mt Al USD ppt 04/03/25 and Sell 5 mt Al AVG February 2025 Flat, ppt 04/03/25 against\n" +
-        "Execution Instruction: Please work this order posting as the best offer in the book for the fixed price, valid for Day."
+        "Execution Instruction: Please work this order posting as the best offer in the book for the fixed price, valid for Day." +
+        "\n\nExpected Payoff:\nIf official Monthly Average of February 2025 is higher than the Fixed Price, Alcast receives the difference. If the average is lower, Alcast pays the difference."
     );
   });
 
@@ -313,7 +337,8 @@ describe("generateRequest", () => {
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
       "LME Request: Sell 5 mt Al USD ppt 04/02/25 and Buy 5 mt Al AVG January 2025 Flat, ppt 04/02/25 against\n" +
-        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day."
+        "Execution Instruction: Please work this order posting as the best bid in the book for the fixed price, valid for Day." +
+        "\n\nExpected Payoff:\nIf official Monthly Average of January 2025 is higher than the Fixed Price, Alcast pays the difference. If the average is lower, Alcast receives the difference."
     );
   });
 
@@ -342,7 +367,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al Fixing AVG 16/05/25 to 19/05/25, ppt 04/08/25\n" +
+      "LME Request: Buy 5 mt Al Fixing AVG 16/05/25 to 19/05/25, ppt 21/05/25\n" +
         "LME Request: Buy 5 mt Al AVG July 2025 Flat"
     );
   });
