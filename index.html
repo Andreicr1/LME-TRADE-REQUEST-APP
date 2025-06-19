@@ -36,7 +36,7 @@
           Alcast Trading
         </label>
       </div>
-      <div id="trades" class="trade-section"></div>
+      <div id="trades" class="trade-section"></div>    
       <div class="output-section">
 		  <h2 class="output-title">Output - Trade Request Preview</h2>
         <textarea
@@ -73,9 +73,17 @@
       </div>
     </div>
 
-    <template id="trade-template">
-      <div class="trade-card">
-        <h2 class="trade-title"><strong>Trade 1</strong></h2>
+<template id="trade-template">
+  <div class="trade-card">
+    <h2 class="trade-title"><strong>Trade 1</strong></h2>
+    <div class="template-dropdown">
+      <button onclick="toggleTemplateDropdown(this)">Selecionar Template ▼</button>
+      <div class="dropdown-content hidden">
+        <div onclick="addTemplateTrade('queda', this)">Proteção de Queda</div>
+        <div onclick="addTemplateTrade('alta', this)">Proteção de Alta</div>
+      </div>
+    </div>
+
         <div class="trade-inputs">
           <div class="input-group">
             <label class="input-label" for="qty-0">Quantity (mt):</label>
@@ -128,7 +136,7 @@
             </div>
             <div class="avg-fields" id="avgFields1-0">
               <div>
-                <label class="field-label">Month:</label>
+                <label class="field-label" for="month1-0">Month:</label>
                 <select id="month1-0" class="input-field">
                   <option>January</option>
                   <option>February</option>
@@ -145,7 +153,7 @@
                 </select>
               </div>
               <div>
-                <label class="field-label">Year:</label>
+                <label class="field-label" for="year1-0">Year:</label>
                 <select id="year1-0" class="input-field"></select>
               </div>
             </div>
@@ -211,7 +219,7 @@
             </div>
             <div class="avg-fields" id="avgFields2-0">
               <div>
-                <label class="field-label">Month:</label>
+                <label class="field-label" for="month2-0">Month:</label>
                 <select id="month2-0" class="input-field">
                   <option>January</option>
                   <option>February</option>
@@ -228,7 +236,7 @@
                 </select>
               </div>
               <div>
-                <label class="field-label">Year:</label>
+                <label class="field-label" for="year2-0">Year:</label>
                 <select id="year2-0" class="input-field"></select>
               </div>
             </div>

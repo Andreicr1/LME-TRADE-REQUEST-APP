@@ -59,6 +59,103 @@ window.onload = () => {
     tradesContainer.style.display = "block";
   }
 };
+document.addEventListener('click', function(event) {
+  const dropdowns = document.querySelectorAll('.dropdown-content');
+  dropdowns.forEach(dropdown => {
+    if (!dropdown.contains(event.target) && !dropdown.previousElementSibling.contains(event.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+});
+
+function toggleTemplateDropdown(button) {
+  const dropdown = button.nextElementSibling;
+  dropdown.classList.toggle('hidden');
+}
+
+function addTemplateTrade(type, clickedElement) {
+  const tradeCard = clickedElement.closest('.trade-card');
+  if (!tradeCard) return;
+
+  const tradeTypeSelect = tradeCard.querySelector('select[id^="tradeType"]');
+
+  const leg1Buy = tradeCard.querySelector('input[name^="side1"][value="buy"]');
+  const leg1Sell = tradeCard.querySelector('input[name^="side1"][value="sell"]');
+  const leg1PriceType = tradeCard.querySelector('select[id^="type1"]');
+
+  const leg2Buy = tradeCard.querySelector('input[name^="side2"][value="buy"]');
+  const leg2Sell = tradeCard.querySelector('input[name^="side2"][value="sell"]');
+  const leg2PriceType = tradeCard.querySelector('select[id^="type2"]');
+
+  // Resetar os radio buttons
+  if (leg1Buy) leg1Buy.checked = false;
+  if (leg1Sell) leg1Sell.checked = false;
+  if (leg2Buy) leg2Buy.checked = false;
+  if (leg2Sell) leg2Sell.checked = false;
+
+  // Sempre forçar Swap
+  if (tradeTypeSelect) tradeTypeSelect.value = 'Swap';
+
+const syncPptCheckbox = tradeCard.querySelector('input[id^="syncPpt"]');
+if (syncPptCheckbox) {
+  syncPptCheckbox.checked = true;
+  syncPptCheckbox.dispatchEvent(new Event('change'));
+}
+
+
+  // Lógica por template
+  if (type === 'queda') {
+    if (leg1Buy) leg1Buy.checked = true;
+    if (leg1PriceType) {
+      leg1PriceType.value = 'AVG';
+      leg1PriceType.dispatchEvent(new Event('change'));
+    }
+
+    if (leg2Sell) leg2Sell.checked = true;
+    if (leg2PriceType) {
+      leg2PriceType.value = 'Fix';
+      leg2PriceType.dispatchEvent(new Event('change'));
+    }
+  }
+
+  if (type === 'alta') {
+    if (leg1Sell) leg1Sell.checked = true;
+    if (leg1PriceType) {
+      leg1PriceType.value = 'AVG';
+      leg1PriceType.dispatchEvent(new Event('change'));
+    }
+
+    if (leg2Buy) leg2Buy.checked = true;
+    if (leg2PriceType) {
+      leg2PriceType.value = 'Fix';
+      leg2PriceType.dispatchEvent(new Event('change'));
+    }
+  }
+
+  if (type === 'spread') {
+    if (leg1Buy) leg1Buy.checked = true;
+    if (leg1PriceType) {
+      leg1PriceType.value = 'AVG';
+      leg1PriceType.dispatchEvent(new Event('change'));
+    }
+
+    if (leg2Sell) leg2Sell.checked = true;
+    if (leg2PriceType) {
+      leg2PriceType.value = 'AVG';
+      leg2PriceType.dispatchEvent(new Event('change'));
+    }
+  }
+
+  // Atualizar o texto do botão
+  const dropdown = clickedElement.closest('.dropdown-content');
+  const button = dropdown.previousElementSibling;
+  if (button) {
+    button.textContent = clickedElement.textContent + ' ▼';
+  }
+
+  // Fechar dropdown
+  dropdown.classList.add('hidden');
+}
 
 // Função para carregar dados de feriados
 async function loadHolidayData() {
@@ -125,7 +222,7 @@ function addTrade() {
   div.className = "trade-block opacity-0 transition-opacity duration-300";
   div.appendChild(clone);
 
-  // Ensure fixing date inputs exist for tests
+  // Garantir existência dos campos de fixing date
   const legs = div.querySelectorAll(".leg-section");
   if (legs[0] && !div.querySelector(`#fixDate1-${index}`)) {
     const inp = document.createElement("input");
@@ -158,6 +255,28 @@ function addTrade() {
   toggleLeg2Fields(index);
 
   attachTradeHandlers(index);
+
+  // --- Início do bloco de sincronização Month/Year da Leg 1 com FixDate da Leg 2 ---
+  const month1Sel = document.getElementById(`month1-${index}`);
+  const year1Sel = document.getElementById(`year1-${index}`);
+  const fixDate2 = document.getElementById(`fixDate-${index}`);
+  const syncPptCheckbox = document.getElementById(`syncPpt-${index}`);
+
+  function updateFixDate2() {
+    if (syncPptCheckbox?.checked) {
+      const month = month1Sel?.value;
+      const year = year1Sel?.value;
+      if (month && year) {
+        const last = getLastBusinessDay(Number(year), MONTHS.indexOf(month));
+        const d = calendarUtils.parseDate(last, currentCalendar());
+        if (fixDate2) fixDate2.value = d.toISOString().split('T')[0];
+      }
+    }
+  }
+
+  if (month1Sel) month1Sel.addEventListener('change', updateFixDate2);
+  if (year1Sel) year1Sel.addEventListener('change', updateFixDate2);
+  // --- Fim do bloco ---
 
   console.log(`✅ Trade ${index} adicionado com sucesso`);
 }
