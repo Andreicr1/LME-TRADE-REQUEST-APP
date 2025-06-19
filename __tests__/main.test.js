@@ -12,6 +12,7 @@ const {
   getSecondBusinessDay,
   getLastBusinessDay,
   getFixPpt,
+  getFirstBusinessDay,
   updateEndDateMin,
   updateAvgRestrictions,
   setMinDates,
@@ -73,7 +74,7 @@ describe('date restrictions', () => {
     expect(opts[1].disabled).toBe(false);
   });
 
-  test('setMinDates applies today to min attributes', () => {
+  test('setMinDates sets proper minimum dates', () => {
     document.body.innerHTML += `
       <input type="date" id="fixDate1-0">
       <input type="date" id="fixDate-0">
@@ -84,8 +85,14 @@ describe('date restrictions', () => {
     `;
     setMinDates(0);
     const today = new Date().toISOString().split('T')[0];
-    ['fixDate1-0','fixDate-0','startDate-0','endDate-0','startDate2-0','endDate2-0'].forEach(id => {
+    const now = new Date();
+    const first = getFirstBusinessDay(now.getFullYear(), now.getMonth());
+    const firstIso = calendarUtils.parseDate(first, 'gregorian').toISOString().split('T')[0];
+    ['fixDate1-0','fixDate-0'].forEach(id => {
       expect(document.getElementById(id).min).toBe(today);
+    });
+    ['startDate-0','endDate-0','startDate2-0','endDate2-0'].forEach(id => {
+      expect(document.getElementById(id).min).toBe(firstIso);
     });
   });
 });

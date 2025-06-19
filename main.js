@@ -534,18 +534,32 @@ function updateAvgRestrictions(index) {
   });
 }
 
+function getFirstBusinessDay(year, month) {
+  let d = new Date(year, month, 1);
+  while (!isBusinessDay(d)) d.setDate(d.getDate() + 1);
+  return calendarUtils.formatDate(d, currentCalendar());
+}
+
 function setMinDates(index) {
-  const today = new Date().toISOString().split("T")[0];
+  const todayIso = new Date().toISOString().split("T")[0];
+  const now = new Date();
+  const firstBizStr = getFirstBusinessDay(now.getFullYear(), now.getMonth());
+  const firstBizDate = calendarUtils.parseDate(firstBizStr, currentCalendar());
+  const firstIso = firstBizDate.toISOString().split("T")[0];
+
+  [`fixDate1-${index}`, `fixDate-${index}`].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.min = todayIso;
+  });
+
   [
-    `fixDate1-${index}`,
-    `fixDate-${index}`,
     `startDate-${index}`,
     `endDate-${index}`,
     `startDate2-${index}`,
     `endDate2-${index}`,
   ].forEach((id) => {
     const el = document.getElementById(id);
-    if (el) el.min = today;
+    if (el) el.min = firstIso;
   });
 }
 
@@ -663,6 +677,10 @@ function generateRequest(index) {
   let ppt2 = "";
   if (type1 === "AVG") ppt1 = legPpt(month1, year1);
   if (type2 === "AVG") ppt2 = legPpt(month2, year2);
+  if (type1 === "AVGInter" && end1)
+    ppt1 = getFixPpt(calendarUtils.formatDate(end1, currentCalendar()));
+  if (type2 === "AVGInter" && end2)
+    ppt2 = getFixPpt(calendarUtils.formatDate(end2, currentCalendar()));
 
   if ((type1 === "Fix" || type1 === "C2R") && fix1)
     ppt1 = getFixPpt(calendarUtils.formatDate(fix1, currentCalendar()));
@@ -675,6 +693,16 @@ function generateRequest(index) {
     return;
   }
 
+  if (type1 === "AVGInter" && (type2 === "Fix" || type2 === "C2R") && end1) {
+    fix2 = end1;
+    if (syncPpt) ppt2 = ppt1;
+  }
+
+  if (type2 === "AVGInter" && (type1 === "Fix" || type1 === "C2R") && end2) {
+    fix1 = end2;
+    if (syncPpt) ppt1 = ppt2;
+  }
+
   if (type1 === "Fix" && type2 === "AVG") {
     ppt1 = ppt2;
     fix1 = null;
@@ -683,8 +711,8 @@ function generateRequest(index) {
     ppt2 = ppt1;
     fix2 = null;
   }
-  if (type1 === "AVGInter" && (type2 === "AVG" || syncPpt)) ppt1 = legPpt(month2, year2);
-  if (type2 === "AVGInter" && (type1 === "AVG" || syncPpt)) ppt2 = legPpt(month1, year1);
+  if (syncPpt && type1 === "AVGInter") ppt2 = ppt1;
+  if (syncPpt && type2 === "AVGInter") ppt1 = ppt2;
 
   function legText(side, type, month, year, start, end, fixDate, ppt) {
     const s = side === "buy" ? "Buy" : "Sell";
@@ -748,6 +776,17 @@ function generateRequest(index) {
     text += `\nExecution Instruction: ${buildExecutionInstruction(orderType2, side2, validity2, limit2)}`;
   }
 
+  let payoffText = "";
+  const companyName = (document.querySelector("input[name='company']:checked")?.value || "").split(" ")[0];
+  if ((type1 === "Fix" || type1 === "C2R") && (type2 === "AVG" || type2 === "AVGInter")) {
+    const avgInfo = type2 === "AVG" ? { type: "AVG", month: month2, year: year2 } : { type: "AVGInter", start: start2, end: end2 };
+    payoffText = buildExpectedPayoff(side1, avgInfo, companyName);
+  } else if ((type2 === "Fix" || type2 === "C2R") && (type1 === "AVG" || type1 === "AVGInter")) {
+    const avgInfo = type1 === "AVG" ? { type: "AVG", month: month1, year: year1 } : { type: "AVGInter", start: start1, end: end1 };
+    payoffText = buildExpectedPayoff(side2, avgInfo, companyName);
+  }
+  if (payoffText) text += `\n\n${payoffText}`;
+
 
   output.textContent = text.trim();
   updateFinalOutput();
@@ -762,6 +801,18 @@ function buildExecutionInstruction(type, side, validity, price) {
     return `Please work this order posting as the best ${dir} in the book for the fixed price, valid for ${validity}.`;
   }
   return "";
+}
+
+function buildExpectedPayoff(fixedSide, avgInfo, company) {
+  if (!fixedSide || !avgInfo) return "";
+  const [higherAction, lowerAction] =
+    fixedSide === "sell" ? ["pays", "receives"] : ["receives", "pays"];
+  if (avgInfo.type === "AVG") {
+    return `Expected Payoff:\nIf official Monthly Average of ${avgInfo.month} ${avgInfo.year} is higher than the Fixed Price, ${company} ${higherAction} the difference. If the average is lower, ${company} ${lowerAction} the difference.`;
+  }
+  const s = calendarUtils.formatDate(avgInfo.start, currentCalendar());
+  const e = calendarUtils.formatDate(avgInfo.end, currentCalendar());
+  return `Expected Payoff:\nIf average of official prices between ${s} and ${e} is higher than the Fixed Price, ${company} ${higherAction} the difference. If the average is lower, ${company} ${lowerAction} the difference.`;
 }
 
 function ptExecutionInstruction(type, side, validity, price) {
@@ -1116,12 +1167,14 @@ if (typeof module !== "undefined" && module.exports) {
     getSecondBusinessDay,
     getLastBusinessDay,
     getFixPpt,
+    getFirstBusinessDay,
     updateEndDateMin,
     updateAvgRestrictions,
     setMinDates,
     updateMonthOptions,
     toggleOrderFields,
     generateRequest,
+    buildExpectedPayoff,
     buildConfirmationText,
     clearTrade,
     removeTrade,
