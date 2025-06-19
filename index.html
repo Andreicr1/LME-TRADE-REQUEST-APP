@@ -75,41 +75,49 @@
 
 <template id="trade-template">
   <div class="trade-card">
-    <h2 class="trade-title"><strong>Trade 1</strong></h2>
-    <div class="template-dropdown">
-      <button onclick="toggleTemplateDropdown(this)" class="btn-template">Selecionar Template ▼</button>
-      <div class="dropdown-content hidden">
-        <div onclick="addTemplateTrade('queda', this)">Proteção de Queda</div>
-        <div onclick="addTemplateTrade('alta', this)">Proteção de Alta</div>
-      </div>
+    <div class="trade-header">
+  <h2 class="trade-title">Trade 1</h2>
+  <div class="template-dropdown">
+    <button onclick="toggleTemplateDropdown(this)" class="btn-template">Selecionar Template ▼</button>
+    <div class="dropdown-content hidden">
+      <div onclick="addTemplateTrade('queda', this)">Proteção de Queda</div>
+      <div onclick="addTemplateTrade('alta', this)">Proteção de Alta</div>
     </div>
+  </div>
+</div>
 
-        <div class="trade-inputs">
-          <div class="input-group">
-            <label class="input-label" for="qty-0">Quantity (mt):</label>
-            <input
-              type="number"
-              id="qty-0"
-              class="input-field"
-              min="0"
-              step="1"
-              aria-label="Quantity in metric tons"
-            />
-          </div>
+<div class="section-divider"></div>    
 
-          <div class="input-group">
-            <label class="input-label" for="tradeType-0">Trade Type:</label>
-            <select id="tradeType-0" class="input-field">
-              <option value="Swap" selected>Swap</option>
-              <option value="Forward">Forward</option>
-            </select>
-          </div>
+<div class="input-row">
+  <div class="input-group">
+    <label for="qty-0">Quantity (mt):</label>
+    <input
+      type="number"
+      id="qty-0"
+      class="input-field small-field"
+      min="0"
+      step="1"
+      aria-label="Quantity in metric tons"
+    />
+  </div>
 
-          <label class="checkbox-group">
-            <input type="checkbox" id="syncPpt-0" />
-            <span class="checkbox-label">Synchronize PPT</span>
-          </label>
-        </div>
+  <div class="input-group">
+    <label for="tradeType-0">Trade Type:</label>
+    <select id="tradeType-0" class="input-field small-field">
+      <option value="Swap" selected>Swap</option>
+      <option value="Forward">Forward</option>
+    </select>
+  </div>
+
+  <div class="checkbox-group">
+    <label>
+      <input type="checkbox" id="syncPpt-0" />
+      <span class="checkbox-label">Synchronize PPT</span>
+    </label>
+  </div>
+</div>
+
+<div class="section-divider"></div>
 
         <div class="legs-grid">
           <div class="leg-section">
@@ -279,6 +287,9 @@
             </div>
           </div>
         </div>
+
+<div class="section-divider"></div>
+
         <div class="trade-buttons">
           <button name="generate" class="btn-primary">Generate</button>
           <button name="clear" class="btn-secondary">Clear</button>
