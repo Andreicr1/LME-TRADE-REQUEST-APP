@@ -125,7 +125,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al Fixing AVG 01/09/25 to 10/09/25, ppt 12/09/25 and Sell 5 mt Al AVG October 2025 Flat against",
+      "LME Request: Buy 5 mt Al AVG from 01/09/25 to 10/09/25, ppt 12/09/25 and Sell 5 mt Al AVG October 2025 Flat against",
     );
   });
 
@@ -140,7 +140,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 4 mt Al AVG January 2025 Flat and Sell 4 mt Al Fixing AVG 20/02/25 to 25/02/25, ppt 27/02/25 against",
+      "LME Request: Buy 4 mt Al AVG January 2025 Flat and Sell 4 mt Al AVG from 20/02/25 to 25/02/25, ppt 27/02/25 against",
     );
   });
 
@@ -367,7 +367,7 @@ describe("generateRequest", () => {
     generateRequest(0);
     const out = document.getElementById("output-0").textContent;
     expect(out).toBe(
-      "LME Request: Buy 5 mt Al Fixing AVG 16/05/25 to 19/05/25, ppt 21/05/25\n" +
+      "LME Request: Buy 5 mt Al AVG from 16/05/25 to 19/05/25, ppt 21/05/25\n" +
         "LME Request: Buy 5 mt Al AVG July 2025 Flat"
     );
   });

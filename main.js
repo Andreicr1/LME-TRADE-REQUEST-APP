@@ -752,7 +752,8 @@ function generateRequest(index) {
     if (type === "AVGInter") {
       const ss = calendarUtils.formatDate(start, currentCalendar());
       const ee = calendarUtils.formatDate(end, currentCalendar());
-      txt += `Fixing AVG ${ss} to ${ee}, ppt ${ppt}`;
+      txt += `AVG from ${ss} to ${ee}`;
+      if (ppt) txt += `, ppt ${ppt}`;
       return txt;
     }
     if (type === "Fix") {
