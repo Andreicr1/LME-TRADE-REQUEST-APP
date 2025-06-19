@@ -853,33 +853,38 @@ function buildConfirmationText(index) {
 }
 
 function clearTrade(index) {
-  const fields = [
-    `qty-${index}`,
-    `fixDate1-${index}`,
-    `fixDate-${index}`,
-    `startDate-${index}`,
-    `endDate-${index}`,
-    `startDate2-${index}`,
-    `endDate2-${index}`,
-  ];
-  fields.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) el.value = "";
+  console.log(`🧹 Limpando dados do trade ${index}`);
+
+  // Limpar todos os inputs e selects dentro do trade
+  const inputs = document.querySelectorAll(
+    `#trade-${index} input, #trade-${index} select`
+  );
+  inputs.forEach((input) => {
+    if (input.type === "radio") input.checked = input.defaultChecked;
+    else if (input.type === "checkbox") input.checked = false;
+    else input.value = input.defaultValue;
   });
-  const buy1 = document.querySelector(`input[name='side1-${index}'][value='buy']`);
-  if (buy1) buy1.checked = true;
-  const buy2 = document.querySelector(`input[name='side2-${index}'][value='buy']`);
-  const sell2 = document.querySelector(`input[name='side2-${index}'][value='sell']`);
-  if (buy2) buy2.checked = false;
-  if (sell2) sell2.checked = true;
-  syncSides(index, 1);
-  const type1Sel = document.getElementById(`type1-${index}`);
-  const type2Sel = document.getElementById(`type2-${index}`);
-  if (type1Sel) type1Sel.value = "";
-  if (type2Sel) type2Sel.value = "";
-  const out = document.getElementById(`output-${index}`);
-  if (out) out.textContent = "";
+
+  // Resetar campos de Leg 1 e Leg 2
+  toggleLeg1Fields(index);
+  toggleLeg2Fields(index);
+
+  // Resetar botão de template para "Selecionar Template"
+  const templateButton = document.querySelector(`#templateButton-${index}`);
+  if (templateButton) {
+    templateButton.textContent = "Selecionar Template"; // Redefinir texto
+    templateButton.value = ""; // Resetar valor selecionado
+    templateButton.classList.remove("active"); // Remover classe ativa
+  }
+
+  // Limpar saída gerada
+  const outputEl = document.getElementById(`output-${index}`);
+  if (outputEl) outputEl.textContent = "";
+
+  // Atualizar saída final
   updateFinalOutput();
+
+  console.log(`✅ Trade ${index} limpo e resetado`);
 }
 
 function renumberTrades() {
