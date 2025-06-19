@@ -583,3 +583,12 @@ button:disabled {
   border-top: 1px solid #e2e8f0;
   margin: 1rem 0;
 }
+
+.output-text {
+  color: transparent;
+  user-select: none;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
