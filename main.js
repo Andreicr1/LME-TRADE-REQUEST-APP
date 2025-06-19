@@ -870,16 +870,14 @@ function clearTrade(index) {
   toggleLeg2Fields(index);
 
   // Resetar botão de template para "Selecionar Template"
-  const templateButton = document.querySelector(`#templateButton-${index}`);
-  if (templateButton) {
-    templateButton.textContent = "Selecionar Template"; // Redefinir texto
-    templateButton.value = ""; // Resetar valor selecionado
-    templateButton.classList.remove("active"); // Remover classe ativa
-  }
-
+const templateButton = document.querySelector(`#trade-${index} .template-dropdown button`);
+  if (templateButton) templateButton.textContent = 'Selecionar Template ▼';
+  
   // Limpar saída gerada
   const outputEl = document.getElementById(`output-${index}`);
   if (outputEl) outputEl.textContent = "";
+
+
 
   // Atualizar saída final
   updateFinalOutput();
